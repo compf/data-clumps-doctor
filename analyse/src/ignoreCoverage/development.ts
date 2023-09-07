@@ -23,9 +23,11 @@ async function generateAstCallback(timer, message, index, total): Promise<void> 
 async function main() {
     console.log("Development started");
 
-    const path_to_folder_of_parsed_ast = "/Users/nbaumgartner/Documents/GitHub/data-Clumps/testDataParsedAst/argouml";
+    const path_to_folder_of_parsed_ast = "./../testDataParsedAst/testSrc";
+    const path_to_folder_of_ast_generator = "./../astGenerator";
+    const path_to_source_code = "./../astGenerator/testSrc/java";
 
-    await ParserHelper.parseSourceCodeToAst("/Users/nbaumgartner/Documents/GitHub/data-Clumps/testData/argouml", path_to_folder_of_parsed_ast);
+    await ParserHelper.parseSourceCodeToAst(path_to_source_code, path_to_folder_of_parsed_ast, path_to_folder_of_ast_generator);
 
     let softwareProjectDicts: SoftwareProjectDicts = await ParserHelper.getDictClassOrInterfaceFromParsedAstFolder(path_to_folder_of_parsed_ast);
 
@@ -38,6 +40,8 @@ async function main() {
     let dataClumpsContext = await detector.detect();
     timer.stop();
     timer.printElapsedTime("Detection time");
+
+    await ParserHelper.removeGeneratedAst(path_to_folder_of_parsed_ast);
 
     console.log("Amount dataclumps: "+Object.keys(dataClumpsContext.data_clumps).length);
     console.log("Development finished");

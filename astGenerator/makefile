@@ -1,8 +1,8 @@
 .PHONY: all build run clean
 
 # Default value for the DIRECTORY variable
-DIRECTORY := ./testSrc/java
-OUTPUT_FOLDER := ./../testDataParsedAst/testSrc
+SOURCE := ./testSrc/java
+DESTINATION := ./../testDataParsedAst/testSrc
 IGNORE_DUBLICATE_DEFINITION := true
 
 # Determine the appropriate remove command based on the operating system
@@ -28,11 +28,11 @@ build:
 run:
 	@echo "Start time: $$(date)"; \
 	START_TIME=$$(date +%s); \
-	export OUTPUT_FOLDER=$(OUTPUT_FOLDER); \
-	export DIRECTORY=$(DIRECTORY); \
+	export DESTINATION=$(DESTINATION); \
+	export SOURCE=$(SOURCE); \
 	export IGNORE_DUBLICATE_DEFINITION=$(IGNORE_DUBLICATE_DEFINITION); \
-	$(RM) $(OUTPUT_FOLDER); \
-	./pmd-bin-7.0.0-rc3/bin/pmd check -d $(DIRECTORY) -f text -R custom-java-ruleset.xml; \
+	$(RM) $(DESTINATION); \
+	./pmd-bin-7.0.0-rc3/bin/pmd check -d $(SOURCE) -f text -R custom-java-ruleset.xml; \
 	echo "End time: $$(date)"; \
 	END_TIME=$$(date +%s); \
 	ELAPSED_TIME=$$((END_TIME - START_TIME)); \

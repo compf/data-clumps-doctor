@@ -484,7 +484,7 @@ public class MyRule extends AbstractJavaRule {
 
         String originalPath = fileId.getOriginalPath();
 
-        String directoryFolder = System.getenv("DIRECTORY");
+        String directoryFolder = System.getenv("SOURCE");
         if (directoryFolder.endsWith("/")) {
             directoryFolder = directoryFolder.substring(0, directoryFolder.length() - 1);
         }
@@ -540,8 +540,8 @@ public class MyRule extends AbstractJavaRule {
             System.out.println(outputRow);
             System.out.println("######################");
         } else {
-            // Access the OUTPUT_FOLDER environment variable
-            String outputFolder = System.getenv("OUTPUT_FOLDER");
+            // Access the DESTINATION environment variable
+            String outputFolder = System.getenv("DESTINATION");
             if (outputFolder == null) {
                 outputFolder = "./output";  // Default to current directory if not set
             }
