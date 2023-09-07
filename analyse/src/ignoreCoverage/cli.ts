@@ -9,7 +9,8 @@ import {Dictionary} from "./UtilTypes";
 import {ClassOrInterfaceTypeContext} from "./ParsedAstTypes";
 
 import { Command } from 'commander';
-import {SoftwareProjectDicts} from "./SoftwareProject"; // import commander
+import {SoftwareProjectDicts} from "./SoftwareProject";
+import {GitHelper} from "./GitHelper"; // import commander
 
 const packageJsonPath = path.join(__dirname, '..','..', 'package.json');
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
@@ -63,62 +64,11 @@ function verboseLog(...content: any){
     }
 }
 
-// New function to get all commits
-async function getAllCommitsFromGitProject(path_to_folder: string): Promise<string[] | null> {
-    return new Promise((resolve, reject) => {
-        const git: SimpleGit = simpleGit(path_to_folder);
-        git.log(undefined, (err: Error | null, log: LogResult<string>) => {
-            if (err) {
-                resolve(null);
-            } else {
 
-                git.log(undefined, (err: Error | null, log: LogResult<DefaultLogFields>) => {
-                    if (err) {
-                        resolve(null);
-                    } else {
-                        const commits: string[] = [];
-                        log.all.forEach(entry => {
-                            if(entry.hash) {
-                                commits.push(entry.hash);
-                            }
-                        });
-                        resolve(commits);
-                    }
-                });
-            }
-        });
-    });
-}
-
-async function getAllTagsFromGitProject(path_to_folder: string): Promise<string[] | null> {
-        console.log("getAllTagsFromGitProject");
-    return new Promise((resolve, reject) => {
-        const git: SimpleGit = simpleGit(path_to_folder);
-        git.tags(async (err: Error | null, tags: TagResult) => {
-            if (err) {
-                resolve(null);
-            } else {
-                const commitHashes: string[] = [];
-                for (const tag of tags.all) {
-                    try {
-                        const details = await git.show([tag]);
-                        const hash = details.split('\n')[0].split(' ')[1];
-                        commitHashes.push(hash);
-                    } catch (error) {
-                        console.error(`Error retrieving commit hash for tag ${tag}:`, error);
-                    }
-                }
-                console.log("commitHashes")
-                console.log(commitHashes);
-                resolve(commitHashes);
-            }
-        });
-    });
-}
 
 async function getCommitSelectionModeCurrent(){
     let commits_to_analyse: any[] = [];
-    let commit = await getProjectCommit(path_to_project);
+    let commit = await GitHelper.getProjectCommit(path_to_project);
     if(!!options.project_commit){
         commit = options.project_commit;
     }
@@ -131,7 +81,7 @@ async function getCommitSelectionModeCurrent(){
 
 async function getNotAnalysedGitTagCommits(project_name){
     console.log("Perform a full check of the whole project");
-    const allCommits = await getAllTagsFromGitProject(path_to_project);
+    const allCommits = await GitHelper.getAllTagsFromGitProject(path_to_project);
     let missing_commit_results: string[] = [];
 
     if(!!allCommits){
@@ -191,74 +141,6 @@ async function getProjectName(path_to_folder: string): Promise<string | null> {
                 }
             });
         });
-}
-
-async function getProjectCommit(path_to_folder: string): Promise<string | null> {
-    return new Promise((resolve, reject) => {
-        const git: SimpleGit = simpleGit(path_to_folder);
-        git.revparse(['HEAD'], (err: Error | null, data?: string) => {
-            if (err) {
-                //reject(err);
-                resolve(null);
-            } else {
-                let commit = data?.trim();
-                if(!!commit){
-                    resolve(commit);
-                } else {
-                    resolve(null);
-                }
-
-            }
-        });
-    });
-}
-
-function readFiles(project_root_directory, directory, project) {
-    let pathToFolderOfRootDir = project_root_directory;
-    if(!pathToFolderOfRootDir.endsWith("/")){
-        pathToFolderOfRootDir += "/";
-    }
-
-    let filesAndFoldersInPath = fs.readdirSync(directory, { withFileTypes: true });
-    for (let fileOrFolder of filesAndFoldersInPath) {
-        let fullPath = path.join(directory, fileOrFolder.name);
-        if (fileOrFolder.isDirectory()) {
-            readFiles(project_root_directory, fullPath, project);
-        } else {
-            let fileContent = fs.readFileSync(fullPath, 'utf-8');
-            let relativePath = fullPath.substring(pathToFolderOfRootDir.length, fullPath.length);
-            project.addFileContent(relativePath, fileContent);
-        }
-    }
-}
-
-function saveJSONFile(jsonObject, path_to_output){
-    const jsonData = JSON.stringify(jsonObject, null, 2); // Convert the JSON object to a string with indentation
-
-    try {
-        const directory = path.dirname(path_to_output);
-        fs.mkdirSync(directory, { recursive: true });
-
-        fs.writeFileSync(path_to_output, jsonData, 'utf8');
-        verboseLog('JSON data has been successfully saved to file.');
-    } catch (err) {
-        verboseLog('An error occurred while writing to file:', err);
-    }
-}
-
-async function generateAstCallback(prepend, message, index, total): Promise<void> {
-    let content = `File: ${index}/${total}: ${message}`;
-    let isEveryHundreds = index % 10 === 0;
-    let firstAndSecond = index === 0 || index === 1;
-    let lastAndPreLast = index === total - 1 || index === total - 2;
-    if(!prepend){
-        prepend = "";
-    }
-    if(firstAndSecond || isEveryHundreds || lastAndPreLast) {
-        if(showProgress){
-            verboseLog(prepend+content)
-        }
-    }
 }
 
 async function getDictClassOrInterfaceFromProjectPath(path_to_project, path_to_source_files, fileExtensions, preprend){
@@ -327,15 +209,12 @@ async function analyse(project_name, commit, index, amount){
         let path_to_output_with_variables = options.output;
         let path_to_output = replaceOutputVariables(path_to_output_with_variables, project_name, commit);
 
-        await saveJSONFile(dataClumpsContext, path_to_output);
-        console.log("Output saved to: "+path_to_output);
-        console.log("Amount Data-Clumps: "+Object.keys(dataClumpsContext.data_clumps).length);
     }
 }
 
 async function getNotAnalysedGitCommits(project_name){
     console.log("Perform a full check of the whole project");
-    const allCommits = await getAllCommitsFromGitProject(path_to_project);
+    const allCommits = await GitHelper.getAllCommitsFromGitProject(path_to_project);
     let missing_commit_results: string[] = [];
 
     if(!!allCommits){
@@ -357,17 +236,6 @@ async function getNotAnalysedGitCommits(project_name){
     return missing_commit_results;
 }
 
-async function checkoutGitCommit(commit){
-        console.log("Start checkoutGitCommit "+commit);
-    const git: SimpleGit = simpleGit(path_to_project);
-    try {
-        await git.checkout(commit);
-    } catch (error) {
-        console.error(`Error checking out commit ${commit}:`, error);
-        throw new Error(`Failed to checkout commit ${commit}`);
-    }
-}
-
 async function analyseCommits(project_name, missing_commit_results){
     console.log("Analysing amount commits: "+missing_commit_results.length);
     let i=1;
@@ -375,7 +243,7 @@ async function analyseCommits(project_name, missing_commit_results){
         let checkoutWorked = true;
         if(!!commit){
             try{
-                await checkoutGitCommit(commit);
+                await GitHelper.checkoutGitCommit(path_to_project, commit);
             } catch(error){
                 checkoutWorked = false;
             }

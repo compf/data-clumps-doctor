@@ -1,17 +1,17 @@
 <h2 align="center">
-    data-clumps
+    data-clumps-doctor
 </h2>
 
 <p align="center">
-    <img src="https://github.com/NilsBaumgartner1994/data-clumps/raw/master/public/logo.png" alt="logo" style="height:100px;"/>
+    <img src="https://github.com/NilsBaumgartner1994/data-clumps-doctor/raw/master/assets/logo-animation.gif" alt="https://lottiefiles.com/animations/data-scanning-9P3AsKKZ59" style="height:100px;"/>
 </p>
 
 <h2 align="center">
-Cerberus Data Clumps Detection (CDCD)
+Data-Clumps-Doctor
 </h2>
 
 <h3 align="center">
-Let Cerberus Guard Your Code: Detect Data Clumps easy
+Check your code for data clumps and refactor them
 </h3>
 
 ## About

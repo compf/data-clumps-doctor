@@ -1,34 +1,9 @@
 import {SoftwareProjectDicts} from "./SoftwareProject";
 
 import fs from 'fs';
-import path from 'path';
 import {Detector} from "./detector/Detector";
-import {Dictionary} from "./UtilTypes";
-import {ClassOrInterfaceTypeContext} from "./ParsedAstTypes";
 import {Timer} from "./Timer";
-
-function saveJSONFile(softwareProjectDicts, file_name){
-    const jsonData = JSON.stringify(softwareProjectDicts, null, 2); // Convert the JSON object to a string with indentation
-
-    try {
-        fs.writeFileSync(file_name, jsonData, 'utf8');
-        console.log('JSON data has been successfully saved to file.');
-    } catch (err) {
-        console.error('An error occurred while writing to file:', err);
-    }
-}
-
-function loadJSONFile(file_name): Dictionary<ClassOrInterfaceTypeContext> | null{
-    try {
-        const loadedData = fs.readFileSync(file_name, 'utf8');
-        const loadedJsonData: Dictionary<ClassOrInterfaceTypeContext> = JSON.parse(loadedData); // Parse the JSON data
-        console.log('JSON data loaded from file');
-        return loadedJsonData;
-    } catch (err) {
-        console.error('An error occurred while reading the file:', err);
-        return null;
-    }
-}
+import {ParserUtils} from "./ParserUtils";
 
 async function generateAstCallback(timer, message, index, total): Promise<void> {
     let isEveryHundreds = index % 100 === 0;
@@ -40,35 +15,11 @@ async function generateAstCallback(timer, message, index, total): Promise<void> 
     }
 }
 
-async function getDictClassOrInterfaceFromParsedAstFolder(path_to_folder_of_parsed_ast){
-    let softwareProjectDicts: SoftwareProjectDicts = new SoftwareProjectDicts();
-
-    console.log("Reading files and adding to project");
-    let filesAndFoldersInPath = fs.readdirSync(path_to_folder_of_parsed_ast, { withFileTypes: true });
-    for (let fileOrFolder of filesAndFoldersInPath) {
-        let fullPath = path.join(path_to_folder_of_parsed_ast, fileOrFolder.name);
-        if (fileOrFolder.isDirectory()) {
-            continue;
-        } else {
-            let fileContent = fs.readFileSync(fullPath, 'utf-8');
-            const loadedJsonData: any = JSON.parse(fileContent); // Parse the JSON data
-            const classOrInterfaceTypeContext: ClassOrInterfaceTypeContext = ClassOrInterfaceTypeContext.fromObject(loadedJsonData);
-            softwareProjectDicts.loadClassOrInterface(classOrInterfaceTypeContext);
-        }
-    }
-
-    console.log("Amount of classes and interfaces: "+Object.keys(softwareProjectDicts.dictClassOrInterface).length);
-    console.log("Amount of methods: "+Object.keys(softwareProjectDicts.dictMethod).length);
-    console.log("Amount of fields: "+Object.keys(softwareProjectDicts.dictMemberFieldParameters).length);
-
-    return softwareProjectDicts
-}
-
 async function main() {
     console.log("Development started");
 
     const path_to_folder_of_parsed_ast = "/Users/nbaumgartner/Documents/GitHub/data-Clumps/testDataParsedAst/argouml";
-    let softwareProjectDicts: SoftwareProjectDicts = await getDictClassOrInterfaceFromParsedAstFolder(path_to_folder_of_parsed_ast);
+    let softwareProjectDicts: SoftwareProjectDicts = await ParserUtils.getDictClassOrInterfaceFromParsedAstFolder(path_to_folder_of_parsed_ast);
 
     let detectorOptions = {};
     let timer: Timer = new Timer();
