@@ -158,8 +158,8 @@ export class Detector {
                 additional: this.additional,
             },
             detector: {
-                name: "FireboltCasters/data-clumps",
-                version: "0.1.87",
+                name: "NilsBaumgarnter1994/data-clumps-doctor",
+                version: "0.1.94",
                 options: JSON.parse(JSON.stringify(this.options))
             },
             data_clumps: {}

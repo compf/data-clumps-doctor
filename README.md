@@ -1,14 +1,10 @@
-<h2 align="center">
-    data-clumps-doctor
-</h2>
+<h1 align="center">
+Data-Clumps-Doctor
+</h1>
 
 <p align="center">
-    <img src="https://github.com/NilsBaumgartner1994/data-clumps-doctor/raw/master/assets/logo-animation.gif" alt="https://lottiefiles.com/animations/data-scanning-9P3AsKKZ59" style="height:100px;"/>
+    <img src="https://github.com/NilsBaumgartner1994/data-clumps-doctor/raw/master/assets/logo-animation.gif" alt="https://lottiefiles.com/animations/data-scanning-9P3AsKKZ59" style="height:200px;"/>
 </p>
-
-<h2 align="center">
-Data-Clumps-Doctor
-</h2>
 
 <h3 align="center">
 Check your code for data clumps and refactor them
