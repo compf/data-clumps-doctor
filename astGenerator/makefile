@@ -28,11 +28,11 @@ build:
 run:
 	@echo "Start time: $$(date)"; \
 	START_TIME=$$(date +%s); \
-	export DESTINATION=$(DESTINATION); \
-	export SOURCE=$(SOURCE); \
+	export DESTINATION="$(DESTINATION)"; \
+	export SOURCE="$(SOURCE)"; \
 	export IGNORE_DUBLICATE_DEFINITION=$(IGNORE_DUBLICATE_DEFINITION); \
-	$(RM) $(DESTINATION); \
-	./pmd-bin-7.0.0-rc3/bin/pmd check -d $(SOURCE) -f text -R custom-java-ruleset.xml; \
+	$(RM) "$(DESTINATION)"; \
+	./pmd-bin-7.0.0-rc3/bin/pmd check -d "$(SOURCE)" -f text -R custom-java-ruleset.xml; \
 	echo "End time: $$(date)"; \
 	END_TIME=$$(date +%s); \
 	ELAPSED_TIME=$$((END_TIME - START_TIME)); \

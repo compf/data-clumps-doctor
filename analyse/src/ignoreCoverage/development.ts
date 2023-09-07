@@ -22,29 +22,26 @@ async function generateAstCallback(timer, message, index, total): Promise<void> 
 
 async function main() {
     console.log("Development started");
+    let timer: Timer = new Timer();
+    timer.start();
 
-    const path_to_folder_of_parsed_ast = "./../testDataParsedAst/testSrc";
+    const path_to_folder_of_parsed_ast = "./../testDataParsedAst";
     const path_to_folder_of_ast_generator = "./../astGenerator";
-    const path_to_source_code = "./../astGenerator/testSrc/java";
+    let path_to_source_code = "./../astGenerator/testSrc/java";
+    path_to_source_code = "/Users/nbaumgartner/Desktop/LCSD-Paper/Data_for_Paper/ArgoUML_src/src/argouml-app/src"
+    path_to_source_code = "/Users/nbaumgartner/Documents/GitHub/data-clumps-doctor/astGenerator"
+    path_to_source_code = "/Users/nbaumgartner/Documents/GitHub/Live-Code-Smell-Detection-of-Data-Clumps-in-an-Integrated-Development-Environment/Source Code/src/main/java/com/github/fiadleh/codesmellsplugin"
 
     await ParserHelper.parseSourceCodeToAst(path_to_source_code, path_to_folder_of_parsed_ast, path_to_folder_of_ast_generator);
 
     let softwareProjectDicts: SoftwareProjectDicts = await ParserHelper.getDictClassOrInterfaceFromParsedAstFolder(path_to_folder_of_parsed_ast);
 
     let detectorOptions = {};
-    let timer: Timer = new Timer();
     let progressCallback = generateAstCallback.bind(null, timer);
     let detector = new Detector(softwareProjectDicts, detectorOptions, progressCallback);
 
-    timer.start();
     let dataClumpsContext = await detector.detect();
-    timer.stop();
-    timer.printElapsedTime("Detection time");
-
     await ParserHelper.removeGeneratedAst(path_to_folder_of_parsed_ast);
-
-    console.log("Amount dataclumps: "+Object.keys(dataClumpsContext.data_clumps).length);
-    console.log("Development finished");
 
     let result_path = "../data-clumps-result.json";
 
@@ -60,6 +57,12 @@ async function main() {
     } catch (err) {
         console.error('An error occurred while writing to file:', err);
     }
+
+    timer.stop();
+    timer.printElapsedTime("Detection time");
+
+    console.log("Amount dataclumps: "+Object.keys(dataClumpsContext.data_clumps).length);
+    console.log("Development finished");
 }
 
 main();

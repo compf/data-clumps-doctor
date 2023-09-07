@@ -24,7 +24,7 @@ export class ParserHelper {
     static async parseSourceCodeToAst(path_to_source_code: string, path_to_save_parsed_ast: string, path_to_ast_generator_folder): Promise<void> {
         console.log("Started generating ASTs");
         try {
-            const { stdout } = await ParserHelper.execAsync('cd '+path_to_ast_generator_folder+' && make run SOURCE='+path_to_source_code+' DESTINATION='+path_to_save_parsed_ast);
+            const { stdout } = await ParserHelper.execAsync('cd '+path_to_ast_generator_folder+' && make run SOURCE="'+path_to_source_code+'" DESTINATION="'+path_to_save_parsed_ast+'"');
             console.log(stdout);
         } catch (error) {
             console.error(`Error executing make: ${error}`);
