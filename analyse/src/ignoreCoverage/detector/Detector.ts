@@ -117,6 +117,7 @@ export class Detector {
     public project_version: string | null;
     public project_commit: string | null;
     public additional: any;
+    public detector_version: string;
 
     static getDefaultOptions(options?: Partial<DetectorOptions>){
         return getDefaultValuesFromPartialOptions(options || {});
@@ -129,7 +130,8 @@ export class Detector {
                        project_name?: string,
                        project_version?: string | null,
                        project_commit?: string | null,
-                       additional?: any
+                       additional?: any,
+                       detector_version?: string
     ){
         this.options = Detector.getDefaultOptions(options || {});
         this.softwareProjectDicts = softwareProjectDicts;
@@ -141,6 +143,7 @@ export class Detector {
         this.project_version = project_version || "unknown";
         this.project_commit = project_commit || "unknown";
         this.additional = additional || {};
+        this.detector_version = detector_version || "0.1.94";
     }
 
     public async detect(): Promise<DataClumpsTypeContext>{
@@ -159,7 +162,7 @@ export class Detector {
             },
             detector: {
                 name: "NilsBaumgarnter1994/data-clumps-doctor",
-                version: "0.1.94",
+                version: this.detector_version,
                 options: JSON.parse(JSON.stringify(this.options))
             },
             data_clumps: {}

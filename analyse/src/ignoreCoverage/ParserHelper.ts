@@ -4,7 +4,31 @@ import fs from 'fs';
 import path from 'path';
 import {ClassOrInterfaceTypeContext} from "./ParsedAstTypes";
 
-export class ParserUtils {
+import {exec, spawn} from 'child_process';
+
+
+export class ParserHelper {
+
+    static async execAsync(command): Promise<{ stdout: string, stderr: string }> {
+        return new Promise((resolve, reject) => {
+            exec(command, (error, stdout, stderr) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                resolve({ stdout, stderr });
+            });
+        });
+    };
+
+    static async parseSourceCodeToAst(path_to_source_code: string, path_to_save_parsed_ast: string): Promise<void> {
+        try {
+            const { stdout } = await ParserHelper.execAsync('pwd');
+            console.log(stdout);
+        } catch (error) {
+            console.error(`Error executing make: ${error}`);
+        }
+    }
 
     static async getDictClassOrInterfaceFromParsedAstFolder(path_to_folder_of_parsed_ast){
         let softwareProjectDicts: SoftwareProjectDicts = new SoftwareProjectDicts();

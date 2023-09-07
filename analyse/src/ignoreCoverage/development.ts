@@ -3,7 +3,12 @@ import {SoftwareProjectDicts} from "./SoftwareProject";
 import fs from 'fs';
 import {Detector} from "./detector/Detector";
 import {Timer} from "./Timer";
-import {ParserUtils} from "./ParserUtils";
+import {ParserHelper} from "./ParserHelper";
+import path from "path";
+
+const packageJsonPath = path.join(__dirname, '..','..', 'package.json');
+const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+const version = packageJson.version;
 
 async function generateAstCallback(timer, message, index, total): Promise<void> {
     let isEveryHundreds = index % 100 === 0;
@@ -19,7 +24,10 @@ async function main() {
     console.log("Development started");
 
     const path_to_folder_of_parsed_ast = "/Users/nbaumgartner/Documents/GitHub/data-Clumps/testDataParsedAst/argouml";
-    let softwareProjectDicts: SoftwareProjectDicts = await ParserUtils.getDictClassOrInterfaceFromParsedAstFolder(path_to_folder_of_parsed_ast);
+
+    await ParserHelper.parseSourceCodeToAst("/Users/nbaumgartner/Documents/GitHub/data-Clumps/testData/argouml", path_to_folder_of_parsed_ast);
+
+    let softwareProjectDicts: SoftwareProjectDicts = await ParserHelper.getDictClassOrInterfaceFromParsedAstFolder(path_to_folder_of_parsed_ast);
 
     let detectorOptions = {};
     let timer: Timer = new Timer();
