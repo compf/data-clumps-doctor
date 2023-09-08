@@ -18,3 +18,7 @@ astAnalyse/__pycache__/
 temp_ast_output_folder/
 
 data-clumps-result.json
+
+analyse/data-clumps-results/
+
+analyse/src/ignoreCoverage/astGenerator/temp_ast_output/
