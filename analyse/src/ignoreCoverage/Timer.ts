@@ -29,7 +29,7 @@ export class Timer {
         return this.endTime - this.startTime;
     }
 
-    public printElapsedTime(prefix?: string, suffix?: string) {
+    public printElapsedTime(prefix?: string | null, suffix?: string | null) {
         prefix = prefix ? `${prefix}: ` : "";
         suffix = suffix ? `: ${suffix}` : "";
         console.log(prefix+`Elapsed time: ${this.formatTimeToString()}`+suffix);

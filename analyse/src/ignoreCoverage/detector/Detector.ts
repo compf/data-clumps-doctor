@@ -124,14 +124,14 @@ export class Detector {
     }
 
     public constructor(softwareProjectDicts: SoftwareProjectDicts,
-                       options?: Partial<DetectorOptions>,
-                       progressCallback?: any,
-                       target_language?: string,
-                       project_name?: string,
-                       project_version?: string | null,
-                       project_commit?: string | null,
+                       options: Partial<DetectorOptions> | null,
+                       progressCallback: any,
+                       project_name: string | null,
+                       project_version: string | null,
+                       project_commit: string | null,
+                       detector_version?: string,
                        additional?: any,
-                       detector_version?: string
+                       target_language?: string,
     ){
         this.options = Detector.getDefaultOptions(options || {});
         this.softwareProjectDicts = softwareProjectDicts;

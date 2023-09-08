@@ -1,16 +1,15 @@
 #!/usr/bin/env node
 
-import simpleGit, {SimpleGit, LogResult, DefaultLogFields, TagResult} from 'simple-git';
+import simpleGit, {SimpleGit} from 'simple-git';
 
 import fs from 'fs';
 import path from 'path';
 import {Detector} from "./detector/Detector";
-import {Dictionary} from "./UtilTypes";
-import {ClassOrInterfaceTypeContext} from "./ParsedAstTypes";
 
-import { Command } from 'commander';
+import {Command} from 'commander';
 import {SoftwareProjectDicts} from "./SoftwareProject";
-import {GitHelper} from "./GitHelper"; // import commander
+import {GitHelper} from "./GitHelper";
+import {Analyzer} from "./Analyzer"; // import commander
 
 const packageJsonPath = path.join(__dirname, '..','..', 'package.json');
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
@@ -18,24 +17,25 @@ const version = packageJson.version;
 
 const program = new Command();
 
-const project_name_variable_placeholder = "{project_name}";
-const project_commit_variable_placeholder = "{project_commit}";
+
 
 program
     .description('Data-Clumps Detection\n\n' +
         'This script performs data clumps detection in a given directory.\n\n' +
-        'npx data-clumps [options] <path_to_folder>')
+        'npx data-clumps-doctor [options] <path_to_folder>')
     .version(version)
     .argument('<path_to_project>', 'Absolute path to project (a git project in best case)')
-    .option('--source <path_to_source_files>', 'Absolute path to source files (default is the path to project)')
-    .option('--language <type>', 'Language (default: java)', "java")
+    .argument('<path_to_ast_generator_folder>', 'Absolute path to the ast generator folder (In this project: astGenerator)')
+    .option('--source <path_to_source_folder>', 'Absolute path to source files (default is the path to project). If you want to analyse just a specific folder in the project, you can specify it here.')
+    .option('--ast_output <path_to_ast_output>', 'Path where to save the generated AST output', "./temp_ast_output")
+    .option('--language <type>', 'Language (default: java, options: java)', "java")
     .option('--verbose', 'Verbose output', false)
     .option('--progress', 'Show progress', true)  // Default value is true
-    .option('--output <path>', 'Output path', './data-clumps/'+project_name_variable_placeholder+'/'+project_commit_variable_placeholder+'.json') // Default value is './data-clumps.json'
+    .option('--output <path>', 'Output path', './data-clumps-results/'+Analyzer.project_name_variable_placeholder+'/'+Analyzer.project_commit_variable_placeholder+'.json') // Default value is './data-clumps.json'
     .option('--project_name <project_name>', 'Project Name (default: Git-Name)')
-    .option('--project_version <project_version>', 'Project Version')
-    .option('--project_commit <project_commit>', 'Project Commit (default: Git-Commit)')
-    .option('--commit_selection <mode>', 'Commit selections (default: current, options: history, tags, <path_tp_commits_csv>)')
+    .option('--project_version <project_version>', 'Project Version (default: Git-Commit hash)')
+    .option('--project_commit <project_commit>', 'Project Commit (default: current Git-Commit hash)')
+    .option('--commit_selection <mode>', 'Commit selections (default: current, options: history, tags, "commit_hash1,commit_hash2,...")')
 // TODO: --detector_options <path_to_detector_options_json>
 
 program.parse(process.argv);
@@ -43,26 +43,22 @@ program.parse(process.argv);
 // Get the options and arguments
 const options = program.opts();
 const path_to_project = program.args[0] || './';
-console.log("path_to_project: "+path_to_project);
-console.log(JSON.stringify(program.args));
-const path_to_source_files = options.source || path_to_project;
+const path_to_ast_generator_folder = program.args[1];
 
-let language = options.language;
-let verbose = options.verbose;
-let showProgress = options.progress;
+if (!fs.existsSync(path_to_ast_generator_folder)) {
+    console.log("ERROR: Specified path to ast generator folder does not exist: "+path_to_ast_generator_folder);
+    process.exit(1);
+}
 
-
-let target_language = language;
+const path_to_source_folder = options.source || path_to_project;
+const path_to_ast_output = options.ast_output;
+let path_to_output_with_variables = options.output;
 
 let project_version = options.project_version;
 
+
 const commitSelectionMode = options.commit_selection;
 
-function verboseLog(...content: any){
-    if(verbose){
-        console.log(content);
-    }
-}
 
 
 
@@ -89,8 +85,7 @@ async function getNotAnalysedGitTagCommits(project_name){
 
         for (const commit of allCommits) {
             console.log("check commit: " + commit);
-            let path_to_output_with_variables = options.output;
-            let path_to_output = replaceOutputVariables(path_to_output_with_variables, project_name, commit);
+            let path_to_output = Analyzer.replaceOutputVariables(path_to_output_with_variables, project_name, commit);
 
             // Check if output file already exists for the commit
             if (!fs.existsSync(path_to_output)) {
@@ -103,53 +98,16 @@ async function getNotAnalysedGitTagCommits(project_name){
     return missing_commit_results;
 }
 
-async function getAllCommitsFromPassedCommitOption(path_to_commits_to_analyse){
-    let commit_hashes: string[] = [];
-    if (path_to_commits_to_analyse) {
-        const data = fs.readFileSync(path_to_commits_to_analyse, 'utf-8');
-        commit_hashes = data.split(',').map(hash => hash.trim());
-    }
-    return commit_hashes;
-}
-
-function replaceOutputVariables(path_to_output_with_variables, project_name="project_name", project_commit="project_commit"){
-    // path_to_output_with_variables: ./data-clumps-<project_name>-<project_version>.json
-    //TODO replace <project_name> with content of: project_name
-    //TODO replace <project_version> with content of: project_version
-    let copy = path_to_output_with_variables+"";
-    copy = copy.replace(project_name_variable_placeholder, project_name);
-    copy = copy.replace(project_commit_variable_placeholder, project_commit);
-    return copy;
-}
-
-async function getProjectName(path_to_folder: string): Promise<string | null> {
+async function getProjectName(path_to_folder: string): Promise<string> {
     if(!!options.project_name){
         return options.project_name;
     }
 
-        return new Promise((resolve, reject) => {
-            const git: SimpleGit = simpleGit(path_to_folder);
-            git.listRemote(['--get-url'], (err: Error | null, data?: string) => {
-                if (err) {
-                    //reject(err);
-                    resolve(null);
-                } else {
-                    let url = data?.trim();
-                    let splitData = url?.split('/');
-                    let projectName = splitData?.[splitData.length - 1]?.replace('.git', '') || '';
-                    resolve(projectName);
-                }
-            });
-        });
-}
-
-async function getDictClassOrInterfaceFromProjectPath(path_to_project, path_to_source_files, fileExtensions, preprend){
-    verboseLog("Reading files and adding to project");
-
-
- //   let dictClassOrInterface = project.dictClassOrInterface;
- //   return dictClassOrInterface;
-    return new SoftwareProjectDicts();
+    let project_name = await GitHelper.getProjectName(path_to_folder);
+    if(!project_name){
+        project_name = "unknown_project_name";
+    }
+    return project_name;
 }
 
 function printLogo(){
@@ -183,35 +141,6 @@ function printLogo(){
         "                                    .?J! Y################P.^J?.                                    \n")
 }
 
-async function analyse(project_name, commit, index, amount){
-        const commitInformation = "Commit ["+index+"/"+amount+"]";
-        console.log("Analyse "+commitInformation);
-    if (!fs.existsSync(path_to_source_files)) {
-        console.log(`The path to source files ${path_to_source_files} does not exist.`);
-        return;
-    } else {
-        let softwareProjectDicts: SoftwareProjectDicts = new SoftwareProjectDicts()
-
-        let fileExtensions = [language];
-        let prepend = commitInformation+": ";
-        softwareProjectDicts = await getDictClassOrInterfaceFromProjectPath(path_to_project, path_to_source_files, fileExtensions, prepend);
-
-        let detectorOptions = {};
-        let progressCallback = null;
-
-        let detector = new Detector(softwareProjectDicts, detectorOptions, progressCallback, target_language,
-            project_name,
-            project_version,
-            commit,
-            {});
-        let dataClumpsContext = await detector.detect();
-
-        let path_to_output_with_variables = options.output;
-        let path_to_output = replaceOutputVariables(path_to_output_with_variables, project_name, commit);
-
-    }
-}
-
 async function getNotAnalysedGitCommits(project_name){
     console.log("Perform a full check of the whole project");
     const allCommits = await GitHelper.getAllCommitsFromGitProject(path_to_project);
@@ -222,8 +151,7 @@ async function getNotAnalysedGitCommits(project_name){
 
         for (const commit of allCommits) {
             console.log("check commit: " + commit);
-            let path_to_output_with_variables = options.output;
-            let path_to_output = replaceOutputVariables(path_to_output_with_variables, project_name, commit);
+            let path_to_output = Analyzer.replaceOutputVariables(path_to_output_with_variables, project_name, commit);
 
             // Check if output file already exists for the commit
             if (!fs.existsSync(path_to_output)) {
@@ -236,55 +164,41 @@ async function getNotAnalysedGitCommits(project_name){
     return missing_commit_results;
 }
 
-async function analyseCommits(project_name, missing_commit_results){
-    console.log("Analysing amount commits: "+missing_commit_results.length);
-    let i=1;
-    for (const commit of missing_commit_results) {
-        let checkoutWorked = true;
-        if(!!commit){
-            try{
-                await GitHelper.checkoutGitCommit(path_to_project, commit);
-            } catch(error){
-                checkoutWorked = false;
-            }
-        }
-        if(checkoutWorked){
-            // Do analysis for each missing commit and proceed to the next
-            await analyse(project_name, commit, i, missing_commit_results.length);
-            console.log("Proceed to next");
-        } else {
-            console.log("Skip since checkout did not worked");
-        }
-        i++;
-    }
-}
-
 async function main() {
-    console.log("Data-Clumps Detection");
+    console.log("Data-Clumps-Doctor Detection");
 
     console.log("path_to_project: "+path_to_project);
     let project_name = await getProjectName(path_to_project);
     console.log("project_name: "+project_name);
 
     let commits_to_analyse: any[] = [];
+    let git_checkout_needed = true;
 
-    if(commitSelectionMode==="full"){
+    if(commitSelectionMode==="current" || !commitSelectionMode){
+        commits_to_analyse = await getCommitSelectionModeCurrent();
+        git_checkout_needed = false;
+    } else if(commitSelectionMode==="full"){
         commits_to_analyse = await getNotAnalysedGitCommits(project_name);
     } else if(commitSelectionMode==="tags"){
         commits_to_analyse = await getNotAnalysedGitTagCommits(project_name);
-    } else if(commitSelectionMode==="current" || !commitSelectionMode){
-        commits_to_analyse = await getCommitSelectionModeCurrent();
     } else {
-        let path_to_commits_to_analyse = commitSelectionMode;
-        if (fs.existsSync(path_to_commits_to_analyse)) {
-            commits_to_analyse = await getAllCommitsFromPassedCommitOption(path_to_commits_to_analyse);
-        } else {
-            console.error("option: commit_selection - no valid path to csv file");
-        }
+        let string_commits_to_analyse = commitSelectionMode;
+        commits_to_analyse = string_commits_to_analyse.split(",");
     }
 
-    await analyseCommits(project_name, commits_to_analyse)
+    let analyzer = new Analyzer(
+        path_to_project,
+        path_to_ast_generator_folder,
+        path_to_output_with_variables,
+        path_to_source_folder,
+        path_to_ast_output,
+        commits_to_analyse,
+        git_checkout_needed,
+        project_name,
+        project_version,
+    );
 
+    await analyzer.start()
 }
 
 main();

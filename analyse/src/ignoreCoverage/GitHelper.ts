@@ -13,6 +13,23 @@ export class GitHelper {
         }
     }
 
+    static async getProjectName(path_to_folder: string): Promise<string | null> {
+        return new Promise((resolve, reject) => {
+            const git: SimpleGit = simpleGit(path_to_folder);
+            git.listRemote(['--get-url'], (err: Error | null, data?: string) => {
+                if (err) {
+                    //reject(err);
+                    resolve(null);
+                } else {
+                    let url = data?.trim();
+                    let splitData = url?.split('/');
+                    let projectName = splitData?.[splitData.length - 1]?.replace('.git', '') || '';
+                    resolve(projectName);
+                }
+            });
+        });
+    }
+
     static async getProjectCommit(path_to_folder: string): Promise<string | null> {
         return new Promise((resolve, reject) => {
             const git: SimpleGit = simpleGit(path_to_folder);
