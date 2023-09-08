@@ -1,4 +1,4 @@
-target/
+pmd-java-custom/target/
 .classpath
 .project
 .settings/

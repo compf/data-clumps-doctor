@@ -138,7 +138,7 @@ export class Detector {
         this.timer = new Timer();
         this.progressCallback = progressCallback;
 
-        this.target_language = target_language || "unknown";
+        this.target_language = target_language || "java";
         this.project_name = project_name || "unknown";
         this.project_version = project_version || "unknown";
         this.project_commit = project_commit || "unknown";

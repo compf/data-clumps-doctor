@@ -42,6 +42,8 @@ export class ParserHelper {
 
     static async getDictClassOrInterfaceFromParsedAstFolder(path_to_folder_of_parsed_ast){
         let softwareProjectDicts: SoftwareProjectDicts = new SoftwareProjectDicts();
+        console.log("Started loading ASTs")
+        console.log("path_to_folder_of_parsed_ast", path_to_folder_of_parsed_ast)
 
         let filesAndFoldersInPath = fs.readdirSync(path_to_folder_of_parsed_ast, { withFileTypes: true });
         for (let fileOrFolder of filesAndFoldersInPath) {

@@ -9,7 +9,7 @@
     "test": "npm run build && npm run testOnly",
     "testOnly": "npm run coverage",
     "start": "npm run build && node ./build/ignoreCoverage/development.js",
-    "build": "rimraf ./build && tsc && cp package.json ./build && cp ./../README.md ./build && cp ./../LICENSE.md ./build && npm run chmodCli",
+    "build": "rimraf ./build && tsc && cp -r ./src/ignoreCoverage/astGenerator ./build/ignoreCoverage && cp package.json ./build && cp ./../README.md ./build && cp ./../LICENSE.md ./build && npm run chmodCli",
     "chmodCli": "chmod +x ./build/ignoreCoverage/cli.js",
     "dev": "nodemon",
     "_prepareUpload": "npm run build && rimraf ./coverage && rimraf ./build/tests",
