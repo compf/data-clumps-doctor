@@ -26,6 +26,7 @@ program
     .option('--path_to_ast_generator_folder', 'Absolute path to the ast generator folder (In this project: astGenerator)', path_to_ast_generator_folder_test)
     .option('--source <path_to_source_folder>', 'Absolute path to source files (default is the path to project). If you want to analyse just a specific folder in the project, you can specify it here.')
     .option('--ast_output <path_to_ast_output>', 'Path where to save the generated AST output. By default it is in a temp folder', current_working_directory+'/'+"temp_ast_output")
+    .option('--preserve_ast_output <preserve_ast_output>', 'If the ast_output folder should be preserved (default: false).', false)
     .option('--language <type>', 'Language (default: java, options: java)', "java")
     .option('--verbose', 'Verbose output', false)
     .option('--progress', 'Show progress', true)  // Default value is true
@@ -49,10 +50,12 @@ if (!fs.existsSync(path_to_ast_generator_folder)) {
 }
 
 const path_to_source_folder = options.source || path_to_project;
-const path_to_ast_output = options.ast_output;
+const path_to_ast_output = path.resolve(options.ast_output);
+console.log("path_to_ast_output: "+path_to_ast_output);
 let path_to_output_with_variables = options.output;
 
 let project_version = options.project_version;
+let preserve_ast_output = options.preserve_ast_output;
 
 
 const commit_selection_mode = options.commit_selection;
@@ -103,6 +106,7 @@ async function main() {
         commit_selection_mode,
         passed_project_name,
         project_version,
+        preserve_ast_output
     );
 
     await analyzer.start()

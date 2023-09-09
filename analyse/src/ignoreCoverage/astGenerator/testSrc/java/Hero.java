@@ -2,16 +2,10 @@ package com.example;
 
 import java.util.List;
 
-class Hero<T extends Number> {
+class Hero extends List{
 
-    T item;
-    List noVarType;
-    List<T> varType;
-    List<? extends Number> extendsType;
-    List<Number> noVarTypeWithNumber;
+    public void greet(String firstname, String lastname, String message){}
 
-    private void lookupRemoveItem(T item) {
-            // Implementation here
-        }
+        public void greet(String firstname, String lastname, String message, int a){}
 
 }

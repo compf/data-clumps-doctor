@@ -165,7 +165,6 @@ public class MyRule extends AbstractJavaRule {
             MethodTypeContext methodContext = new MethodTypeContext();
             // Set the properties of the methodContext based on the method
             methodContext.name = method.getMethodName();
-            methodContext.key = classOrInterfaceKey+"/method/"+method.getMethodName(); // or other unique key
             methodContext.type = this.getQualifiedNameUnsafe(method.getResultTypeNode().getTypeMirror());
 
             //System.out.println("----------------");
@@ -200,14 +199,14 @@ public class MyRule extends AbstractJavaRule {
                 // Set the properties of the parameterContext based on the parameter
                 // now get from a row like: private ArrayList javaArrayList, anotherArrayList[];
                 // the individual : javaArrayList and anotherArrayList[]
-                String memberFieldKey = "";
                 // Set the properties of the fieldContext based on the field
                 parameterContext.name = parameterVariableDeclarator.getName();
-                parameterContext.key = parameterVariableDeclarator.getName();
 
                 // TODO: what is is varargs?
                 parameterContext.type = this.getQualifiedNameUnsafe(parameterVariableDeclarator.getTypeMirror());
                 parameterContext.hasTypeVariable = this.hasTypeVariable(parameterVariableDeclarator.getTypeMirror());
+
+                parameterContext.key = parameterContext.type+" "+parameterContext.name;
                 /**
                 if (parameter.isVarargs()) {  // Hypothetical method; check PMD documentation
                     System.out.println("This is a varargs parameter: " + parameter.getImage());
@@ -229,15 +228,36 @@ public class MyRule extends AbstractJavaRule {
                     parameterContext.modifiers = modifierSet.stream().map(Enum::name).collect(Collectors.toList());
                 }
 
-                parameterContext.methodKey = methodContext.key;
+                //parameterContext.methodKey = methodContext.key;
+                // We cant set the methodKey directly, since the method key is not yet defined
 
                 // Add the parameterContext to the methodContext.parameters
                 methodContext.parameters.add(parameterContext);
             }
 
+            // set method key
+            // Java method key is the method signature. The signature is: method name + parameters (type and order)
+            String methodContextParametersKey = classOrInterfaceKey+"/method/"+method.getMethodName()+"(";
+            int amountParameters = methodContext.parameters.size();
+            for(int i=0; i<amountParameters; i++){
+                MethodParameterTypeContext parameterContext = methodContext.parameters.get(i);
+                methodContextParametersKey += parameterContext.key;
+                if(i+1<amountParameters){
+                    methodContextParametersKey += ", ";
+                }
+            }
+            methodContextParametersKey += ")";
+
+            methodContext.key = methodContextParametersKey;
+
+
+            for(MethodParameterTypeContext parameterContext: methodContext.parameters){
+                parameterContext.methodKey = methodContext.key;
+            }
+
 
             // Add the methodContext to the classContext.methods
-            classContext.methods.put(methodContext.name, methodContext);
+            classContext.methods.put(methodContext.key, methodContext);
         }
     }
 
@@ -525,6 +545,10 @@ public class MyRule extends AbstractJavaRule {
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         this.setFilePathAndPackageName(node); // before visitClassOrInterface
         ClassOrInterfaceTypeContext classContext = this.visitClassOrInterface(node); // after setFilePathAndPackageName
+
+        String GENERATE_REFERENCES_OF_FIELDS_AND_METHODS = System.getenv("GENERATE_REFERENCES_OF_FIELDS_AND_METHODS");
+        // TODO: Find the usages of fields and methods. We use this later for easier taxonomy of data-clumps and for refactoring help.
+        String IGNORE_WILDCARD_IMPORTS = System.getenv("IGNORE_WILDCARD_IMPORTS");
 
         boolean debug = false;
 

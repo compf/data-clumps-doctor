@@ -4,8 +4,8 @@ import java.util.String;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Main<T> {
+public class Main extends List {
 
-    ArrayList<T> list;
+    public void greet(String firstname, String lastname, String message){}
 
 }

@@ -107,8 +107,8 @@ export class ClassOrInterfaceTypeContext extends AstElementTypeContext{
     public anonymous: boolean;
     public auxclass: boolean; // true: wont be analysed. the class is only an aux class in order to support the hierarchy.
 
-    public implements: string[]
-    public extends: string[] // Languages that support multiple inheritance include: C++, Common Lisp
+    public implements_: string[]
+    public extends_: string[] // Languages that support multiple inheritance include: C++, Common Lisp
 
     public definedInClassOrInterfaceTypeKey: string | undefined; // key of the class or interface where this class or interface is defined
 
@@ -148,8 +148,8 @@ export class ClassOrInterfaceTypeContext extends AstElementTypeContext{
         this.methods = {};
         this.innerDefinedClasses = {};
         this.innerDefinedInterfaces = {};
-        this.implements = [];
-        this.extends = [];
+        this.implements_ = [];
+        this.extends_ = [];
         this.anonymous = false;
         this.auxclass = false;
     }
@@ -160,11 +160,11 @@ export class ClassOrInterfaceTypeContext extends AstElementTypeContext{
         let foundKeys: Dictionary<string | null> = {};
 
         let extendingClassesOrInterfacesKeys: string[] = []
-        let extendingKeys = this.extends;
+        let extendingKeys = this.extends_;
         for(let extendingKey of extendingKeys){
             extendingClassesOrInterfacesKeys.push(extendingKey)
         }
-        let implementsKeys = this.implements;
+        let implementsKeys = this.implements_;
         for(let implementsKey of implementsKeys){
             extendingClassesOrInterfacesKeys.push(implementsKey)
         }
@@ -327,12 +327,15 @@ export class MethodTypeContext extends AstElementTypeContext{
 
     public static isWholeHierarchyKnown(method: MethodTypeContext, softwareProjectDicts: SoftwareProjectDicts){
         // TODO: check if we can find all parents
-        //console.log("isWholeHierarchyKnown?")
+        //console.log("isWholeHierarchyKnown?: method.key: "+method?.key);
         //console.log("softwareProjectDicts.dictClassOrInterface")
         //console.log(softwareProjectDicts.dictClassOrInterface);
 
+
         let currentClassOrInterface = MethodTypeContext.getClassOrInterface(method, softwareProjectDicts);
+        //console.log("-- currentClassOrInterface.key: "+currentClassOrInterface?.key)
         let superClassesOrInterfacesKeys = currentClassOrInterface.getSuperClassesAndInterfacesKeys(softwareProjectDicts, true);
+        //console.log("-- superClassesOrInterfacesKeys");
         //console.log(superClassesOrInterfacesKeys);
         for(let superClassesOrInterfaceKey of superClassesOrInterfacesKeys){
             let superClassesOrInterface = softwareProjectDicts.dictClassOrInterface[superClassesOrInterfaceKey];

@@ -22,6 +22,7 @@ export class Analyzer {
     public commit_selection_mode: string | undefined | null;
     public project_name: string = "unknown_project_name";
     public project_version: any;
+    public preserve_ast_output: boolean;
 
     public passed_project_name: string | undefined | null;
 
@@ -35,7 +36,8 @@ export class Analyzer {
         path_to_ast_output: string,
         commit_selection_mode: string | undefined | null,
         project_name: string | undefined | null,
-        project_version: any
+        project_version: any,
+        preserve_ast_output: boolean
     ) {
         this.path_to_project = path_to_project;
         this.path_to_ast_generator_folder = path_to_ast_generator_folder;
@@ -45,6 +47,7 @@ export class Analyzer {
         this.commit_selection_mode = commit_selection_mode;
         this.passed_project_name = project_name;
         this.project_version = project_version;
+        this.preserve_ast_output = preserve_ast_output
 
         this.timer = new Timer();
     }
@@ -212,7 +215,12 @@ export class Analyzer {
             let detector = new Detector(softwareProjectDicts, detectorOptions, progressCallback, this.project_name, project_version, commit);
 
             let dataClumpsContext = await detector.detect();
-            await ParserHelper.removeGeneratedAst(this.path_to_ast_output);
+
+            if(!this.preserve_ast_output){
+                await ParserHelper.removeGeneratedAst(this.path_to_ast_output);
+            } else {
+                console.log("Preserving generated AST Output");
+            }
 
             let path_to_result = Analyzer.replaceOutputVariables(this.path_to_output_with_variables, this.project_name, commit);
 

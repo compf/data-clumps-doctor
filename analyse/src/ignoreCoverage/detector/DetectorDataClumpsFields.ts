@@ -141,7 +141,7 @@ export class DetectorDataClumpsFields {
         // A class can inherit all members from its superclass
         // An interface can inherit all members from its superinterfaces
         if(this.options.subclassInheritsAllMembersFromSuperclass){
-            let superclassesDict = currentClass.extends // {Batman: 'Batman.java/class/Batman'}
+            let superclassesDict = currentClass.extends_ // {Batman: 'Batman.java/class/Batman'}
             let superclassNames = Object.keys(superclassesDict);
             for (let superclassName of superclassNames) {
                 // superclassName = 'Batman'

@@ -27,7 +27,7 @@ In our endeavor to ensure precision and standardization in reporting data clumps
 You can simply call the detection via command line.
 
 ```
-npx data-clumps <PATH_TO_PROJECT>
+npx data-clumps-doctor <PATH_TO_PROJECT>
 ```
 
 ## Roadmap

@@ -161,7 +161,7 @@ export class Detector {
                 additional: this.additional,
             },
             detector: {
-                name: "NilsBaumgarnter1994/data-clumps-doctor",
+                name: "https://github.com/NilsBaumgartner1994/data-clumps-doctor",
                 version: this.detector_version,
                 options: JSON.parse(JSON.stringify(this.options))
             },
@@ -172,8 +172,9 @@ export class Detector {
         //console.log(softwareProjectDicts);
         let detectorDataClumpsMethods = new DetectorDataClumpsMethods(this.options, this.progressCallback);
         let commonMethodParameters = await detectorDataClumpsMethods.detect(this.softwareProjectDicts);
+        let commonMethodParametersKeys: any[] = []
         if(!!commonMethodParameters){
-            let commonMethodParametersKeys = Object.keys(commonMethodParameters);
+            commonMethodParametersKeys = Object.keys(commonMethodParameters);
             for (let commonMethodParametersKey of commonMethodParametersKeys) {
                 let commonMethodParameter = commonMethodParameters[commonMethodParametersKey];
                 dataClumpsTypeContext.data_clumps[commonMethodParameter.key] = commonMethodParameter;
@@ -182,8 +183,9 @@ export class Detector {
 
         let detectorDataClumpsFields = new DetectorDataClumpsFields(this.options, this.progressCallback);
         let commonFields = await detectorDataClumpsFields.detect(this.softwareProjectDicts);
+        let commonFieldsKeys: any[] = []
         if(!!commonFields){
-            let commonFieldsKeys = Object.keys(commonFields);
+            commonFieldsKeys = Object.keys(commonFields);
             for (let commonFieldsKey of commonFieldsKeys) {
                 let commonField = commonFields[commonFieldsKey];
                 dataClumpsTypeContext.data_clumps[commonField.key] = commonField;
@@ -192,7 +194,15 @@ export class Detector {
 
 
         dataClumpsTypeContext.report_summary = {
-            amount_data_clumps: Object.keys(dataClumpsTypeContext.data_clumps).length
+            amount_data_clumps: Object.keys(dataClumpsTypeContext.data_clumps).length,
+            parameter_data_clump: {
+                total: commonMethodParametersKeys.length
+                // TODO severity
+            },
+            field_data_clump: {
+                total: commonFieldsKeys.length
+                // TODO: severity
+            },
         };
 
         // timeout for testing

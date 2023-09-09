@@ -4,6 +4,8 @@
 SOURCE := ./testSrc/java
 DESTINATION := ./../testDataParsedAst/testSrc
 IGNORE_DUBLICATE_DEFINITION := true
+IGNORE_WILDCARD_IMPORTS := true
+GENERATE_REFERENCES_OF_FIELDS_AND_METHODS := true
 
 # Determine the appropriate remove command based on the operating system
 ifeq ($(OS),Windows_NT)
@@ -31,6 +33,8 @@ run:
 	export DESTINATION="$(DESTINATION)"; \
 	export SOURCE="$(SOURCE)"; \
 	export IGNORE_DUBLICATE_DEFINITION=$(IGNORE_DUBLICATE_DEFINITION); \
+	export GENERATE_REFERENCES_OF_FIELDS_AND_METHODS=$(GENERATE_REFERENCES_OF_FIELDS_AND_METHODS); \
+	export IGNORE_WILDCARD_IMPORTS=$(IGNORE_WILDCARD_IMPORTS); \
 	$(RM) "$(DESTINATION)"; \
 	./pmd-bin-7.0.0-rc3/bin/pmd check -d "$(SOURCE)" -f text -R custom-java-ruleset.xml; \
 	echo "End time: $$(date)"; \
