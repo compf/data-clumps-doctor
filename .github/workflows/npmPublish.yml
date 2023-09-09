@@ -6,7 +6,7 @@ on:
       - master
 jobs:
   build:
-    if: ${{ github.event.workflow_run.conclusion == 'success' && !startsWith(github.event.head_commit.message, '[RELEASE]') }}
+    if: ${{ !startsWith(github.event.head_commit.message, '[RELEASE]') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -15,10 +15,16 @@ jobs:
           node-version: '14.x'
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
+        working-directory: analyse
       - run: git config --global user.name 'Nils Baumgartner'
+        working-directory: analyse
       - run: git config --global user.email 'nilsbaumgartner1994@gmail.com'
+        working-directory: analyse
       - run: npm version patch -m "[RELEASE] %s"
+        working-directory: analyse
       - run: git push
+        working-directory: analyse
       - run: npm run _uploadWithoutPatch
+        working-directory: analyse
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
