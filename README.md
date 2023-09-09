@@ -32,13 +32,32 @@ In our endeavor to ensure precision and standardization in reporting data clumps
   - OpenJDK Runtime Environment (build 19.0.1+10-21)
   - OpenJDK 64-Bit Server VM (build 19.0.1+10-21, mixed mode, sharing)
 
-## Installation & Usage
-
-You can simply call the detection via command line.
+## Installation
 
 ```
-npx data-clumps-doctor <PATH_TO_PROJECT>
+cd data-clumps-doctor/analyse && npm ci && npm run build
 ```
+
+Optional: build the astGenerator from source
+```
+cd data-clumps-doctor/analyse/src/ignoreCoverage/astGenerator && make build
+```
+
+## Usage
+
+```
+cd data-clumps-doctor/analyse
+node ./build/ignoreCoverage/cli.js <Path_to_your_project_to_analyse>
+```
+
+### Help
+
+```
+cd data-clumps-doctor/analyse
+node ./build/ignoreCoverage/cli.js --help
+```
+
+
 
 ## Roadmap
 
