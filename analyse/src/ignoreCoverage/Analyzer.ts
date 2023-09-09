@@ -208,6 +208,12 @@ export class Analyzer {
             return;
         } else {
             await ParserHelper.parseSourceCodeToAst(this.path_to_source_folder, this.path_to_ast_output, this.path_to_ast_generator_folder);
+            if (!fs.existsSync(this.path_to_ast_output)) {
+                console.log(`The path to ast output ${this.path_to_ast_output} does not exist. Creating it.`)
+                // in order when the ast generator does not find any files, it does not create the folder
+                fs.mkdirSync(this.path_to_ast_output, { recursive: true });
+            }
+
             let softwareProjectDicts: SoftwareProjectDicts = await ParserHelper.getDictClassOrInterfaceFromParsedAstFolder(this.path_to_ast_output);
 
             let detectorOptions = {};
