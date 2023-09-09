@@ -49,4 +49,4 @@ clean:
 
 designer:
 	@echo "Starting PMD designer..."
-	JAVAFX_HOME=/Users/nbaumgartner/Library/Java/JavaVirtualMachines/javafx-sdk-17.0.7 pmd-bin-7.0.0-rc1/bin/pmd designer
+	JAVAFX_HOME=/Users/nbaumgartner/Library/Java/JavaVirtualMachines/javafx-sdk-17.0.7 pmd-bin-7.0.0-rc3/bin/pmd designer
