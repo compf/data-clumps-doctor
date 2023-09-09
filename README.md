@@ -22,6 +22,16 @@ We're excited to share our public [Data-Clumps Dataset](https://github.com/Fireb
 
 In our endeavor to ensure precision and standardization in reporting data clumps, we utilize the following specification: [Data-Clumps-Type-Context](https://github.com/FireboltCasters/data-clumps-type-context/).
 
+## Requirements
+
+- The project to be analyzed can not have [Wildcard imports](https://stackoverflow.com/questions/147454/why-is-using-a-wild-card-with-a-java-import-statement-bad)
+  - Since a static source-code analysis is made, the detector does not know where the import comes exactly from
+- Node Version 14.15.6 (test on this. Newer versions might also work)
+- Java 19
+  - openjdk version "19.0.1" 2022-10-18
+  - OpenJDK Runtime Environment (build 19.0.1+10-21)
+  - OpenJDK 64-Bit Server VM (build 19.0.1+10-21, mixed mode, sharing)
+
 ## Installation & Usage
 
 You can simply call the detection via command line.
