@@ -24,3 +24,5 @@ analyse/data-clumps-results/
 analyse/src/ignoreCoverage/astGenerator/temp_ast_output/
 
 analyse/data-clumps-results.json
+
+analyse/temp_ast_output/

@@ -237,7 +237,7 @@ export class Analyzer {
             // save to file
             try {
                 fs.writeFileSync(path_to_result, JSON.stringify(dataClumpsContext, null, 2), 'utf8');
-                console.log('JSON data has been successfully saved to file.');
+                console.log('Results saved to '+path_to_result);
             } catch (err) {
                 console.error('An error occurred while writing to file:', err);
             }
