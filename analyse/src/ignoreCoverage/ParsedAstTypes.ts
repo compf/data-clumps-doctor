@@ -154,10 +154,15 @@ export class ClassOrInterfaceTypeContext extends AstElementTypeContext{
         this.auxclass = false;
     }
 
-    public getSuperClassesAndInterfacesKeys(softwareProjectDicts: SoftwareProjectDicts, recursive: boolean): any[] {
-   //     console.log("getSuperClassesAndInterfacesKeys for: "+this.key);
-     //   console.log(this);
+    public getSuperClassesAndInterfacesKeys(softwareProjectDicts: SoftwareProjectDicts, recursive: boolean, checkedKeys: Dictionary<string | null> = {}, level=0): any[] {
+        //console.log(level+" - getSuperClassesAndInterfacesKeys for: "+this.key);
+        //console.log(this);
         let foundKeys: Dictionary<string | null> = {};
+
+        if(!checkedKeys){
+            checkedKeys = {};
+        }
+        checkedKeys[this.key] = this.key;
 
         let extendingClassesOrInterfacesKeys: string[] = []
         let extendingKeys = this.extends_;
@@ -169,22 +174,25 @@ export class ClassOrInterfaceTypeContext extends AstElementTypeContext{
             extendingClassesOrInterfacesKeys.push(implementsKey)
         }
 
-      //  console.log("implements and extends");
-    //    console.log(JSON.parse(JSON.stringify(extendingClassesOrInterfacesKeys)))
+        //console.log("implements and extends");
+        //console.log(JSON.parse(JSON.stringify(extendingClassesOrInterfacesKeys)))
+
         for(let extendingClassesOrInterfacesKey of extendingClassesOrInterfacesKeys){
-            let newFinding = !foundKeys[extendingClassesOrInterfacesKey];
-            if(newFinding){
-                foundKeys[extendingClassesOrInterfacesKey] = extendingClassesOrInterfacesKey;
-                if(recursive){
-                    let foundClassOrInterface = softwareProjectDicts.dictClassOrInterface[extendingClassesOrInterfacesKey];
-                    if(!!foundClassOrInterface){
-  //                      console.log("--> Recursive call for: "+foundClassOrInterface.key)
-                        let recursiveFindings = foundClassOrInterface.getSuperClassesAndInterfacesKeys(softwareProjectDicts, recursive);
-//                        console.log("<-- Recursive call endet");
-                        for(let recursiveFindingKey of recursiveFindings){
-                            let newRecursiveFinding = !foundKeys[recursiveFindingKey];
-                            if(newRecursiveFinding){
-                                foundKeys[recursiveFindingKey] = recursiveFindingKey;
+            if(!checkedKeys[extendingClassesOrInterfacesKey]){
+                let newFinding = !foundKeys[extendingClassesOrInterfacesKey];
+                if(newFinding){
+                    foundKeys[extendingClassesOrInterfacesKey] = extendingClassesOrInterfacesKey;
+                    if(recursive){
+                        let foundClassOrInterface = softwareProjectDicts.dictClassOrInterface[extendingClassesOrInterfacesKey];
+                        if(!!foundClassOrInterface){
+                            //console.log("--> Recursive call for: "+foundClassOrInterface.key)
+                            let recursiveFindings = foundClassOrInterface.getSuperClassesAndInterfacesKeys(softwareProjectDicts, recursive, checkedKeys, level+1);
+                            //console.log("<-- Recursive call endet");
+                            for(let recursiveFindingKey of recursiveFindings){
+                                let newRecursiveFinding = !foundKeys[recursiveFindingKey];
+                                if(newRecursiveFinding){
+                                    foundKeys[recursiveFindingKey] = recursiveFindingKey;
+                                }
                             }
                         }
                     }
