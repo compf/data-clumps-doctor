@@ -85,21 +85,27 @@ export class Analyzer {
         return missing_commit_results;
     }
 
-    async getNotAnalysedGitTagCommits(){
+    async getNotAnalysedGitTagCommitsHashes(){
         console.log("Perform a full check of the whole project");
-        const allCommits = await GitHelper.getAllTagsFromGitProject(this.path_to_project);
+        const allTags = await GitHelper.getAllTagsFromGitProject(this.path_to_project);
         let missing_commit_results: string[] = [];
 
-        if(!!allCommits){
-            console.log("ammount tag commits: "+allCommits.length)
+        if(!!allTags){
+            console.log("amount tag commits: "+allTags.length)
 
-            for (const commit of allCommits) {
-                console.log("check commit: " + commit);
-                let path_to_output = Analyzer.replaceOutputVariables(this.path_to_output_with_variables, this.project_name, commit);
+            for (const tag of allTags) {
+                console.log("check tag: " + tag);
+                let commit_hash = await GitHelper.getCommitHashForTag(this.path_to_project, tag);
+                if(!commit_hash){
+                    console.log("No commit hash found for tag: "+tag);
+                    continue;
+                }
+                console.log("commit hash: " + commit_hash);
+                let path_to_output = Analyzer.replaceOutputVariables(this.path_to_output_with_variables, this.project_name, commit_hash);
 
                 // Check if output file already exists for the commit
                 if (!fs.existsSync(path_to_output)) {
-                    missing_commit_results.push(commit);
+                    missing_commit_results.push(commit_hash);
                 }
             }
         } else {
@@ -117,7 +123,7 @@ export class Analyzer {
         } else if(this.commit_selection_mode==="full"){
             commits_to_analyse = await this.getNotAnalysedGitCommits();
         } else if(this.commit_selection_mode==="tags"){
-            commits_to_analyse = await this.getNotAnalysedGitTagCommits();
+            commits_to_analyse = await this.getNotAnalysedGitTagCommitsHashes();
         } else {
             let string_commits_to_analyse = this.commit_selection_mode;
             commits_to_analyse = string_commits_to_analyse.split(",");
@@ -174,7 +180,7 @@ export class Analyzer {
                 i++;
             }
         } else {
-            let commit = !!(commits_to_analyse && commits_to_analyse.length===1) ? commits_to_analyse[0] : undefined;
+            let commit = (commits_to_analyse && commits_to_analyse.length === 1) ? commits_to_analyse[0] : undefined;
             await this.analyse(commit);
         }
 
@@ -201,12 +207,20 @@ export class Analyzer {
 
 
     async analyse(commit){
+        console.log("Analyse commit: "+commit);
+
         let project_version = this.project_version || commit || "unknown_project_version";
 
         if (!fs.existsSync(this.path_to_source_folder)) {
             console.log(`The path to source files ${this.path_to_source_folder} does not exist.`);
             return;
         } else {
+            let commit_date = await GitHelper.getCommitDate(this.path_to_project, commit);
+            let commit_tag = await GitHelper.getTagFromCommitHash(this.path_to_project, commit);
+            console.log("commit_tag: "+commit_tag);
+            console.log("commit_date: "+commit_date);
+
+
             await ParserHelper.parseSourceCodeToAst(this.path_to_source_folder, this.path_to_ast_output, this.path_to_ast_generator_folder);
             if (!fs.existsSync(this.path_to_ast_output)) {
                 console.log(`The path to ast output ${this.path_to_ast_output} does not exist. Creating it.`)
@@ -218,7 +232,7 @@ export class Analyzer {
 
             let detectorOptions = {};
             let progressCallback = this.generateAstCallback.bind(this);
-            let detector = new Detector(softwareProjectDicts, detectorOptions, progressCallback, this.project_name, project_version, commit);
+            let detector = new Detector(softwareProjectDicts, detectorOptions, progressCallback, this.project_name, project_version, commit, commit_tag, commit_date);
 
             let dataClumpsContext = await detector.detect();
 

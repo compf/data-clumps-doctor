@@ -62,13 +62,13 @@
   "dependencies": {
     "@babel/preset-typescript": "^7.21.0",
     "@stdlib/buffer-from-string": "^0.0.8",
-    "axios": "^0.21.4",
     "Base64": "^1.1.0",
+    "axios": "^0.21.4",
     "base64-js": "^1.5.1",
     "buffer": "^6.0.0",
     "buffer-from": "^1.1.2",
     "commander": "^10.0.1",
-    "data-clumps-type-context": "^0.1.80",
+    "data-clumps-type-context": "^0.1.97",
     "eslint": "^7.32.0",
     "simple-git": "^3.19.0"
   }

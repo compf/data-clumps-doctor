@@ -13,6 +13,62 @@ export class GitHelper {
         }
     }
 
+    static async getCommitHashForTag(path_to_folder: string, tagName: string): Promise<string | null> {
+        return new Promise((resolve, reject) => {
+            const git: SimpleGit = simpleGit(path_to_folder);
+            git.raw(['show-ref', '--tags', tagName], (err: Error | null, data: string) => {
+                if (err) {
+                    console.error(`Error fetching commit hash for tag ${tagName}:`, err);
+                    resolve(null);
+                } else {
+                    const lines = data.trim().split('\n');
+                    for (const line of lines) {
+                        const parts = line.split(' ');
+                        if (parts.length > 1 && parts[1] === `refs/tags/${tagName}`) {
+                            resolve(parts[0]);
+                            return;
+                        }
+                    }
+                    console.warn(`No commit hash found for tag ${tagName}`);
+                    resolve(null);
+                }
+            });
+        });
+    }
+
+    static async getTagFromCommitHash(path_to_folder: string, commitHash: string): Promise<string | null> {
+        // 1. get all Tags: GitHelper.getAllTagsFromGitProject(path_to_folder)
+        let tags = await GitHelper.getAllTagsFromGitProject(path_to_folder);
+
+        // 2. get all commits for each tag: GitHelper.getCommitsForTag(path_to_folder, tag)
+        if(!!tags){
+            for (let tag of tags){
+                let commit = await GitHelper.getCommitHashForTag(path_to_folder, tag);
+                if(commit === commitHash){             // 3. check if commitHash is in commits for tag
+                    return tag;
+                }
+            }
+        }
+        return null;
+
+    }
+
+    static async getCommitDate(path_to_folder: string, identifier: string): Promise<string | null> {
+        try {
+            const git: SimpleGit = simpleGit(path_to_folder);
+            const options = ['-s', '--format=%ct', identifier];
+            const result = await git.show(options);
+            const lines = result.trim().split('\n');
+            const lastLine = lines[lines.length - 1];
+            const timestamp = parseInt(lastLine, 10);
+            return isNaN(timestamp) ? null : ""+timestamp;
+        } catch (error) {
+            console.error('An error occurred:', error);
+            return null;
+        }
+    }
+
+
     static async getProjectName(path_to_folder: string): Promise<string | null> {
         return new Promise((resolve, reject) => {
             const git: SimpleGit = simpleGit(path_to_folder);
@@ -85,19 +141,15 @@ export class GitHelper {
                 if (err) {
                     resolve(null);
                 } else {
-                    const commitHashes: string[] = [];
+                    const commitTags: string[] = [];
                     for (const tag of tags.all) {
-                        try {
-                            const details = await git.show([tag]);
-                            const hash = details.split('\n')[0].split(' ')[1];
-                            commitHashes.push(hash);
-                        } catch (error) {
-                            console.error(`Error retrieving commit hash for tag ${tag}:`, error);
-                        }
+                        console.log("tag")
+                        console.log(tag)
+                        commitTags.push(tag);
                     }
                     console.log("commitHashes")
-                    console.log(commitHashes);
-                    resolve(commitHashes);
+                    console.log(commitTags);
+                    resolve(commitTags);
                 }
             });
         });

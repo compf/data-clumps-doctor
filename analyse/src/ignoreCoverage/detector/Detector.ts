@@ -115,7 +115,9 @@ export class Detector {
     public target_language: string;
     public project_name: string;
     public project_version: string | null;
-    public project_commit: string | null;
+    public project_commit_hash: string | null;
+    public project_tag: string | null;
+    public project_commit_date: string | null;
     public additional: any;
     public detector_version: string;
 
@@ -128,7 +130,9 @@ export class Detector {
                        progressCallback: any,
                        project_name: string | null,
                        project_version: string | null,
-                       project_commit: string | null,
+                       project_commit_hash: string | null,
+                       project_tag: string | null,
+                       project_commit_date: string | null,
                        detector_version?: string,
                        additional?: any,
                        target_language?: string,
@@ -141,7 +145,9 @@ export class Detector {
         this.target_language = target_language || "java";
         this.project_name = project_name || "unknown";
         this.project_version = project_version || "unknown";
-        this.project_commit = project_commit || "unknown";
+        this.project_commit_hash = project_commit_hash || "unknown";
+        this.project_tag = project_tag || null;
+        this.project_commit_date = project_commit_date || null;
         this.additional = additional || {};
         this.detector_version = detector_version || "0.1.94";
     }
@@ -157,11 +163,14 @@ export class Detector {
             project_info: {
                 project_name: this.project_name,
                 project_version: this.project_version,
-                project_commit: this.project_commit,
+                project_commit_hash: this.project_commit_hash,
+                project_tag: this.project_tag,
+                project_commit_date: this.project_commit_date,
                 additional: this.additional,
             },
             detector: {
-                name: "https://github.com/NilsBaumgartner1994/data-clumps-doctor",
+                name: "data-clumps-doctor",
+                url: "https://github.com/NilsBaumgartner1994/data-clumps-doctor",
                 version: this.detector_version,
                 options: JSON.parse(JSON.stringify(this.options))
             },
