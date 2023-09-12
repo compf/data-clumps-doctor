@@ -134,7 +134,7 @@ export class GitHelper {
     }
 
     static async getAllTagsFromGitProject(path_to_folder: string): Promise<string[] | null> {
-        console.log("getAllTagsFromGitProject");
+        //console.log("getAllTagsFromGitProject");
         return new Promise((resolve, reject) => {
             const git: SimpleGit = simpleGit(path_to_folder);
             git.tags(async (err: Error | null, tags: TagResult) => {
@@ -143,12 +143,12 @@ export class GitHelper {
                 } else {
                     const commitTags: string[] = [];
                     for (const tag of tags.all) {
-                        console.log("tag")
-                        console.log(tag)
+                        //console.log("tag")
+                        //console.log(tag)
                         commitTags.push(tag);
                     }
-                    console.log("commitHashes")
-                    console.log(commitTags);
+                    //console.log("commitHashes")
+                    //console.log(commitTags);
                     resolve(commitTags);
                 }
             });

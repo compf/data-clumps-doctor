@@ -3,6 +3,28 @@ import {DetectorDataClumpsMethods} from "./DetectorDataClumpsMethods";
 import {DetectorDataClumpsFields} from "./DetectorDataClumpsFields";
 import {DataClumpsTypeContext} from "data-clumps-type-context";
 import {Timer} from "../Timer";
+import path from "path";
+import fs from "fs";
+
+let detector_version = "unknown";
+let reportVersion = "unknown";
+
+try {
+    const packageJsonPath = path.join(__dirname, '..','..', '..', 'package.json');
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+    detector_version = packageJson.version;
+} catch (e) {
+    console.log("Could not read package.json to get version of detector");
+}
+
+try {
+    const packageJsonLockPath = path.join(__dirname, '..','..', '..', 'package-lock.json');
+    const packageJsonLock = JSON.parse(fs.readFileSync(packageJsonLockPath, 'utf8'));
+    reportVersion = packageJsonLock?.dependencies?.["data-clumps-type-context"]?.version || "unknown";
+} catch (e) {
+    console.log("Could not read package-lock.json to get version of report");
+}
+
 
 const defaultValueField = "defaultValue";
 
@@ -133,7 +155,6 @@ export class Detector {
                        project_commit_hash: string | null,
                        project_tag: string | null,
                        project_commit_date: string | null,
-                       detector_version?: string,
                        additional?: any,
                        target_language?: string,
     ){
@@ -149,14 +170,14 @@ export class Detector {
         this.project_tag = project_tag || null;
         this.project_commit_date = project_commit_date || null;
         this.additional = additional || {};
-        this.detector_version = detector_version || "0.1.94";
+        this.detector_version = detector_version;
     }
 
     public async detect(): Promise<DataClumpsTypeContext>{
         this.timer.start();
 
         let dataClumpsTypeContext: DataClumpsTypeContext = {
-            report_version: "0.1.93",
+            report_version: reportVersion,
             report_timestamp: new Date().toISOString(),
             target_language: this.target_language || "unkown",
             report_summary: {},
@@ -220,6 +241,8 @@ export class Detector {
 
         console.log("Detecting software project for data clumps (done)")
         this.timer.printElapsedTime("Detector.detect");
+
+        console.log("Amount of data clumps: " + Object.keys(dataClumpsTypeContext.data_clumps).length);
 
 
         return dataClumpsTypeContext;

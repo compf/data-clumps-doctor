@@ -63,15 +63,15 @@ export class Analyzer {
     }
 
     async getNotAnalysedGitCommits(){
-        console.log("Perform a full check of the whole project");
+        //console.log("Perform a full check of the whole project");
         const allCommits = await GitHelper.getAllCommitsFromGitProject(this.path_to_project);
         let missing_commit_results: string[] = [];
 
         if(!!allCommits){
-            console.log("amount commits: "+allCommits.length)
+            //console.log("amount commits: "+allCommits.length)
 
             for (const commit of allCommits) {
-                console.log("check commit: " + commit);
+                //console.log("check commit: " + commit);
                 let path_to_output = Analyzer.replaceOutputVariables(this.path_to_output_with_variables, this.project_name, commit);
 
                 // Check if output file already exists for the commit
@@ -86,21 +86,21 @@ export class Analyzer {
     }
 
     async getNotAnalysedGitTagCommitsHashes(){
-        console.log("Perform a full check of the whole project");
+        //console.log("Perform a full check of the whole project");
         const allTags = await GitHelper.getAllTagsFromGitProject(this.path_to_project);
         let missing_commit_results: string[] = [];
 
         if(!!allTags){
-            console.log("amount tag commits: "+allTags.length)
+            //console.log("amount tag commits: "+allTags.length)
 
             for (const tag of allTags) {
-                console.log("check tag: " + tag);
+                //console.log("check tag: " + tag);
                 let commit_hash = await GitHelper.getCommitHashForTag(this.path_to_project, tag);
                 if(!commit_hash){
-                    console.log("No commit hash found for tag: "+tag);
+                    //console.log("No commit hash found for tag: "+tag);
                     continue;
                 }
-                console.log("commit hash: " + commit_hash);
+                //console.log("commit hash: " + commit_hash);
                 let path_to_output = Analyzer.replaceOutputVariables(this.path_to_output_with_variables, this.project_name, commit_hash);
 
                 // Check if output file already exists for the commit
@@ -109,7 +109,7 @@ export class Analyzer {
                 }
             }
         } else {
-            console.log("No tag commits found");
+            //console.log("No tag commits found");
         }
         return missing_commit_results;
     }
@@ -158,9 +158,9 @@ export class Analyzer {
         if(git_checkout_needed){
             let i=1;
             let amount_commits = commits_to_analyse.length;
-            console.log("Analysing amount commits: "+amount_commits);
+            //console.log("Analysing amount commits: "+amount_commits);
             const commitInformation = "Commit ["+i+"/"+amount_commits+"]";
-            console.log("Analyse "+commitInformation);
+            //console.log("Analyse "+commitInformation);
             for (const commit of commits_to_analyse) {
                 let checkoutWorked = true;
                 if(!!commit){
@@ -173,9 +173,9 @@ export class Analyzer {
                 if(checkoutWorked){
                     // Do analysis for each missing commit and proceed to the next
                     await this.analyse(commit);
-                    console.log("Proceed to next");
+                    //console.log("Proceed to next");
                 } else {
-                    console.log("Skip since checkout did not worked");
+                    //console.log("Skip since checkout did not worked");
                 }
                 i++;
             }
@@ -212,7 +212,7 @@ export class Analyzer {
         let project_version = this.project_version || commit || "unknown_project_version";
 
         if (!fs.existsSync(this.path_to_source_folder)) {
-            console.log(`The path to source files ${this.path_to_source_folder} does not exist.`);
+            //console.log(`The path to source files ${this.path_to_source_folder} does not exist.`);
             return;
         } else {
             let commit_date = await GitHelper.getCommitDate(this.path_to_project, commit);
