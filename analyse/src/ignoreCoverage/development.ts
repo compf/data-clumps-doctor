@@ -1,40 +1,39 @@
 import fs from 'fs';
-import path from "path";
+import {ParserHelperXmlVisualParadigm} from "./ParserHelperXmlVisualParadigm";
 import {Analyzer} from "./Analyzer";
-
-const packageJsonPath = path.join(__dirname, '..','..', 'package.json');
-const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-const version = packageJson.version;
+import {SoftwareProjectDicts} from "./SoftwareProject";
+import {ParserHelper} from "./ParserHelper";
 
 const current_working_directory = process.cwd();
 
 async function main() {
     console.log("Development started");
 
-    const path_to_ast_generator_folder = current_working_directory+"/src/ignoreCoverage/astGenerator";
-    let path_to_project = path_to_ast_generator_folder+"/testSrc/java";
-    path_to_project = "/Users/nbaumgartner/Desktop/LCSD-Paper/Data_for_Paper/ArgoUML_src/src/argouml-app"
-    let path_to_source_folder = path_to_project;
-    let path_to_ast_output = current_working_directory+'/'+"temp_ast_output"
-    let commits_to_analyse = "current";
-    let project_name = "data-clumps-doctor-development";
-    let project_version = "development";
+    //const pathToExportedXMLFile = current_working_directory+"/src/ignoreCoverage/astGeneratorFromUmlClassXmlFile/project.xml"
+    //const pathToExportedXMLFile = current_working_directory+"/src/ignoreCoverage/astGeneratorFromUmlClassXmlFile/projectUseOfGeneralisation.xml"
+    //const pathToExportedXMLFile = current_working_directory+"/src/ignoreCoverage/astGeneratorFromUmlClassXmlFile/projectImplementsInterface.xml"
+    //const pathToExportedXMLFile = current_working_directory+"/src/ignoreCoverage/astGeneratorFromUmlClassXmlFile/projectExampleSwEng-WorkflowManagement.xml"
+    const pathToExportedXMLFile = current_working_directory+"/src/ignoreCoverage/astGeneratorFromUmlClassXmlFile/projectDataClumpAttribute.xml"
 
-    let path_to_output_with_variables = current_working_directory+"/data-clumps-results.json";
+    const path_to_ast_output = current_working_directory+"/src/ignoreCoverage/testDataParsedAst"
+    console.log("current_working_directory");
+    console.log(current_working_directory);
 
-    let analyzer = new Analyzer(
-        path_to_project,
-        path_to_ast_generator_folder,
-        path_to_output_with_variables,
-        path_to_source_folder,
-        path_to_ast_output,
-        commits_to_analyse,
-        project_name,
-        project_version,
-        false,
-    );
+    await ParserHelperXmlVisualParadigm.parseXmlToAst(pathToExportedXMLFile, path_to_ast_output);
+    let softwareProjectDicts: SoftwareProjectDicts = await ParserHelper.getSoftwareProjectDictsFromParsedAstFolder(path_to_ast_output);
 
-    await analyzer.start()
+    let project_name = "testProject";
+    let project_version = "1.0.0";
+    let commit = "1234567890";
+    let commit_tag = "v1.0.0";
+    let commit_date = "2021-01-01";
+    let path_to_result = current_working_directory+"/src/ignoreCoverage/testDataResult";
+    let progressCallback = null;
+
+    await Analyzer.analyseSoftwareProjectDicts(softwareProjectDicts, project_name, project_version, commit, commit_tag, commit_date, path_to_result, progressCallback);
+
+
+
 }
 
 main();

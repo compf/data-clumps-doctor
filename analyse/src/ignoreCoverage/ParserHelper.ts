@@ -9,38 +9,7 @@ import {exec, spawn} from 'child_process';
 
 export class ParserHelper {
 
-    static async execAsync(command): Promise<{ stdout: string, stderr: string }> {
-        return new Promise((resolve, reject) => {
-            exec(command, (error, stdout, stderr) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-                resolve({ stdout, stderr });
-            });
-        });
-    };
-
-    static async parseSourceCodeToAst(path_to_source_code: string, path_to_save_parsed_ast: string, path_to_ast_generator_folder): Promise<void> {
-        console.log("Started generating ASTs");
-        try {
-            const { stdout } = await ParserHelper.execAsync('cd '+path_to_ast_generator_folder+' && make run SOURCE="'+path_to_source_code+'" DESTINATION="'+path_to_save_parsed_ast+'"');
-            //console.log(stdout);
-        } catch (error) {
-            console.error(`Error executing make: ${error}`);
-        }
-        console.log("Finished generating ASTs");
-    }
-
-    static async removeGeneratedAst(path_to_folder_of_parsed_ast: string): Promise<void> {
-        console.log("Started removing generated ASTs");
-        // delete file if exists
-        if(fs.existsSync(path_to_folder_of_parsed_ast)){
-            fs.rmSync(path_to_folder_of_parsed_ast, { recursive: true });
-        }
-    }
-
-    static async getDictClassOrInterfaceFromParsedAstFolder(path_to_folder_of_parsed_ast){
+    static async getSoftwareProjectDictsFromParsedAstFolder(path_to_folder_of_parsed_ast){
         let softwareProjectDicts: SoftwareProjectDicts = new SoftwareProjectDicts();
         console.log("Started loading ASTs")
         console.log("path_to_folder_of_parsed_ast", path_to_folder_of_parsed_ast)
@@ -59,6 +28,14 @@ export class ParserHelper {
         }
 
         return softwareProjectDicts
+    }
+
+    static async removeGeneratedAst(path_to_folder_of_parsed_ast: string): Promise<void> {
+        console.log("Started removing generated ASTs");
+        // delete file if exists
+        if(fs.existsSync(path_to_folder_of_parsed_ast)){
+            fs.rmSync(path_to_folder_of_parsed_ast, { recursive: true });
+        }
     }
 
 }

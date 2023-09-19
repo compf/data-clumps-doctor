@@ -2,11 +2,11 @@ import {GitHelper} from "./GitHelper";
 import fs from "fs";
 import {SoftwareProjectDicts} from "./SoftwareProject";
 import {Detector} from "./detector/Detector";
-import {ParserHelper} from "./ParserHelper";
+import {ParserHelperJavaSourceCode} from "./ParserHelperJavaSourceCode";
 import {Timer} from "./Timer";
 import path from "path";
-
-const current_working_directory = process.cwd();
+import {ParserHelper} from "./ParserHelper";
+import {ParserHelperXmlVisualParadigm} from "./ParserHelperXmlVisualParadigm";
 
 export class Analyzer {
 
@@ -17,7 +17,8 @@ export class Analyzer {
     public path_to_project: string;
     public path_to_ast_generator_folder: string;
     public path_to_output_with_variables: string;
-    public path_to_source_folder: string;
+    public path_to_source: string;
+    public source_type: string;
     public path_to_ast_output: string;
     public commit_selection_mode: string | undefined | null;
     public project_name: string = "unknown_project_name";
@@ -32,7 +33,8 @@ export class Analyzer {
         path_to_project: string,
         path_to_ast_generator_folder: string,
         path_to_output_with_variables: string,
-        path_to_source_files: string,
+        path_to_source: string,
+        source_type: string,
         path_to_ast_output: string,
         commit_selection_mode: string | undefined | null,
         project_name: string | undefined | null,
@@ -42,7 +44,8 @@ export class Analyzer {
         this.path_to_project = path_to_project;
         this.path_to_ast_generator_folder = path_to_ast_generator_folder;
         this.path_to_output_with_variables = path_to_output_with_variables
-        this.path_to_source_folder = path_to_source_files;
+        this.path_to_source = path_to_source;
+        this.source_type = source_type;
         this.path_to_ast_output = path_to_ast_output;
         this.commit_selection_mode = commit_selection_mode;
         this.passed_project_name = project_name;
@@ -205,13 +208,12 @@ export class Analyzer {
         return copy;
     }
 
-
     async analyse(commit){
         console.log("Analyse commit: "+commit);
 
         let project_version = this.project_version || commit || "unknown_project_version";
 
-        if (!fs.existsSync(this.path_to_source_folder)) {
+        if (!fs.existsSync(this.path_to_source)) {
             //console.log(`The path to source files ${this.path_to_source_folder} does not exist.`);
             return;
         } else {
@@ -220,21 +222,28 @@ export class Analyzer {
             console.log("commit_tag: "+commit_tag);
             console.log("commit_date: "+commit_date);
 
+            await ParserHelper.removeGeneratedAst(this.path_to_ast_output);
+            fs.mkdirSync(this.path_to_ast_output, { recursive: true });
 
-            await ParserHelper.parseSourceCodeToAst(this.path_to_source_folder, this.path_to_ast_output, this.path_to_ast_generator_folder);
+            if(this.source_type === "java"){
+                await ParserHelperJavaSourceCode.parseSourceCodeToAst(this.path_to_source, this.path_to_ast_output, this.path_to_ast_generator_folder);
+            } else if(this.source_type === "uml"){
+                await ParserHelperXmlVisualParadigm.parseXmlToAst(this.path_to_source, this.path_to_ast_output);
+            }
+
+
             if (!fs.existsSync(this.path_to_ast_output)) {
                 console.log(`The path to ast output ${this.path_to_ast_output} does not exist. Creating it.`)
                 // in order when the ast generator does not find any files, it does not create the folder
                 fs.mkdirSync(this.path_to_ast_output, { recursive: true });
             }
 
-            let softwareProjectDicts: SoftwareProjectDicts = await ParserHelper.getDictClassOrInterfaceFromParsedAstFolder(this.path_to_ast_output);
+            let softwareProjectDicts: SoftwareProjectDicts = await ParserHelper.getSoftwareProjectDictsFromParsedAstFolder(this.path_to_ast_output);
 
-            let detectorOptions = {};
+            let path_to_result = Analyzer.replaceOutputVariables(this.path_to_output_with_variables, this.project_name, commit);
             let progressCallback = this.generateAstCallback.bind(this);
-            let detector = new Detector(softwareProjectDicts, detectorOptions, progressCallback, this.project_name, project_version, commit, commit_tag, commit_date);
+            await Analyzer.analyseSoftwareProjectDicts(softwareProjectDicts, this.project_name, project_version, commit, commit_tag, commit_date, path_to_result, progressCallback);
 
-            let dataClumpsContext = await detector.detect();
 
             if(!this.preserve_ast_output){
                 await ParserHelper.removeGeneratedAst(this.path_to_ast_output);
@@ -242,27 +251,33 @@ export class Analyzer {
                 console.log("Preserving generated AST Output");
             }
 
-            let path_to_result = Analyzer.replaceOutputVariables(this.path_to_output_with_variables, this.project_name, commit);
-
-            // delete file if exists
-            if(fs.existsSync(path_to_result)){
-                fs.unlinkSync(path_to_result);
-            }
-
-            const dir = path.dirname(path_to_result);
-            if (!fs.existsSync(dir)) {
-                fs.mkdirSync(dir, { recursive: true });
-            }
-
-            // save to file
-            try {
-                fs.writeFileSync(path_to_result, JSON.stringify(dataClumpsContext, null, 2), 'utf8');
-                console.log('Results saved to '+path_to_result);
-            } catch (err) {
-                console.error('An error occurred while writing to file:', err);
-            }
-
         }
+    }
+
+    static async analyseSoftwareProjectDicts(softwareProjectDicts, project_name, project_version, commit, commit_tag, commit_date, path_to_result, progressCallback){
+        let detectorOptions = {};
+        let detector = new Detector(softwareProjectDicts, detectorOptions, progressCallback, project_name, project_version, commit, commit_tag, commit_date);
+
+        let dataClumpsContext = await detector.detect();
+
+        // delete file if exists
+        if(fs.existsSync(path_to_result)){
+            fs.unlinkSync(path_to_result);
+        }
+
+        const dir = path.dirname(path_to_result);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+
+        // save to file
+        try {
+            fs.writeFileSync(path_to_result, JSON.stringify(dataClumpsContext, null, 2), 'utf8');
+            console.log('Results saved to '+path_to_result);
+        } catch (err) {
+            console.error('An error occurred while writing to file:', err);
+        }
+
     }
 
 }

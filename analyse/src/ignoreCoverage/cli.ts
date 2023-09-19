@@ -25,6 +25,7 @@ program
     .argument('<path_to_project>', 'Absolute path to project (a git project in best case)')
     .option('--path_to_ast_generator_folder', 'Absolute path to the ast generator folder (In this project: astGenerator)', path_to_ast_generator_folder_test)
     .option('--source <path_to_source_folder>', 'Absolute path to source files (default is the path to project). If you want to analyse just a specific folder in the project, you can specify it here.')
+    .option('--source_type <type>', 'Source type (default: java, options: java, uml). uml: Class Diagram in the simple XML Export format of Visual Paradigm.', "java")
     .option('--ast_output <path_to_ast_output>', 'Path where to save the generated AST output. By default it is in a temp folder', current_working_directory+'/'+"temp_ast_output")
     .option('--preserve_ast_output <preserve_ast_output>', 'If the ast_output folder should be preserved (default: false).', false)
     .option('--language <type>', 'Language (default: java, options: java)', "java")
@@ -43,13 +44,14 @@ program.parse(process.argv);
 const options = program.opts();
 const path_to_project = program.args[0] || './';
 const path_to_ast_generator_folder = options.path_to_ast_generator_folder;
+const source_type = options.source_type;
 
 if (!fs.existsSync(path_to_ast_generator_folder)) {
     console.log("ERROR: Specified path to ast generator folder does not exist: "+path_to_ast_generator_folder);
     process.exit(1);
 }
 
-const path_to_source_folder = options.source || path_to_project;
+const path_to_source = options.source || path_to_project;
 const path_to_ast_output = path.resolve(options.ast_output);
 console.log("path_to_ast_output: "+path_to_ast_output);
 let path_to_output_with_variables = options.output;
@@ -101,7 +103,8 @@ async function main() {
         path_to_project,
         path_to_ast_generator_folder,
         path_to_output_with_variables,
-        path_to_source_folder,
+        path_to_source,
+        source_type,
         path_to_ast_output,
         commit_selection_mode,
         passed_project_name,

@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project Author="nbaumgartner" CommentTableSortAscending="false" CommentTableSortColumn="Date Time" DocumentationType="html" ExportedFromDifferentName="false" ExporterVersion="16.1.1" Name="untitled" TextualAnalysisHighlightOptionCaseSensitive="false" UmlVersion="2.x" Xml_structure="simple">
+	<ProjectInfo>
+		<LogicalView/>
+		<ProjectOptions>
+			<DiagramOptions ActivityDiagramControlFlowDisplayOption="\u0000" ActivityDiagramShowActionCallBehaviorOption="\u0000" ActivityDiagramShowActivityEdgeWeight="true" ActivityDiagramShowDiagramFrame="true" ActivityDiagramShowObjectNodeType="true" ActivityDiagramShowPartitionHandle="\u0000" AddDataStoresExtEntitiesToDecomposedDFD="\u0002" AlignColumnProperties="true" AllowConfigShowInOutFlowButtonsInDataFlowDiagram="false" AutoGenerateRoleName="false" AutoSetAttributeType="true" AutoSetColumnType="true" AutoSyncRoleName="true" BlockDefinitionDiagramShowDiagramFrame="true" BpPoolLaneDefaultOrientation="\u0000" BpdAutoStretchPools="true" BpdConnectGatewayWithFlowObjectInDifferentPool="\u0000" BpdDefaultConnectionPointStyle="\u0001" BpdDefaultConnectorStyle="\u0005" BpdDhowIdOption="\u0000" BpdShowActivitiesTypeIcon="true" BusinessProcessDiagramDefaultLanguage="English" ClassVisibilityStyle="\u0001" ConnectorLabelOrientation="\u0000" CreateOneMessagePerDirection="true" DecisionMergeNodeConnectionPointStyle="\u0000" DefaultAssociationEndNavigable="\u0001" DefaultAssociationEndVisibility="\u0000" DefaultAssociationShowFromMultiplicity="true" DefaultAssociationShowFromRoleName="true" DefaultAssociationShowFromRoleVisibility="true" DefaultAssociationShowStereotypes="true" DefaultAssociationShowToMultiplicity="true" DefaultAssociationShowToRoleName="true" DefaultAssociationShowToRoleVisibility="true" DefaultAttributeMultiplicity="false" DefaultAttributeType="" DefaultAttributeVisibility="\u0001" DefaultClassAttributeMultiplicity="" DefaultClassAttributeMultiplicityOrdered="false" DefaultClassAttributeMultiplicityUnique="true" DefaultClassInterfaceBall="false" DefaultClassVisibility="\u0004" DefaultColumnType="integer(10)" DefaultConnectionPointStyle="\u0000" DefaultConnectorStyle="\u0001" DefaultDiagramBackground="rgb(255, 255, 255)" DefaultDisplayAsRobustnessAnalysisIcon="true" DefaultDisplayAsRobustnessAnalysisIconInSequenceDiagram="true" DefaultDisplayAsStereotypeIcon="false" DefaultFontColor="rgb(0, 0, 0)" DefaultGenDiagramTypeFromScenario="\u0000" DefaultHtmlDocFontColor="rgb(0, 0, 0)" DefaultLineJumps="\u0000" DefaultOperationVisibility="\u0004" DefaultParameterDirection="\u0002" DefaultShowAttributeInitialValue="true" DefaultShowAttributeOption="\u0001" DefaultShowClassMemberStereotype="true" DefaultShowDirection="false" DefaultShowMultiplicityConstraints="false" DefaultShowOperationOption="\u0001" DefaultShowOperationSignature="true" DefaultShowOrderedMultiplicityConstraint="true" DefaultShowOwnedAssociationEndAsAttribute="true" DefaultShowOwner="false" DefaultShowOwnerSkipModelInFullyQualifiedOwnerSignature="true" DefaultShowReceptionOption="\u0001" DefaultShowTemplateParameter="true" DefaultShowTypeOption="\u0001" DefaultShowUniqueMultiplicityConstraint="true" DefaultTypeOfSubProcess="\u0000" DefaultWrapClassMember="false" DrawTextAnnotationOpenRectangleFollowConnectorEnd="true" EnableMinimumSize="true" EntityColumnConstraintsPresentation="\u0002" ErdIndexNumOfDigits="-1" ErdIndexPattern="{table_name}" ErdIndexPatternSyncAutomatically="true" ErdManyToManyJoinTableDelimiter="_" EtlTableDiagramFontSize="14" ExpandedSubProcessDiagramContent="\u0001" ForeignKeyArrowHeadSize="\u0002" ForeignKeyConnectorEndPointAssociatedColumn="false" ForeignKeyNamePattern="{reference_table_name}{reference_column_name}" ForeignKeyNamePatternCaseHandling="0" ForeignKeyRelationshipPattern="{association_name}" FractionalMetrics="true" GeneralizationSetNotation="\u0001" GraphicAntiAliasing="true" GridDiagramFontSize="14" InteractionDiagramShowDiagramFrame="true" InternalBlockDiagramShowDiagramFrame="true" LineJumpSize="\u0000" ModelElementNameAlignment="\u0004" MultipleLineClassName="\u0001" PackageDiagramShowDiagramFrame="true" PaintConnectorThroughLabel="false" ParametricDiagramShowDiagramFrame="true" PointConnectorEndToCompartmentMember="true" PrimaryKeyConstraintPattern="" PrimaryKeyNamePattern="ID" RenameConstructorAfterRenameClass="\u0000" RenameExtensionPointToFollowExtendUseCase="\u0000" RequirementDiagramShowDiagramFrame="true" ShapeAutoFitSize="false" ShowActivationsInSequenceDiagram="true" ShowActivityStateNodeCaption="524287" ShowArtifactOption="\u0002" ShowAssociatedDiagramNameOfInteraction="false" ShowAssociationRoleStereotypes="true" ShowAttributeGetterSetter="false" ShowBSElementCode="true" ShowClassEmptyCompartments="false" ShowColumnDefaultValue="false" ShowColumnNullable="true" ShowColumnType="true" ShowColumnUniqueConstraintName="false" ShowColumnUserType="false" ShowComponentOption="\u0002" ShowExtraColumnProperties="true" ShowInOutFlowButtonsInDataFlowDiagram="false" ShowInOutFlowsInSubLevelDiagram="true" ShowMessageOperationSignatureForSequenceAndCommunicationDiagram="true" ShowMessageStereotypeInSequenceAndCommunicationDiagram="true" ShowNumberInCollaborationDiagram="true" ShowNumberInSequenceDiagram="true" ShowPackageNameStyle="\u0000" ShowParameterNameInOperationSignature="true" ShowRowGridLineWithinCompClassDiagram="false" ShowRowGridLineWithinCompERD="true" ShowRowGridLineWithinORMDiagram="true" ShowSchemaNameInERD="true" ShowTransitionTrigger="\u0000" ShowUseCaseExtensionPoint="true" ShowUseCaseID="false" SnapConnectorsAfterZoom="false" StateDiagramShowDiagramFrame="true" StateShowParametersOfInternalActivities="false" StateShowPrePostConditionAndBodyOfInternalActivities="true" StopTargetLifelineOnCreateDestroyMessage="\u0002" SupportHtmlTaggedValue="true" SupportMultipleLineAttribute="true" SuppressImpliedMultiplicityForAttributeAssociationEnd="false" SyncAssociationNameWithAssociationClass="\u0000" SyncAssociationRoleNameWithReferencedAttributeName="true" SyncDocOfInterfaceToSubClass="\u0000" TextAntiAliasing="true" TextualAnalysisGenerateRequirementTextOption="\u0001" TextualAnalysisHighlightOption="\u0000" UnnamedIndexPattern="{table_name}_{column_name}" UseCaseDiagramShowDiagramFrame="true" UseStateNameTab="false" WireflowDiagramDevice="0" WireflowDiagramShowActiveFlowLabel="true" WireflowDiagramTheme="0" WireflowDiagramWireflowShowPreview="true" WireflowDiagramWireflowShowScreenId="true">
+				<DefaultHtmlDocFont Family="Dialog" Size="12" Style="0"/>
+			</DiagramOptions>
+			<GeneralOptions ConfirmSubLevelIdWithDot="true" QuickAddGlossaryTermParentModelId="default"/>
+			<InstantReverseOptions CalculateGeneralizationAndRealization="false" CreateShapeForParentModelOfDraggedClassPackage="false" ReverseGetterSetter="\u0000" ReverseOperationImplementation="false" ShowPackageForNewDiagram="\u0001" ShowPackageOwner="\u0000"/>
+			<ModelQualityOptions EnableModelQualityChecking="false"/>
+			<ORMOptions AlterColumnUserType="true" DecimalPrecision="19" DecimalScale="0" ExportCommentToDatabase="true" FormattedSQL="false" GenerateAssociationWithAttribute="false" GenerateDiagramFromORMWizards="true" GetterSetterVisibility="\u0000" IdGeneratorType="native" MappingFileColumnOrder="\u0000" NumericToClassType="\u0000" QuoteSQLIdentifier="\u0000" RecreateShapeWhenSync="false" SyncToClassDiagramAttributeName="\u0001" SyncToClassDiagramAttributeNamePrefix="" SyncToClassDiagramAttributeNameSuffix="" SyncToClassDiagramClassName="\u0000" SyncToClassDiagramClassNamePrefix="" SyncToClassDiagramClassNameSuffix="" SyncToERDColumnName="\u0000" SyncToERDColumnNamePrefix="" SyncToERDColumnNameSuffix="" SyncToERDTableName="\u0004" SyncToERDTableNamePrefix="" SyncToERDTableNameSuffix="" SynchronizeDefaultValueToColumn="false" SynchronizeName="\u0002" TablePerSubclassFKMapping="\u0000" UpperCaseSQL="true" UseDefaultDecimal="true" WrappingServletRequest="\u0001"/>
+			<RequirementDiagramOptions DefaultWrapMember="true" ShowAttributes="\u0001" SupportHTMLAttribute="false"/>
+			<StateCodeEngineOptions AutoCreateInitialStateInStateDiagram="true" AutoCreateTransitionMethods="true" DefaultInitialStateLocationX="-1" DefaultInitialStateLocationY="-1" GenerateDebugMessage="false" GenerateSample="true" GenerateTryCatch="true" Language="\u0000" RegenerateTransitionMethods="false" SyncTransitionMethods="true"/>
+			<WarningOptions CreateORMClassInDefaultPackage="true"/>
+			<PORepository>
+				<POUserIDFormats>
+					<POUserIDFormat Digits="2" Guid="false" Id="IVCb5VGGAqFkIwWS" LastNumericValue="0" ModelType="BPMNElement" Prefix="BP" Suffix=""/>
+					<POUserIDFormat Digits="2" Guid="false" Id="oVCb5VGGAqFkIwWT" LastNumericValue="0" ModelType="Actor" Prefix="AC" Suffix=""/>
+					<POUserIDFormat Digits="2" Guid="false" Id="oVCb5VGGAqFkIwWU" LastNumericValue="0" ModelType="UseCase" Prefix="UC" Suffix=""/>
+					<POUserIDFormat Digits="3" Guid="false" Id="oVCb5VGGAqFkIwWV" LastNumericValue="0" ModelType="Requirement" Prefix="REQ" Suffix=""/>
+					<POUserIDFormat Digits="3" Guid="false" Id="oVCb5VGGAqFkIwWW" LastNumericValue="0" ModelType="BusinessRule" Prefix="BR" Suffix=""/>
+					<POUserIDFormat Digits="-1" Guid="false" Id="oVCb5VGGAqFkIwWX" LastNumericValue="0" ModelType="BusinessProcessDiagram" Prefix="" Suffix=""/>
+				</POUserIDFormats>
+			</PORepository>
+		</ProjectOptions>
+	</ProjectInfo>
+	<Models>
+		<DataType BacklogActivityId="0" Documentation_plain="" Id="FRCb5VGGAqFkIwBQ" Name="boolean" PmAuthor="" PmCreateDateTime="2017-06-21T18:09:47.441" PmLastModified="2023-09-18T12:33:18.095" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+		<DataType BacklogActivityId="0" Documentation_plain="" Id="bRCb5VGGAqFkIwBR" Name="byte" PmAuthor="" PmCreateDateTime="2017-06-21T18:09:47.443" PmLastModified="2023-09-18T12:33:18.092" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+		<DataType BacklogActivityId="0" Documentation_plain="" Id="bRCb5VGGAqFkIwBS" Name="char" PmAuthor="" PmCreateDateTime="2017-06-21T18:09:47.443" PmLastModified="2023-09-18T12:33:18.092" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+		<DataType BacklogActivityId="0" Documentation_plain="" Id="bRCb5VGGAqFkIwBT" Name="double" PmAuthor="" PmCreateDateTime="2017-06-21T18:09:47.444" PmLastModified="2023-09-18T12:33:18.092" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+		<DataType BacklogActivityId="0" Documentation_plain="" Id="7RCb5VGGAqFkIwBU" Name="float" PmAuthor="" PmCreateDateTime="2017-06-21T18:09:47.444" PmLastModified="2023-09-18T12:33:18.096" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+		<DataType BacklogActivityId="0" Documentation_plain="" Id="7RCb5VGGAqFkIwBV" Name="int" PmAuthor="" PmCreateDateTime="2017-06-21T18:09:47.445" PmLastModified="2023-09-18T12:33:18.096" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+		<DataType BacklogActivityId="0" Documentation_plain="" Id="7RCb5VGGAqFkIwBW" Name="long" PmAuthor="" PmCreateDateTime="2017-06-21T18:09:47.445" PmLastModified="2023-09-18T12:33:18.096" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+		<DataType BacklogActivityId="0" Documentation_plain="" Id="7RCb5VGGAqFkIwBX" Name="short" PmAuthor="" PmCreateDateTime="2017-06-21T18:09:47.446" PmLastModified="2023-09-18T12:33:18.096" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+		<DataType BacklogActivityId="0" Documentation_plain="" Id="HRCb5VGGAqFkIwBY" Name="void" PmAuthor="" PmCreateDateTime="2017-06-21T18:09:47.446" PmLastModified="2023-09-18T12:33:18.095" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+		<DataType BacklogActivityId="0" Documentation_plain="" Id="HRCb5VGGAqFkIwBZ" Name="string" PmAuthor="" PmCreateDateTime="2017-06-21T18:09:47.446" PmLastModified="2023-09-18T12:33:18.095" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+		<Model Abstract="false" BacklogActivityId="0" ConnectToCodeModel="1" Documentation_plain="" Id="4qBb5VGGAqFkIwWe" Leaf="false" Name="Class Diagram - Sales Order System" PmAuthor="" PmCreateDateTime="2017-06-21T18:45:46.951" PmLastModified="2023-09-18T12:36:20.895" QualityReason_IsNull="true" QualityScore="-1" Root="false" UserIDLastNumericValue="0" UserID_IsNull="true">
+			<ModelChildren>
+				<Class Abstract="false" Active="false" BacklogActivityId="0" BusinessKeyMutable="true" BusinessModel="false" ConnectToCodeModel="1" Documentation_plain="" FinalSpecialization="false" Id="CqBb5VGGAqFkIwWg" Leaf="false" Name="Customer" PmAuthor="" PmCreateDateTime="2017-06-21T18:46:25.684" PmLastModified="2023-09-18T12:33:18.097" QualityReason_IsNull="true" QualityScore="-1" Root="false" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="public">
+					<ModelChildren>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="WqBb5VGGAqFkIwWi" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="name" PmAuthor="" PmCreateDateTime="2017-06-21T18:51:20.912" PmLastModified="2023-09-18T12:33:18.097" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" Type="String" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true"/>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="uqBb5VGGAqFkIwWj" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="deliveryAddress" PmAuthor="" PmCreateDateTime="2017-06-21T18:51:24.244" PmLastModified="2023-09-18T12:33:18.097" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" Type="String" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true"/>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="eqBb5VGGAqFkIwWk" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="contact" PmAuthor="" PmCreateDateTime="2017-06-21T18:51:29.515" PmLastModified="2023-09-18T12:33:18.097" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" Type="String" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true"/>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id=".qBb5VGGAqFkIwWl" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="active" PmAuthor="" PmCreateDateTime="2017-06-21T18:51:43.903" PmLastModified="2023-09-18T12:33:18.097" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true">
+							<Type>
+								<DataType Idref="FRCb5VGGAqFkIwBQ" Name="boolean"/>
+							</Type>
+						</Attribute>
+					</ModelChildren>
+					<MasterView>
+						<Class Idref="p6Bb5VGGAqFkIwYg" Name="Customer"/>
+					</MasterView>
+				</Class>
+				<Class Abstract="false" Active="false" BacklogActivityId="0" BusinessKeyMutable="true" BusinessModel="false" ConnectToCodeModel="1" Documentation_plain="" FinalSpecialization="false" Id="hqBb5VGGAqFkIwWm" Leaf="false" Name="Order" PmAuthor="" PmCreateDateTime="2017-06-21T18:46:31.658" PmLastModified="2023-09-18T12:33:18.093" QualityReason_IsNull="true" QualityScore="-1" Root="false" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="public">
+					<ModelChildren>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="xqBb5VGGAqFkIwWn" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="createDate" PmAuthor="" PmCreateDateTime="2017-06-21T18:49:25.587" PmLastModified="2023-09-18T12:33:18.093" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" Type="date" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true"/>
+					</ModelChildren>
+					<MasterView>
+						<Class Idref="J6Bb5VGGAqFkIwYe" Name="Order"/>
+					</MasterView>
+				</Class>
+				<Class Abstract="false" Active="false" BacklogActivityId="0" BusinessKeyMutable="true" BusinessModel="false" ConnectToCodeModel="1" Documentation_plain="" FinalSpecialization="false" Id="JqBb5VGGAqFkIwWo" Leaf="false" Name="Payment" PmAuthor="" PmCreateDateTime="2017-06-21T18:46:32.035" PmLastModified="2023-09-18T12:33:18.096" QualityReason_IsNull="true" QualityScore="-1" Root="false" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="public">
+					<ModelChildren>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="pqBb5VGGAqFkIwWp" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="amount" PmAuthor="" PmCreateDateTime="2017-06-21T18:53:48.679" PmLastModified="2023-09-18T12:33:18.096" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true">
+							<Type>
+								<DataType Idref="7RCb5VGGAqFkIwBU" Name="float"/>
+							</Type>
+						</Attribute>
+					</ModelChildren>
+					<FromSimpleRelationships>
+						<Generalization Idref="LaBb5VGGAqFkIwYI" Name=""/>
+						<Generalization Idref="raBb5VGGAqFkIwYJ" Name=""/>
+						<Generalization Idref="baBb5VGGAqFkIwYK" Name=""/>
+						<Generalization Idref="baBb5VGGAqFkIwYL" Name=""/>
+					</FromSimpleRelationships>
+					<MasterView>
+						<Class Idref="x6Bb5VGGAqFkIwYc" Name="Payment"/>
+					</MasterView>
+				</Class>
+				<Class Abstract="false" Active="false" BacklogActivityId="0" BusinessKeyMutable="true" BusinessModel="false" ConnectToCodeModel="1" Documentation_plain="" FinalSpecialization="false" Id="pqBb5VGGAqFkIwWq" Leaf="false" Name="Credit" PmAuthor="" PmCreateDateTime="2017-06-21T18:46:43.743" PmLastModified="2023-09-18T12:33:18.094" QualityReason_IsNull="true" QualityScore="-1" Root="false" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="public">
+					<ModelChildren>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="ZqBb5VGGAqFkIwWr" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="number" PmAuthor="" PmCreateDateTime="2017-06-21T18:54:02.391" PmLastModified="2023-09-18T12:33:18.094" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" Type="String" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true"/>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="5qBb5VGGAqFkIwWs" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="type" PmAuthor="" PmCreateDateTime="2017-06-21T18:54:07.716" PmLastModified="2023-09-18T12:33:18.094" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" Type="String" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true"/>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="FqBb5VGGAqFkIwWt" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="expireDate" PmAuthor="" PmCreateDateTime="2017-06-21T18:54:10.628" PmLastModified="2023-09-18T12:33:18.094" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" Type="date" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true"/>
+					</ModelChildren>
+					<ToSimpleRelationships>
+						<Generalization Idref="LaBb5VGGAqFkIwYI" Name=""/>
+					</ToSimpleRelationships>
+					<MasterView>
+						<Class Idref="h6Bb5VGGAqFkIwYa" Name="Credit"/>
+					</MasterView>
+				</Class>
+				<Class Abstract="false" Active="false" BacklogActivityId="0" BusinessKeyMutable="true" BusinessModel="false" ConnectToCodeModel="1" Documentation_plain="" FinalSpecialization="false" Id="lqBb5VGGAqFkIwWu" Leaf="false" Name="Cash" PmAuthor="" PmCreateDateTime="2017-06-21T18:46:49.287" PmLastModified="2023-09-18T12:33:18.094" QualityReason_IsNull="true" QualityScore="-1" Root="false" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="public">
+					<ModelChildren>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="VqBb5VGGAqFkIwWv" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="cashTendered" PmAuthor="" PmCreateDateTime="2017-06-21T18:54:19.245" PmLastModified="2023-09-18T12:33:18.094" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true">
+							<Type>
+								<DataType Idref="7RCb5VGGAqFkIwBU" Name="float"/>
+							</Type>
+						</Attribute>
+					</ModelChildren>
+					<ToSimpleRelationships>
+						<Generalization Idref="raBb5VGGAqFkIwYJ" Name=""/>
+					</ToSimpleRelationships>
+					<MasterView>
+						<Class Idref="B6Bb5VGGAqFkIwYY" Name="Cash"/>
+					</MasterView>
+				</Class>
+				<Class Abstract="false" Active="false" BacklogActivityId="0" BusinessKeyMutable="true" BusinessModel="false" ConnectToCodeModel="1" Documentation_plain="" FinalSpecialization="false" Id="1qBb5VGGAqFkIwWw" Leaf="false" Name="Check" PmAuthor="" PmCreateDateTime="2017-06-21T18:46:52.665" PmLastModified="2023-09-18T12:33:18.096" QualityReason_IsNull="true" QualityScore="-1" Root="false" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="public">
+					<ModelChildren>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="NqBb5VGGAqFkIwWx" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="name" PmAuthor="" PmCreateDateTime="2017-06-21T18:54:27.691" PmLastModified="2023-09-18T12:33:18.096" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" Type="String" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true"/>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="tqBb5VGGAqFkIwWy" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="bankID" PmAuthor="" PmCreateDateTime="2017-06-21T18:54:29.492" PmLastModified="2023-09-18T12:33:18.096" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" Type="String" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true"/>
+						<Operation Abstract="false" BacklogActivityId="0" BodyCondition_IsNull="true" ConnectToCodeModel="1" Documentation_plain="" Id="dqBb5VGGAqFkIwW0" Leaf="false" Lower_IsNull="true" Name="authorized" Ordered="false" PmAuthor="" PmCreateDateTime="2017-06-21T18:54:36.598" PmLastModified="2023-09-18T12:33:18.096" QualityReason_IsNull="true" QualityScore="-1" Query="false" ReturnTypeDocumentation_plain="" Scope="instance" Static="false" TypeModifier="" Unique="true" Upper_IsNull="true" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="public" Visible="true"/>
+					</ModelChildren>
+					<ToSimpleRelationships>
+						<Generalization Idref="baBb5VGGAqFkIwYK" Name=""/>
+					</ToSimpleRelationships>
+					<MasterView>
+						<Class Idref=".6Bb5VGGAqFkIwYW" Name="Check"/>
+					</MasterView>
+				</Class>
+				<Class Abstract="false" Active="false" BacklogActivityId="0" BusinessKeyMutable="true" BusinessModel="false" ConnectToCodeModel="1" Documentation_plain="" FinalSpecialization="false" Id="jqBb5VGGAqFkIwW1" Leaf="false" Name="OrderDetail" PmAuthor="" PmCreateDateTime="2017-06-21T18:47:00.293" PmLastModified="2023-09-18T12:33:18.094" QualityReason_IsNull="true" QualityScore="-1" Root="false" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="public">
+					<ModelChildren>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="TqBb5VGGAqFkIwW2" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="qty" PmAuthor="" PmCreateDateTime="2017-06-21T18:48:59.602" PmLastModified="2023-09-18T12:33:18.094" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true">
+							<Type>
+								<DataType Idref="7RCb5VGGAqFkIwBV" Name="int"/>
+							</Type>
+						</Attribute>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="zqBb5VGGAqFkIwW3" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="taxStatus" PmAuthor="" PmCreateDateTime="2017-06-21T18:49:03.853" PmLastModified="2023-09-18T12:33:18.094" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" Type="String" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true"/>
+						<Operation Abstract="false" BacklogActivityId="0" BodyCondition_IsNull="true" ConnectToCodeModel="1" Documentation_plain="" Id="LqBb5VGGAqFkIwW4" Leaf="false" Lower_IsNull="true" Name="calculateSubTotal" Ordered="false" PmAuthor="" PmCreateDateTime="2017-06-21T18:50:58.985" PmLastModified="2023-09-18T12:33:18.094" QualityReason_IsNull="true" QualityScore="-1" Query="false" ReturnTypeDocumentation_plain="" Scope="instance" Static="false" TypeModifier="" Unique="true" Upper_IsNull="true" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="public" Visible="true"/>
+						<Operation Abstract="false" BacklogActivityId="0" BodyCondition_IsNull="true" ConnectToCodeModel="1" Documentation_plain="" Id="rqBb5VGGAqFkIwW5" Leaf="false" Lower_IsNull="true" Name="calculateWeight" Ordered="false" PmAuthor="" PmCreateDateTime="2017-06-21T18:51:08.610" PmLastModified="2023-09-18T12:33:18.094" QualityReason_IsNull="true" QualityScore="-1" Query="false" ReturnTypeDocumentation_plain="" Scope="instance" Static="false" TypeModifier="" Unique="true" Upper_IsNull="true" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="public" Visible="true"/>
+					</ModelChildren>
+					<MasterView>
+						<Class Idref="e6Bb5VGGAqFkIwYU" Name="OrderDetail"/>
+					</MasterView>
+				</Class>
+				<Class Abstract="false" Active="false" BacklogActivityId="0" BusinessKeyMutable="true" BusinessModel="false" ConnectToCodeModel="1" Documentation_plain="" FinalSpecialization="false" Id="rqBb5VGGAqFkIwW6" Leaf="false" Name="Item" PmAuthor="" PmCreateDateTime="2017-06-21T18:48:44.448" PmLastModified="2023-09-18T12:33:18.094" QualityReason_IsNull="true" QualityScore="-1" Root="false" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="public">
+					<ModelChildren>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="bqBb5VGGAqFkIwW7" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="weight" PmAuthor="" PmCreateDateTime="2017-06-21T18:49:09.311" PmLastModified="2023-09-18T12:33:18.094" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true">
+							<Type>
+								<DataType Idref="7RCb5VGGAqFkIwBU" Name="float"/>
+							</Type>
+						</Attribute>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="HqBb5VGGAqFkIwW8" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="description" PmAuthor="" PmCreateDateTime="2017-06-21T18:49:15.848" PmLastModified="2023-09-18T12:33:18.094" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" Type="String" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true"/>
+						<Operation Abstract="false" BacklogActivityId="0" BodyCondition_IsNull="true" ConnectToCodeModel="1" Documentation_plain="" Id="HqBb5VGGAqFkIwW9" Leaf="false" Lower_IsNull="true" Name="getPriceForQuantity" Ordered="false" PmAuthor="" PmCreateDateTime="2017-06-21T18:50:48.033" PmLastModified="2023-09-18T12:33:18.094" QualityReason_IsNull="true" QualityScore="-1" Query="false" ReturnTypeDocumentation_plain="" Scope="instance" Static="false" TypeModifier="" Unique="true" Upper_IsNull="true" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="public" Visible="true"/>
+						<Operation Abstract="false" BacklogActivityId="0" BodyCondition_IsNull="true" ConnectToCodeModel="1" Documentation_plain="" Id="XqBb5VGGAqFkIwW." Leaf="false" Lower_IsNull="true" Name="getWeight" Ordered="false" PmAuthor="" PmCreateDateTime="2017-06-21T18:50:51.458" PmLastModified="2023-09-18T12:33:18.094" QualityReason_IsNull="true" QualityScore="-1" Query="false" ReturnTypeDocumentation_plain="" Scope="instance" Static="false" TypeModifier="" Unique="true" Upper_IsNull="true" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="public" Visible="true"/>
+					</ModelChildren>
+					<MasterView>
+						<Class Idref="u6Bb5VGGAqFkIwYS" Name="Item"/>
+					</MasterView>
+				</Class>
+				<Class Abstract="false" Active="false" BacklogActivityId="0" BusinessKeyMutable="true" BusinessModel="false" ConnectToCodeModel="1" Documentation_plain="" FinalSpecialization="false" Id="3qBb5VGGAqFkIwW_" Leaf="false" Name="OrderStatus" PmAuthor="" PmCreateDateTime="2017-06-21T18:52:12.990" PmLastModified="2023-09-18T12:33:18.095" QualityReason_IsNull="true" QualityScore="-1" Root="false" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="public">
+					<Stereotypes>
+						<Stereotype Idref="QaBb5VGGAqFkIwXH" Name="Enum"/>
+					</Stereotypes>
+					<ModelChildren>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="PqBb5VGGAqFkIwXA" InitialValue="0" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="CREATE" PmAuthor="" PmCreateDateTime="2017-06-21T18:52:30.115" PmLastModified="2023-09-18T12:33:18.095" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true">
+							<Type>
+								<DataType Idref="7RCb5VGGAqFkIwBV" Name="int"/>
+							</Type>
+						</Attribute>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="vqBb5VGGAqFkIwXB" InitialValue="1" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="SHIPPING" PmAuthor="" PmCreateDateTime="2017-06-21T18:52:46.505" PmLastModified="2023-09-18T12:33:18.095" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true">
+							<Type>
+								<DataType Idref="7RCb5VGGAqFkIwBV" Name="int"/>
+							</Type>
+						</Attribute>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="fqBb5VGGAqFkIwXC" InitialValue="2" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="DELIVERED" PmAuthor="" PmCreateDateTime="2017-06-21T18:52:54.260" PmLastModified="2023-09-18T12:33:18.095" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true">
+							<Type>
+								<DataType Idref="7RCb5VGGAqFkIwBV" Name="int"/>
+							</Type>
+						</Attribute>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="fqBb5VGGAqFkIwXD" InitialValue="3" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="PAID" PmAuthor="" PmCreateDateTime="2017-06-21T18:52:59.476" PmLastModified="2023-09-18T12:33:18.095" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true"/>
+					</ModelChildren>
+					<MasterView>
+						<Class Idref="26Bb5VGGAqFkIwYQ" Name="OrderStatus"/>
+					</MasterView>
+				</Class>
+				<Class Abstract="false" Active="false" BacklogActivityId="0" BusinessKeyMutable="true" BusinessModel="false" ConnectToCodeModel="1" Documentation_plain="" FinalSpecialization="false" Id="_qBb5VGGAqFkIwXE" Leaf="false" Name="WireTransfer" PmAuthor="" PmCreateDateTime="2017-06-21T18:57:49.785" PmLastModified="2023-09-18T12:33:18.095" QualityReason_IsNull="true" QualityScore="-1" Root="false" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="public">
+					<ModelChildren>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="AaBb5VGGAqFkIwXF" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="bankID" PmAuthor="" PmCreateDateTime="2017-06-21T18:58:09.187" PmLastModified="2023-09-18T12:33:18.095" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" Type="String" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true"/>
+						<Attribute Abstract="false" Aggregation="None" AllowEmptyName="false" BacklogActivityId="0" ConnectToCodeModel="1" Derived="false" DerivedUnion="false" Documentation_plain="" HasGetter="false" HasSetter="false" Id="gaBb5VGGAqFkIwXG" IsID="false" Leaf="false" Multiplicity="Unspecified" Name="bankName" PmAuthor="" PmCreateDateTime="2017-06-21T18:58:23.143" PmLastModified="2023-09-18T12:33:18.095" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Scope="instance" Type="String" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="private" Visible="true"/>
+					</ModelChildren>
+					<ToSimpleRelationships>
+						<Generalization Idref="baBb5VGGAqFkIwYL" Name=""/>
+					</ToSimpleRelationships>
+					<MasterView>
+						<Class Idref="C6Bb5VGGAqFkIwYO" Name="WireTransfer"/>
+					</MasterView>
+				</Class>
+			</ModelChildren>
+		</Model>
+		<Stereotype Abstract="false" BacklogActivityId="0" BaseType="Class" Documentation_plain="" IconPath="" Id="QaBb5VGGAqFkIwXH" Leaf="false" Name="Enum" PmAuthor="" PmCreateDateTime="2017-06-21T18:14:22.661" PmLastModified="2023-09-18T12:33:18.096" QualityReason_IsNull="true" QualityScore="-1" Root="false" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+		<Association Abstract="false" BacklogActivityId="0" Derived="false" Direction="From To" Documentation_plain="" EndRelationshipFromMetaModelElement="hqBb5VGGAqFkIwWm" EndRelationshipToMetaModelElement="jqBb5VGGAqFkIwW1" FinalSpecialization="false" Id="CaBb5VGGAqFkIwXN" Leaf="false" OrderingInProfile="-1" PmAuthor="" PmCreateDateTime="2017-06-21T18:47:00.314" PmLastModified="2023-09-18T12:33:18.093" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="Unspecified">
+			<FromEnd>
+				<AssociationEnd AggregationKind="Shared" BacklogActivityId="0" ConnectToCodeModel="1" DefaultValue_IsNull="true" Derived="false" DerivedUnion="false" Documentation_plain="" EndModelElement="hqBb5VGGAqFkIwWm" Id="maBb5VGGAqFkIwXU" JavaCodeAttributeName="" Leaf="false" Multiplicity="1" Navigable="Navigable" PmAuthor="" PmCreateDateTime="2017-06-21T18:47:00.314" PmLastModified_IsNull="true" ProvidePropertyGetterMethod="false" ProvidePropertySetterMethod="false" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Static="false" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="Unspecified">
+					<Qualifier>
+						<Qualifier BacklogActivityId="0" Documentation_plain="" Id="WaBb5VGGAqFkIwXW" Name="" PmAuthor="" PmCreateDateTime="2017-06-21T18:47:00.314" PmLastModified_IsNull="true" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+					</Qualifier>
+					<Type>
+						<Class Idref="hqBb5VGGAqFkIwWm" Name="Order"/>
+					</Type>
+				</AssociationEnd>
+			</FromEnd>
+			<ToEnd>
+				<AssociationEnd AggregationKind="None" BacklogActivityId="0" ConnectToCodeModel="1" DefaultValue_IsNull="true" Derived="false" DerivedUnion="false" Documentation_plain="" EndModelElement="jqBb5VGGAqFkIwW1" Id="2aBb5VGGAqFkIwXX" JavaCodeAttributeName="" Leaf="false" Multiplicity="1..*" Name="line item" Navigable="Navigable" PmAuthor="" PmCreateDateTime="2017-06-21T18:47:00.314" PmLastModified_IsNull="true" ProvidePropertyGetterMethod="false" ProvidePropertySetterMethod="false" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Static="false" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="Unspecified">
+					<Qualifier>
+						<Qualifier BacklogActivityId="0" Documentation_plain="" Id="2aBb5VGGAqFkIwXZ" Name="" PmAuthor="" PmCreateDateTime="2017-06-21T18:47:00.314" PmLastModified_IsNull="true" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+					</Qualifier>
+					<Type>
+						<Class Idref="jqBb5VGGAqFkIwW1" Name="OrderDetail"/>
+					</Type>
+				</AssociationEnd>
+			</ToEnd>
+			<MasterView>
+				<Association Idref="96Bb5VGGAqFkIwYo"/>
+			</MasterView>
+		</Association>
+		<Association Abstract="false" BacklogActivityId="0" Derived="false" Direction="From To" Documentation_plain="" EndRelationshipFromMetaModelElement="CqBb5VGGAqFkIwWg" EndRelationshipToMetaModelElement="hqBb5VGGAqFkIwWm" FinalSpecialization="false" Id="OaBb5VGGAqFkIwXa" Leaf="false" OrderingInProfile="-1" PmAuthor="" PmCreateDateTime="2017-06-21T18:47:14.673" PmLastModified="2023-09-18T12:33:18.093" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="Unspecified">
+			<FromEnd>
+				<AssociationEnd AggregationKind="None" BacklogActivityId="0" ConnectToCodeModel="1" DefaultValue_IsNull="true" Derived="false" DerivedUnion="false" Documentation_plain="" EndModelElement="CqBb5VGGAqFkIwWg" Id="uaBb5VGGAqFkIwXf" JavaCodeAttributeName="" Leaf="false" Multiplicity="1" Navigable="Navigable" PmAuthor="" PmCreateDateTime="2017-06-21T18:47:14.673" PmLastModified_IsNull="true" ProvidePropertyGetterMethod="false" ProvidePropertySetterMethod="false" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Static="false" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="Unspecified">
+					<Qualifier>
+						<Qualifier BacklogActivityId="0" Documentation_plain="" Id="eaBb5VGGAqFkIwXh" Name="" PmAuthor="" PmCreateDateTime="2017-06-21T18:47:14.673" PmLastModified_IsNull="true" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+					</Qualifier>
+					<Type>
+						<Class Idref="CqBb5VGGAqFkIwWg" Name="Customer"/>
+					</Type>
+				</AssociationEnd>
+			</FromEnd>
+			<ToEnd>
+				<AssociationEnd AggregationKind="None" BacklogActivityId="0" ConnectToCodeModel="1" DefaultValue_IsNull="true" Derived="false" DerivedUnion="false" Documentation_plain="" EndModelElement="hqBb5VGGAqFkIwWm" Id=".aBb5VGGAqFkIwXi" JavaCodeAttributeName="" Leaf="false" Multiplicity="0..*" Navigable="Navigable" PmAuthor="" PmCreateDateTime="2017-06-21T18:47:14.673" PmLastModified_IsNull="true" ProvidePropertyGetterMethod="false" ProvidePropertySetterMethod="false" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Static="false" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="Unspecified">
+					<Qualifier>
+						<Qualifier BacklogActivityId="0" Documentation_plain="" Id="BaBb5VGGAqFkIwXk" Name="" PmAuthor="" PmCreateDateTime="2017-06-21T18:47:14.673" PmLastModified_IsNull="true" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+					</Qualifier>
+					<Type>
+						<Class Idref="hqBb5VGGAqFkIwWm" Name="Order"/>
+					</Type>
+				</AssociationEnd>
+			</ToEnd>
+			<MasterView>
+				<Association Idref="j6Bb5VGGAqFkIwYq"/>
+			</MasterView>
+		</Association>
+		<Association Abstract="false" BacklogActivityId="0" Derived="false" Direction="From To" Documentation_plain="" EndRelationshipFromMetaModelElement="hqBb5VGGAqFkIwWm" EndRelationshipToMetaModelElement="JqBb5VGGAqFkIwWo" FinalSpecialization="false" Id="BaBb5VGGAqFkIwXl" Leaf="false" OrderingInProfile="-1" PmAuthor="" PmCreateDateTime="2017-06-21T18:47:39.643" PmLastModified="2023-09-18T12:33:18.093" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="Unspecified">
+			<FromEnd>
+				<AssociationEnd AggregationKind="None" BacklogActivityId="0" ConnectToCodeModel="1" DefaultValue_IsNull="true" Derived="false" DerivedUnion="false" Documentation_plain="" EndModelElement="hqBb5VGGAqFkIwWm" Id="RaBb5VGGAqFkIwXq" JavaCodeAttributeName="" Leaf="false" Multiplicity="1" Navigable="Unspecified" PmAuthor="" PmCreateDateTime="2017-06-21T18:47:39.643" PmLastModified_IsNull="true" ProvidePropertyGetterMethod="false" ProvidePropertySetterMethod="false" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Static="false" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="Unspecified">
+					<Qualifier>
+						<Qualifier BacklogActivityId="0" Documentation_plain="" Id="xaBb5VGGAqFkIwXs" Name="" PmAuthor="" PmCreateDateTime="2017-06-21T18:47:39.643" PmLastModified_IsNull="true" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+					</Qualifier>
+					<Type>
+						<Class Idref="hqBb5VGGAqFkIwWm" Name="Order"/>
+					</Type>
+				</AssociationEnd>
+			</FromEnd>
+			<ToEnd>
+				<AssociationEnd AggregationKind="None" BacklogActivityId="0" ConnectToCodeModel="1" DefaultValue_IsNull="true" Derived="false" DerivedUnion="false" Documentation_plain="" EndModelElement="JqBb5VGGAqFkIwWo" Id="JaBb5VGGAqFkIwXt" JavaCodeAttributeName="" Leaf="false" Multiplicity="1..*" Navigable="Navigable" PmAuthor="" PmCreateDateTime="2017-06-21T18:47:39.643" PmLastModified_IsNull="true" ProvidePropertyGetterMethod="false" ProvidePropertySetterMethod="false" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Static="false" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="Unspecified">
+					<Qualifier>
+						<Qualifier BacklogActivityId="0" Documentation_plain="" Id="paBb5VGGAqFkIwXv" Name="" PmAuthor="" PmCreateDateTime="2017-06-21T18:47:39.643" PmLastModified_IsNull="true" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+					</Qualifier>
+					<Type>
+						<Class Idref="JqBb5VGGAqFkIwWo" Name="Payment"/>
+					</Type>
+				</AssociationEnd>
+			</ToEnd>
+			<MasterView>
+				<Association Idref="T6Bb5VGGAqFkIwYs"/>
+			</MasterView>
+		</Association>
+		<Association Abstract="false" BacklogActivityId="0" Derived="false" Direction="From To" Documentation_plain="" EndRelationshipFromMetaModelElement="jqBb5VGGAqFkIwW1" EndRelationshipToMetaModelElement="rqBb5VGGAqFkIwW6" FinalSpecialization="false" Id="paBb5VGGAqFkIwXw" Leaf="false" OrderingInProfile="-1" PmAuthor="" PmCreateDateTime="2017-06-21T18:48:44.470" PmLastModified="2023-09-18T12:33:18.094" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="Unspecified">
+			<FromEnd>
+				<AssociationEnd AggregationKind="None" BacklogActivityId="0" ConnectToCodeModel="1" DefaultValue_IsNull="true" Derived="false" DerivedUnion="false" Documentation_plain="" EndModelElement="jqBb5VGGAqFkIwW1" Id="ZaBb5VGGAqFkIwX1" JavaCodeAttributeName="" Leaf="false" Multiplicity="0..*" Navigable="Navigable" PmAuthor="" PmCreateDateTime="2017-06-21T18:48:44.470" PmLastModified_IsNull="true" ProvidePropertyGetterMethod="false" ProvidePropertySetterMethod="false" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Static="false" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="Unspecified">
+					<Qualifier>
+						<Qualifier BacklogActivityId="0" Documentation_plain="" Id="5aBb5VGGAqFkIwX3" Name="" PmAuthor="" PmCreateDateTime="2017-06-21T18:48:44.470" PmLastModified_IsNull="true" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+					</Qualifier>
+					<Type>
+						<Class Idref="jqBb5VGGAqFkIwW1" Name="OrderDetail"/>
+					</Type>
+				</AssociationEnd>
+			</FromEnd>
+			<ToEnd>
+				<AssociationEnd AggregationKind="None" BacklogActivityId="0" ConnectToCodeModel="1" DefaultValue_IsNull="true" Derived="false" DerivedUnion="false" Documentation_plain="" EndModelElement="rqBb5VGGAqFkIwW6" Id="FaBb5VGGAqFkIwX4" JavaCodeAttributeName="" Leaf="false" Multiplicity="1" Navigable="Navigable" PmAuthor="" PmCreateDateTime="2017-06-21T18:48:44.470" PmLastModified_IsNull="true" ProvidePropertyGetterMethod="false" ProvidePropertySetterMethod="false" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Static="false" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="Unspecified">
+					<Qualifier>
+						<Qualifier BacklogActivityId="0" Documentation_plain="" Id="laBb5VGGAqFkIwX6" Name="" PmAuthor="" PmCreateDateTime="2017-06-21T18:48:44.470" PmLastModified_IsNull="true" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+					</Qualifier>
+					<Type>
+						<Class Idref="rqBb5VGGAqFkIwW6" Name="Item"/>
+					</Type>
+				</AssociationEnd>
+			</ToEnd>
+			<MasterView>
+				<Association Idref="z6Bb5VGGAqFkIwYu"/>
+			</MasterView>
+		</Association>
+		<Association Abstract="false" BacklogActivityId="0" Derived="false" Direction="From To" Documentation_plain="" EndRelationshipFromMetaModelElement="hqBb5VGGAqFkIwWm" EndRelationshipToMetaModelElement="3qBb5VGGAqFkIwW_" FinalSpecialization="false" Id="laBb5VGGAqFkIwX7" Leaf="false" OrderingInProfile="-1" PmAuthor="" PmCreateDateTime="2017-06-21T18:53:13.556" PmLastModified="2023-09-18T12:33:18.093" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="Unspecified">
+			<FromEnd>
+				<AssociationEnd AggregationKind="None" BacklogActivityId="0" ConnectToCodeModel="1" DefaultValue_IsNull="true" Derived="false" DerivedUnion="false" Documentation_plain="" EndModelElement="hqBb5VGGAqFkIwWm" Id="VaBb5VGGAqFkIwYA" JavaCodeAttributeName="" Leaf="false" Multiplicity="Unspecified" Navigable="Navigable" PmAuthor="" PmCreateDateTime="2017-06-21T18:53:13.556" PmLastModified_IsNull="true" ProvidePropertyGetterMethod="false" ProvidePropertySetterMethod="false" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Static="false" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="Unspecified">
+					<Qualifier>
+						<Qualifier BacklogActivityId="0" Documentation_plain="" Id="1aBb5VGGAqFkIwYC" Name="" PmAuthor="" PmCreateDateTime="2017-06-21T18:53:13.556" PmLastModified_IsNull="true" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+					</Qualifier>
+					<Type>
+						<Class Idref="hqBb5VGGAqFkIwWm" Name="Order"/>
+					</Type>
+				</AssociationEnd>
+			</FromEnd>
+			<ToEnd>
+				<AssociationEnd AggregationKind="None" BacklogActivityId="0" ConnectToCodeModel="1" DefaultValue_IsNull="true" Derived="false" DerivedUnion="false" Documentation_plain="" EndModelElement="3qBb5VGGAqFkIwW_" Id="NaBb5VGGAqFkIwYD" JavaCodeAttributeName="" Leaf="false" Multiplicity="1" Navigable="Navigable" PmAuthor="" PmCreateDateTime="2017-06-21T18:53:13.556" PmLastModified_IsNull="true" ProvidePropertyGetterMethod="false" ProvidePropertySetterMethod="false" QualityReason_IsNull="true" QualityScore="-1" ReadOnly="false" Static="false" TypeModifier="" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="Unspecified">
+					<Qualifier>
+						<Qualifier BacklogActivityId="0" Documentation_plain="" Id="NaBb5VGGAqFkIwYF" Name="" PmAuthor="" PmCreateDateTime="2017-06-21T18:53:13.556" PmLastModified_IsNull="true" QualityReason_IsNull="true" QualityScore="-1" UserIDLastNumericValue="0" UserID_IsNull="true"/>
+					</Qualifier>
+					<Type>
+						<Class Idref="3qBb5VGGAqFkIwW_" Name="OrderStatus"/>
+					</Type>
+				</AssociationEnd>
+			</ToEnd>
+			<MasterView>
+				<Association Idref="z6Bb5VGGAqFkIwYw"/>
+			</MasterView>
+		</Association>
+		<Generalization BacklogActivityId="0" ConnectToCodeModel="1" Documentation_plain="" From="JqBb5VGGAqFkIwWo" Id="LaBb5VGGAqFkIwYI" PmAuthor="" PmCreateDateTime="2017-06-21T18:46:43.768" PmLastModified="2023-09-18T12:33:18.094" QualityReason_IsNull="true" QualityScore="-1" Substitutable="false" To="pqBb5VGGAqFkIwWq" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="Unspecified">
+			<MasterView>
+				<Generalization Idref="16Bb5VGGAqFkIwYi"/>
+			</MasterView>
+		</Generalization>
+		<Generalization BacklogActivityId="0" ConnectToCodeModel="1" Documentation_plain="" From="JqBb5VGGAqFkIwWo" Id="raBb5VGGAqFkIwYJ" PmAuthor="" PmCreateDateTime="2017-06-21T18:46:49.308" PmLastModified="2023-09-18T12:33:18.094" QualityReason_IsNull="true" QualityScore="-1" Substitutable="false" To="lqBb5VGGAqFkIwWu" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="Unspecified">
+			<MasterView>
+				<Generalization Idref="t6Bb5VGGAqFkIwYk"/>
+			</MasterView>
+		</Generalization>
+		<Generalization BacklogActivityId="0" ConnectToCodeModel="1" Documentation_plain="" From="JqBb5VGGAqFkIwWo" Id="baBb5VGGAqFkIwYK" PmAuthor="" PmCreateDateTime="2017-06-21T18:46:52.684" PmLastModified="2023-09-18T12:33:18.095" QualityReason_IsNull="true" QualityScore="-1" Substitutable="false" To="1qBb5VGGAqFkIwWw" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="Unspecified">
+			<MasterView>
+				<Generalization Idref="t6Bb5VGGAqFkIwYm"/>
+			</MasterView>
+		</Generalization>
+		<Generalization BacklogActivityId="0" ConnectToCodeModel="1" Documentation_plain="" From="JqBb5VGGAqFkIwWo" Id="baBb5VGGAqFkIwYL" PmAuthor="" PmCreateDateTime="2017-06-21T18:57:49.807" PmLastModified="2023-09-18T12:33:18.095" QualityReason_IsNull="true" QualityScore="-1" Substitutable="false" To="_qBb5VGGAqFkIwXE" UserIDLastNumericValue="0" UserID_IsNull="true" Visibility="Unspecified">
+			<MasterView>
+				<Generalization Idref="L6Bb5VGGAqFkIwYy"/>
+			</MasterView>
+		</Generalization>
+	</Models>
+</Project>
