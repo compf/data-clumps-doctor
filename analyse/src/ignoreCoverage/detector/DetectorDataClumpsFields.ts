@@ -2,7 +2,7 @@ import {DetectorUtils} from "./DetectorUtils";
 import {Dictionary} from "./../UtilTypes";
 
 import {DataClumpTypeContext} from "data-clumps-type-context";
-import {ClassOrInterfaceTypeContext, MemberFieldParameterTypeContext} from "./../ParsedAstTypes";
+import {ClassOrInterfaceTypeContext, MemberFieldParameterTypeContext, MethodTypeContext} from "./../ParsedAstTypes";
 import {SoftwareProjectDicts} from "./../SoftwareProject";
 import {DetectorOptions} from "./Detector";
 
@@ -13,14 +13,17 @@ function getParsedValuesFromPartialOptions(rawOptions: DetectorOptions): Detecto
         return ""+value==="true";
     }
 
-    rawOptions.sharedFieldParametersMinimum = parseInt(rawOptions.sharedFieldParametersMinimum)
-    rawOptions.subclassInheritsAllMembersFromSuperclass = parseBoolean(rawOptions.subclassInheritsAllMembersFromSuperclass)
-    rawOptions.sharedFieldParametersCheckIfAreSubtypes = parseBoolean(rawOptions.sharedFieldParametersCheckIfAreSubtypes);
+    rawOptions.sharedFieldsToFieldsAmountMinimum = parseInt(rawOptions.sharedFieldsToFieldsAmountMinimum)
+    rawOptions.analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces = parseBoolean(rawOptions.analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces)
+    //rawOptions.sharedFieldParametersCheckIfAreSubtypes = parseBoolean(rawOptions.sharedFieldParametersCheckIfAreSubtypes);
+    rawOptions.analyseFieldsOfClassesWithUnknownHierarchy = parseBoolean(rawOptions.analyseFieldsOfClassesWithUnknownHierarchy);
 
     return rawOptions;
 }
 
 export class DetectorDataClumpsFields {
+
+    public static TYPE = "fields_to_fields_data_clump"
 
     public options: DetectorOptions;
     public progressCallback: any;
@@ -57,9 +60,21 @@ export class DetectorDataClumpsFields {
      * DataclumpsInspection.java line 405
      */
     private generateMemberFieldParametersRelatedToForClass(currentClass: ClassOrInterfaceTypeContext, classesDict: Dictionary<ClassOrInterfaceTypeContext>, dataClumpsFieldParameters: Dictionary<DataClumpTypeContext>, softwareProjectDicts: SoftwareProjectDicts){
-        let memberFieldParameters = this.getMemberParametersFromClass(currentClass, softwareProjectDicts);
+
+        if(!this.options.analyseFieldsOfClassesWithUnknownHierarchy){
+            //console.log("- check if hierarchy is complete")
+            let wholeHierarchyKnown = currentClass.isWholeHierarchyKnown(softwareProjectDicts)
+            if(!wholeHierarchyKnown){ // since we dont the complete hierarchy, we can't detect if a class is inherited or not
+                //console.log("-- check if hierarchy is complete")
+                return; // therefore we stop here
+            }
+        }
+
+
+        let analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces = this.options.analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces;
+        let memberFieldParameters = DetectorDataClumpsFields.getMemberParametersFromClassOrInterface(currentClass, softwareProjectDicts, analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces);
         let amountOfMemberFields = memberFieldParameters.length;
-        if(amountOfMemberFields < this.options.sharedFieldParametersMinimum){
+        if(amountOfMemberFields < this.options.sharedFieldsToFieldsAmountMinimum){
             return;
         }
         let otherClassKeys = Object.keys(classesDict);
@@ -83,6 +98,26 @@ export class DetectorDataClumpsFields {
             return; // skip the same class // DataclumpsInspection.java line 411
         }
 
+        if(!this.options.analyseFieldsOfClassesWithUnknownHierarchy){
+            //console.log("- check if hierarchy is complete")
+            let wholeHierarchyKnown = otherClass.isWholeHierarchyKnown(softwareProjectDicts)
+            if(!wholeHierarchyKnown){ // since we dont the complete hierarchy, we can't detect if a class is inherited or not
+                //console.log("-- check if hierarchy is complete")
+                return; // therefore we stop here
+            }
+        }
+
+        let ignoreClassOrInterfacesInSameHierarchy = true;
+        if(ignoreClassOrInterfacesInSameHierarchy){
+            // we can always ignore classes in the same hierarchy.
+            // when class A is subclass of class B --> A will always have all fields of class B.
+            // Although class A can override a field already inherited, this then must be intended.
+            let hasCurrentClassOrInterfaceOtherClassOrInterfaceAsParent = currentClass.isSubClassOrInterfaceOrParentOfOtherClassOrInterface(otherClass, softwareProjectDicts);
+            if(hasCurrentClassOrInterfaceOtherClassOrInterfaceAsParent){
+                return;
+            }
+        }
+
         /**
          * Fields declared in a superclass
          * Are maybe new fields and not inherited fields
@@ -90,22 +125,23 @@ export class DetectorDataClumpsFields {
          * In both cases, we need to check them
          */
 
-        let currentClassParameters = this.getMemberParametersFromClass(currentClass, softwareProjectDicts);
-        let otherClassParameters = this.getMemberParametersFromClass(otherClass, softwareProjectDicts);
+        let analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces = this.options.analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces;
+        let currentClassParameters = DetectorDataClumpsFields.getMemberParametersFromClassOrInterface(currentClass, softwareProjectDicts, analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces);
+        let otherClassParameters = DetectorDataClumpsFields.getMemberParametersFromClassOrInterface(otherClass, softwareProjectDicts, analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces);
         let commonFieldParameterPairKeys = DetectorUtils.getCommonParameterPairKeys(currentClassParameters, otherClassParameters);
-        //TODO get linked parameters: currentClassParameter --> otherClassParameter
 
         let amountOfCommonFieldParameters = commonFieldParameterPairKeys.length;
-        if(amountOfCommonFieldParameters < this.options.sharedFieldParametersMinimum){
+        if(amountOfCommonFieldParameters < this.options.sharedFieldsToFieldsAmountMinimum){
             return; // DataclumpsInspection.java line 410
         }
 
-        let [currentParameters, commonFieldParamterKeysAsKey] = DetectorUtils.getCurrentAndOtherParametersFromCommonParameterPairKeys(commonFieldParameterPairKeys, currentClassParameters, otherClassParameters, softwareProjectDicts, otherClass, null);
+        let [currentParameters, commonFieldParamterKeysAsKey] = DetectorUtils.getCurrentAndOtherParametersFromCommonParameterPairKeys(commonFieldParameterPairKeys, currentClassParameters, otherClassParameters);
 
         let fileKey = currentClass.file_path;
+        let data_clump_type = DetectorDataClumpsFields.TYPE;
         let dataClumpContext: DataClumpTypeContext = {
             type: "data_clump",
-            key: fileKey+"-"+currentClass.key+"-"+otherClass.key+"-"+commonFieldParamterKeysAsKey, // typically the file path + class name + method name + parameter names
+            key: data_clump_type+"-"+fileKey+"-"+currentClass.key+"-"+otherClass.key+"-"+commonFieldParamterKeysAsKey, // typically the file path + class name + method name + parameter names
 
             from_file_path: fileKey,
             from_class_or_interface_name: currentClass.name,
@@ -119,16 +155,16 @@ export class DetectorDataClumpsFields {
             to_method_key: null,
             to_method_name: null,
 
-            data_clump_type: "field_data_clump", // "parameter_data_clump" or "field_data_clump"
+            data_clump_type: data_clump_type, // "parameter_data_clump" or "field_data_clump"
             data_clump_data: currentParameters
         }
         dataClumpsFieldParameters[dataClumpContext.key] = dataClumpContext;
     }
 
-    private getMemberParametersFromClass(currentClass: ClassOrInterfaceTypeContext, softwareProjectDicts: SoftwareProjectDicts): MemberFieldParameterTypeContext[]{
+    public static getMemberParametersFromClassOrInterface(currentClassOrInterface: ClassOrInterfaceTypeContext, softwareProjectDicts: SoftwareProjectDicts, analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces): MemberFieldParameterTypeContext[]{
         let classParameters: MemberFieldParameterTypeContext[] = [];
 
-        let fieldParameters = currentClass.fields;
+        let fieldParameters = currentClassOrInterface.fields;
         let fieldParameterKeys = Object.keys(fieldParameters);
         for (let fieldKey of fieldParameterKeys) {
             let fieldParameter = fieldParameters[fieldKey];
@@ -139,16 +175,16 @@ export class DetectorDataClumpsFields {
         }
 
         // A class can inherit all members from its superclass
-        // An interface can inherit all members from its superinterfaces
-        if(this.options.subclassInheritsAllMembersFromSuperclass){
-            let superclassesDict = currentClass.extends_ // {Batman: 'Batman.java/class/Batman'}
+        // An interface can inherit all members from its superinterfaces or abstract interfaces
+        if(analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces){
+            let superclassesDict = currentClassOrInterface.extends_ // {Batman: 'Batman.java/class/Batman'}
             let superclassNames = Object.keys(superclassesDict);
             for (let superclassName of superclassNames) {
                 // superclassName = 'Batman'
                 let superClassKey = superclassesDict[superclassName];
                 // superClassKey = 'Batman.java/class/Batman'
                 let superclass = softwareProjectDicts.dictClassOrInterface[superClassKey];
-                let superclassParameters = this.getMemberParametersFromClass(superclass, softwareProjectDicts);
+                let superclassParameters = DetectorDataClumpsFields.getMemberParametersFromClassOrInterface(superclass, softwareProjectDicts, true);
                 classParameters = classParameters.concat(superclassParameters);
             }
         }

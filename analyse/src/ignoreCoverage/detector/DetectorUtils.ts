@@ -1,7 +1,7 @@
 import {SoftwareProjectDicts} from "../SoftwareProject";
 import {Dictionary} from "../UtilTypes";
 import {DataClumpsVariableFromContext, DataClumpsVariableToContext,} from "data-clumps-type-context";
-import {ClassOrInterfaceTypeContext, ParameterTypeContext} from "../ParsedAstTypes";
+import {ClassOrInterfaceTypeContext, MemberFieldParameterTypeContext, ParameterTypeContext} from "../ParsedAstTypes";
 
 type ParameterPair = {
     parameterKey: string;
@@ -35,7 +35,7 @@ export class DetectorUtils {
         return commonParameterPairKeys;
     }
 
-    public static getCurrentAndOtherParametersFromCommonParameterPairKeys(commonFieldParameterPairKeys: ParameterPair[], currentClassParameters: ParameterTypeContext[], otherClassParameters: ParameterTypeContext[], softwareProjectDicts, otherClass, otherMethod)
+    public static getCurrentAndOtherParametersFromCommonParameterPairKeys(commonFieldParameterPairKeys: ParameterPair[], currentClassParameters: ParameterTypeContext[], otherClassParameters: ParameterTypeContext[])
         :[Dictionary<DataClumpsVariableFromContext>, string]
     {
         let currentParameters: Dictionary<DataClumpsVariableFromContext> = {};

@@ -5,6 +5,8 @@ import {DataClumpsTypeContext} from "data-clumps-type-context";
 import {Timer} from "../Timer";
 import path from "path";
 import fs from "fs";
+import {DetectorDataClumpsMethodsToOtherFields} from "./DetectorDataClumpsMethodsToOtherFields";
+import {DetectorDataClumpsMethodsToOtherMethods} from "./DetectorDataClumpsMethodsToOtherMethods";
 
 let detector_version = "unknown";
 let reportVersion = "unknown";
@@ -48,13 +50,22 @@ export class DetectorOptionsInformation {
         type: "boolean"
     }
 
-    public static sharedFieldParametersMinimum: DetectorOptionInformationParameter = {
+    public static analyseFieldsOfClassesWithUnknownHierarchy: DetectorOptionInformationParameter = {
+        label: "Analyze Classes with Unknown Hierarchy",
+        description: "If set to true, the detector will analyze classes that are not part of a known hierarchy of related classes. Default value is false. If set to true, it may find more data clumps but they are maybe false positive.",
+        defaultValue: false,
+        group: "method",
+        type: "boolean"
+    }
+
+    public static sharedFieldsToFieldsAmountMinimum: DetectorOptionInformationParameter = {
         label: "Minimum Number of Shared Fields",
-        description: "The minimum number of fields that two or more classes must share to be considered related. Default value is 3.",
+        description: "The minimum number of fields that classes must share to be considered related. Default value is 3. The lower the value, the more data clumps will be found.",
         defaultValue: 3,
         group: "field",
         type: "number"
     }
+    /**
     public static sharedFieldParametersCheckIfAreSubtypes: DetectorOptionInformationParameter = {
         label: "Check Subtyping of Shared Fields",
         description: "If set to true, the detector will check if shared fields in related classes are subtypes of each other. Default value is false.",
@@ -62,9 +73,11 @@ export class DetectorOptionsInformation {
         group: "field",
         type: "boolean"
     }
-    public static subclassInheritsAllMembersFromSuperclass: DetectorOptionInformationParameter = {
-        label: "Subclass Inherits All Members",
-        description: "If set to true, the detector will consider a subclass related to its superclass only if it inherits all members fields from it. Default value is false.",
+     */
+
+    public static analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces: DetectorOptionInformationParameter = {
+        label: "Class or Interface inherits all fields from super class or interface",
+        description: "If set to true, the detector will use all inherited fields from its super class (and their superclasses) for comparison. Default value is false. We do not consider them since it is not might not be obvious to the user and by definition it is not in one 'place'. If set to true, we it may find more data clumps.",
         defaultValue: false,
         group: "field",
         type: "boolean"
@@ -73,13 +86,14 @@ export class DetectorOptionsInformation {
     /**
      * Methods
      */
-    public static sharedMethodParametersMinimum: DetectorOptionInformationParameter = {
+    public static sharedParametersToParametersAmountMinimum: DetectorOptionInformationParameter = {
         label: "Minimum Number of Shared Method Parameters",
-        description: "The minimum number of method parameters that two or more classes must share to be considered related. Default value is 3.",
+        description: "The minimum number of method parameters that a method must share to be considered related to a . Default value is 3.. The lower the value, the more data clumps will be found.",
         defaultValue: 3,
         group: "method",
         type: "number"
     }
+    /**
     public static sharedMethodParametersHierarchyConsidered: DetectorOptionInformationParameter = {
         label: "Consider Hierarchy for Shared Method Parameters",
         description: "If set to true, the detector will consider the hierarchy of classes when checking for shared method parameters. Default value is false.",
@@ -87,9 +101,10 @@ export class DetectorOptionsInformation {
         group: "method",
         type: "boolean"
     }
+    */
     public static analyseMethodsWithUnknownHierarchy: DetectorOptionInformationParameter = {
         label: "Analyze Methods with Unknown Hierarchy",
-        description: "If set to true, the detector will analyze methods that are not part of a known hierarchy of related classes. Default value is false.",
+        description: "If set to true, the detector will analyze methods that are not part of a known hierarchy of related classes. Default value is false. If set to true, it may find more data clumps but they are maybe false positive.",
         defaultValue: false,
         group: "method",
         type: "boolean"
@@ -223,17 +238,26 @@ export class Detector {
         }
 
 
+        let detected_data_clumps = dataClumpsTypeContext.data_clumps;
+        let data_clumps_keys = Object.keys(detected_data_clumps);
         dataClumpsTypeContext.report_summary = {
-            amount_data_clumps: Object.keys(dataClumpsTypeContext.data_clumps).length,
-            parameter_data_clump: {
-                total: commonMethodParametersKeys.length
-                // TODO severity
-            },
-            field_data_clump: {
-                total: commonFieldsKeys.length
-                // TODO: severity
-            },
+            amount_data_clumps: data_clumps_keys.length,
         };
+
+        let data_clump_types = [DetectorDataClumpsFields.TYPE, DetectorDataClumpsMethodsToOtherFields.TYPE, DetectorDataClumpsMethodsToOtherMethods.TYPE];
+        for(let data_clump_type of data_clump_types){
+            let amount_for_type = 0;
+            for(let data_clumps_key of data_clumps_keys){
+                let data_clump = detected_data_clumps[data_clumps_key];
+                if(data_clump.data_clump_type===data_clump_type){
+                    amount_for_type++;
+                }
+            }
+
+            dataClumpsTypeContext.report_summary[data_clump_type] = amount_for_type;
+        }
+
+
 
         // timeout for testing
 

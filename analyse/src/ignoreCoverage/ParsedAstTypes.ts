@@ -154,6 +154,42 @@ export class ClassOrInterfaceTypeContext extends AstElementTypeContext{
         this.auxclass = false;
     }
 
+    public isSubClassOrInterfaceOrParentOfOtherClassOrInterface(possibleSubOrSuperClassOrInterface: ClassOrInterfaceTypeContext, softwareProjectDicts: SoftwareProjectDicts){
+        let isSubClassOf = this.isSubClassOrInterfaceOfOtherClassOrInterface(possibleSubOrSuperClassOrInterface, softwareProjectDicts);
+        if(isSubClassOf){
+            return true;
+        }
+        let isParentClassOf = possibleSubOrSuperClassOrInterface.isSubClassOrInterfaceOfOtherClassOrInterface(this, softwareProjectDicts);
+        if(isParentClassOf){
+            return true
+        }
+        return false;
+    }
+
+    public isSubClassOrInterfaceOfOtherClassOrInterface(possibleSuperClassOrInterface: ClassOrInterfaceTypeContext, softwareProjectDicts: SoftwareProjectDicts){
+        let superClassesAndInterfacesKeys = this.getSuperClassesAndInterfacesKeys(softwareProjectDicts, true);
+        let possibleSuperClassOrInterfaceKey = possibleSuperClassOrInterface.key;
+        return !!superClassesAndInterfacesKeys[possibleSuperClassOrInterfaceKey]
+    }
+
+    public isWholeHierarchyKnown(softwareProjectDicts: SoftwareProjectDicts){
+        let currentClassOrInterface = this;
+        //console.log("-- currentClassOrInterface.key: "+currentClassOrInterface?.key)
+        let superClassesOrInterfacesKeys = currentClassOrInterface.getSuperClassesAndInterfacesKeys(softwareProjectDicts, true);
+        //console.log("-- superClassesOrInterfacesKeys");
+        //console.log(superClassesOrInterfacesKeys);
+        for(let superClassesOrInterfaceKey of superClassesOrInterfacesKeys){
+            let superClassesOrInterface = softwareProjectDicts.dictClassOrInterface[superClassesOrInterfaceKey];
+            if(!superClassesOrInterface){
+                //console.log("Found no superClassesOrInterface for: "+superClassesOrInterfaceKey);
+                //console.log("The hierarchy is therefore not complete");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public getSuperClassesAndInterfacesKeys(softwareProjectDicts: SoftwareProjectDicts, recursive: boolean, checkedKeys: Dictionary<string | null> = {}, level=0): any[] {
         //console.log(level+" - getSuperClassesAndInterfacesKeys for: "+this.key);
         //console.log(this);
@@ -305,28 +341,6 @@ export class MethodTypeContext extends AstElementTypeContext{
         return hasSameSignature;
     }
 
-    public isWholeHierarchyKnown(softwareProjectDicts: SoftwareProjectDicts){
-        // TODO: check if we can find all parents
-        //console.log("isWholeHierarchyKnown?")
-        //console.log("softwareProjectDicts.dictClassOrInterface")
-        //console.log(softwareProjectDicts.dictClassOrInterface);
-
-        let currentClassOrInterfaceKey = this.classOrInterfaceKey;
-        let currentClassOrInterface = softwareProjectDicts.dictClassOrInterface[currentClassOrInterfaceKey];
-        let superClassesOrInterfacesKeys = currentClassOrInterface.getSuperClassesAndInterfacesKeys(softwareProjectDicts, true);
-        //console.log(superClassesOrInterfacesKeys);
-        for(let superClassesOrInterfaceKey of superClassesOrInterfacesKeys){
-            let superClassesOrInterface = softwareProjectDicts.dictClassOrInterface[superClassesOrInterfaceKey];
-            if(!superClassesOrInterface){
-                //console.log("Found no superClassesOrInterface for: "+superClassesOrInterfaceKey);
-                //console.log("The hierarchy is therefore not complete");
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     public static getClassOrInterface(method: MethodTypeContext, softwareProjectDicts: SoftwareProjectDicts){
         let currentClassOrInterfaceKey = method.classOrInterfaceKey;
         let currentClassOrInterface = softwareProjectDicts.dictClassOrInterface[currentClassOrInterfaceKey];
@@ -334,27 +348,13 @@ export class MethodTypeContext extends AstElementTypeContext{
     }
 
     public static isWholeHierarchyKnown(method: MethodTypeContext, softwareProjectDicts: SoftwareProjectDicts){
-        // TODO: check if we can find all parents
         //console.log("isWholeHierarchyKnown?: method.key: "+method?.key);
         //console.log("softwareProjectDicts.dictClassOrInterface")
         //console.log(softwareProjectDicts.dictClassOrInterface);
 
 
         let currentClassOrInterface = MethodTypeContext.getClassOrInterface(method, softwareProjectDicts);
-        //console.log("-- currentClassOrInterface.key: "+currentClassOrInterface?.key)
-        let superClassesOrInterfacesKeys = currentClassOrInterface.getSuperClassesAndInterfacesKeys(softwareProjectDicts, true);
-        //console.log("-- superClassesOrInterfacesKeys");
-        //console.log(superClassesOrInterfacesKeys);
-        for(let superClassesOrInterfaceKey of superClassesOrInterfacesKeys){
-            let superClassesOrInterface = softwareProjectDicts.dictClassOrInterface[superClassesOrInterfaceKey];
-            if(!superClassesOrInterface){
-                //console.log("Found no superClassesOrInterface for: "+superClassesOrInterfaceKey);
-                //console.log("The hierarchy is therefore not complete");
-                return false;
-            }
-        }
-
-        return true;
+        return currentClassOrInterface.isWholeHierarchyKnown(softwareProjectDicts);
     }
 
     public isInheritedFromParentClassOrInterface(softwareProjectDicts: SoftwareProjectDicts){
