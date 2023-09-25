@@ -33,6 +33,7 @@ program
     .option('--progress', 'Show progress', true)  // Default value is true
     .option('--output <path>', 'Output path', current_working_directory+'/data-clumps-results/'+Analyzer.project_name_variable_placeholder+'/'+Analyzer.project_commit_variable_placeholder+'.json') // Default value is './data-clumps.json'
     .option('--project_name <project_name>', 'Project Name (default: Git-Name)')
+    .option('--project_url <project_url>', 'Project URL (default: Git-Repo-URL)')
     .option('--project_version <project_version>', 'Project Version (default: Git-Commit hash)')
     .option('--project_commit <project_commit>', 'Project Commit (default: current Git-Commit hash)')
     .option('--commit_selection <mode>', 'Commit selections (default: current, options: history, tags, "commit_hash1,commit_hash2,...")')
@@ -98,6 +99,7 @@ async function main() {
     console.log("Data-Clumps-Doctor Detection");
 
     let passed_project_name = options.project_name;
+    let passed_project_url = options.project_url;
 
     let analyzer = new Analyzer(
         path_to_project,
@@ -107,6 +109,7 @@ async function main() {
         source_type,
         path_to_ast_output,
         commit_selection_mode,
+        passed_project_url,
         passed_project_name,
         project_version,
         preserve_ast_output

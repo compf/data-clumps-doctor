@@ -14,6 +14,7 @@ export class Analyzer {
     public static project_commit_variable_placeholder ="{project_commit}";
 
 
+    public project_url: string | undefined | null;
     public path_to_project: string;
     public path_to_ast_generator_folder: string;
     public path_to_output_with_variables: string;
@@ -37,6 +38,7 @@ export class Analyzer {
         source_type: string,
         path_to_ast_output: string,
         commit_selection_mode: string | undefined | null,
+        project_url: string | undefined | null,
         project_name: string | undefined | null,
         project_version: any,
         preserve_ast_output: boolean
@@ -48,6 +50,7 @@ export class Analyzer {
         this.source_type = source_type;
         this.path_to_ast_output = path_to_ast_output;
         this.commit_selection_mode = commit_selection_mode;
+        this.project_url = project_url;
         this.passed_project_name = project_name;
         this.project_version = project_version;
         this.preserve_ast_output = preserve_ast_output
@@ -219,6 +222,9 @@ export class Analyzer {
         } else {
             let commit_date = await GitHelper.getCommitDate(this.path_to_project, commit);
             let commit_tag = await GitHelper.getTagFromCommitHash(this.path_to_project, commit);
+            let git_project_url = await GitHelper.getRemoteUrl(this.path_to_project);
+            this.project_url = this.project_url || git_project_url || "unknown_project_url";
+
             console.log("commit_tag: "+commit_tag);
             console.log("commit_date: "+commit_date);
 
@@ -242,7 +248,7 @@ export class Analyzer {
 
             let path_to_result = Analyzer.replaceOutputVariables(this.path_to_output_with_variables, this.project_name, commit);
             let progressCallback = this.generateAstCallback.bind(this);
-            await Analyzer.analyseSoftwareProjectDicts(softwareProjectDicts, this.project_name, project_version, commit, commit_tag, commit_date, path_to_result, progressCallback);
+            await Analyzer.analyseSoftwareProjectDicts(softwareProjectDicts, this.project_url, this.project_name, project_version, commit, commit_tag, commit_date, path_to_result, progressCallback);
 
 
             if(!this.preserve_ast_output){
@@ -254,9 +260,9 @@ export class Analyzer {
         }
     }
 
-    static async analyseSoftwareProjectDicts(softwareProjectDicts, project_name, project_version, commit, commit_tag, commit_date, path_to_result, progressCallback){
+    static async analyseSoftwareProjectDicts(softwareProjectDicts, project_url, project_name, project_version, commit, commit_tag, commit_date, path_to_result, progressCallback){
         let detectorOptions = {};
-        let detector = new Detector(softwareProjectDicts, detectorOptions, progressCallback, project_name, project_version, commit, commit_tag, commit_date);
+        let detector = new Detector(softwareProjectDicts, detectorOptions, progressCallback, project_url, project_name, project_version, commit, commit_tag, commit_date);
 
         let dataClumpsContext = await detector.detect();
 

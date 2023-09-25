@@ -12,12 +12,14 @@ function getParsedValuesFromPartialOptions(rawOptions: DetectorOptions): Detecto
         return ""+value==="true";
     }
 
-    rawOptions.sharedParametersToParametersAmountMinimum = parseInt(rawOptions.sharedParametersToParametersAmountMinimum)
+    rawOptions.sharedParametersToFieldsAmountMinimum = parseInt(rawOptions.sharedParametersToFieldsAmountMinimum)
     //rawOptions.sharedMethodParametersHierarchyConsidered = parseBoolean(rawOptions.sharedMethodParametersHierarchyConsidered)
     //rawOptions.sharedFieldParametersCheckIfAreSubtypes = parseBoolean(rawOptions.sharedFieldParametersCheckIfAreSubtypes);
     rawOptions.sharedFieldsToFieldsAmountMinimum = parseInt(rawOptions.sharedFieldsToFieldsAmountMinimum)
     rawOptions.analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces = parseBoolean(rawOptions.analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces)
-    rawOptions.analyseFieldsOfClassesWithUnknownHierarchy = parseBoolean(rawOptions.analyseFieldsOfClassesWithUnknownHierarchy);
+    rawOptions.fieldsOfClassesWithUnknownHierarchyProbabilityModifier = parseFloat(rawOptions.fieldsOfClassesWithUnknownHierarchyProbabilityModifier);
+    rawOptions.methodsOfClassesOrInterfacesWithUnknownHierarchyProbabilityModifier = parseFloat(rawOptions.methodsOfClassesOrInterfacesWithUnknownHierarchyProbabilityModifier);
+    rawOptions.similarityModifierOfVariablesWithUnknownType = parseFloat(rawOptions.similarityModifierOfVariablesWithUnknownType);
 
     return rawOptions;
 }
@@ -40,8 +42,16 @@ export class DetectorDataClumpsMethodsToOtherFields {
      * @param methodToClassOrInterfaceDict
      * @private
      */
-    public checkFieldDataClumps(method: MethodTypeContext, softwareProjectDicts: SoftwareProjectDicts, dataClumpsMethodParameterDataClumps: Dictionary<DataClumpTypeContext>){
+    public checkFieldDataClumps(method: MethodTypeContext, softwareProjectDicts: SoftwareProjectDicts, dataClumpsMethodParameterDataClumps: Dictionary<DataClumpTypeContext>, methodWholeHierarchyKnown: boolean){
         //console.log("Checking parameter data clumps for method " + method.key);
+
+        let methodParameters = method.parameters;
+        let methodParametersKeys = Object.keys(methodParameters);
+        let methodParametersAmount = methodParametersKeys.length;
+        if(methodParametersAmount < this.options.sharedParametersToFieldsAmountMinimum){ // avoid checking methods with less than 3 parameters
+            //console.log("Method " + otherMethod.key + " has less than " + this.options.sharedParametersToParametersAmountMinimum + " parameters. Skipping this method.")
+            return;
+        }
 
         let classesOrInterfacesDict = softwareProjectDicts.dictClassOrInterface;
         let otherClassesOrInterfacesKeys = Object.keys(classesOrInterfacesDict);
@@ -52,7 +62,7 @@ export class DetectorDataClumpsMethodsToOtherFields {
                 return;
             }
 
-            let foundDataClumps = this.checkMethodParametersForDataClumps(method, otherClassOrInterface, softwareProjectDicts, dataClumpsMethodParameterDataClumps);
+            let foundDataClumps = this.checkMethodParametersForDataClumps(method, otherClassOrInterface, softwareProjectDicts, dataClumpsMethodParameterDataClumps, methodWholeHierarchyKnown);
         }
     }
 
@@ -65,7 +75,7 @@ export class DetectorDataClumpsMethodsToOtherFields {
      * @param dataClumpsMethodParameterDataClumps
      * @private
      */
-    private checkMethodParametersForDataClumps(method: MethodTypeContext,otherClassOrInterface: ClassOrInterfaceTypeContext, softwareProjectDicts: SoftwareProjectDicts, dataClumpsMethodParameterDataClumps: Dictionary<DataClumpTypeContext>) {
+    private checkMethodParametersForDataClumps(method: MethodTypeContext,otherClassOrInterface: ClassOrInterfaceTypeContext, softwareProjectDicts: SoftwareProjectDicts, dataClumpsMethodParameterDataClumps: Dictionary<DataClumpTypeContext>, wholeHierarchyKnownOfClassOrInterfaceOfCurrentMethod: boolean){
         //console.log("--- otherMethod"+ otherMethod.key)
 
 
@@ -73,10 +83,10 @@ export class DetectorDataClumpsMethodsToOtherFields {
         let currentClassOrInterface = softwareProjectDicts.dictClassOrInterface[currentClassOrInterfaceKey];
         let parameters = method.parameters;
 
-        if(!this.options.analyseFieldsOfClassesWithUnknownHierarchy){
+        let otherClassWholeHierarchyKnown = otherClassOrInterface.isWholeHierarchyKnown(softwareProjectDicts)
+        if(!this.options.fieldsOfClassesWithUnknownHierarchyProbabilityModifier){
             //console.log("- check if hierarchy is complete")
-            let wholeHierarchyKnown = currentClassOrInterface.isWholeHierarchyKnown(softwareProjectDicts)
-            if(!wholeHierarchyKnown){ // since we dont the complete hierarchy, we can't detect if a class is inherited or not
+            if(!otherClassWholeHierarchyKnown){ // since we dont the complete hierarchy, we can't detect if a class is inherited or not
                 //console.log("-- check if hierarchy is complete")
                 return; // therefore we stop here
             }
@@ -84,45 +94,48 @@ export class DetectorDataClumpsMethodsToOtherFields {
 
         let analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces = this.options.analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces;
         let otherClassParameters = DetectorDataClumpsFields.getMemberParametersFromClassOrInterface(otherClassOrInterface, softwareProjectDicts, analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces);
-        let amountCommonParameters = DetectorUtils.getCommonParameterPairKeys(parameters, otherClassParameters);
+        let amountCommonParameters = DetectorUtils.getCommonParameterPairKeys(parameters, otherClassParameters, this.options.similarityModifierOfVariablesWithUnknownType);
 
         //console.log("Amount of common parameters: "+amountCommonParameters);
-        if(amountCommonParameters < this.options.sharedParametersToParametersAmountMinimum) { // is not a data clump
+        if(amountCommonParameters < this.options.sharedParametersToFieldsAmountMinimum) { // is not a data clump
             //console.log("Method " + method.key + " and method " + otherMethod.key + " have less than " + this.options.sharedParametersToParametersAmountMinimum + " common parameters. Skipping this method.")
             return;
-        } else {
-            //console.log("- Found data clumps between method " + method.key + " and method " + otherMethod.key);
-            let commonMethodParameterPairKeys = DetectorUtils.getCommonParameterPairKeys(method.parameters, otherClassParameters);
-
-            let [currentParameters, commonFieldParamterKeysAsKey] = DetectorUtils.getCurrentAndOtherParametersFromCommonParameterPairKeys(commonMethodParameterPairKeys, method.parameters, otherClassParameters)
-
-            let currentClassOrInterface = softwareProjectDicts.dictClassOrInterface[method.classOrInterfaceKey];
-
-            let fileKey = currentClassOrInterface.file_path;
-
-            let data_clump_type = DetectorDataClumpsMethodsToOtherFields.TYPE;
-            let dataClumpContext: DataClumpTypeContext = {
-                type: "data_clump",
-                key: data_clump_type+"-"+fileKey+"-"+currentClassOrInterface.key+"-"+otherClassOrInterface.key+"-"+commonFieldParamterKeysAsKey, // typically the file path + class name + method name + parameter names
-
-                from_file_path: fileKey,
-                from_class_or_interface_name: currentClassOrInterface.name,
-                from_class_or_interface_key: currentClassOrInterface.key,
-                from_method_name: method.name,
-                from_method_key: method.key,
-
-                to_file_path: otherClassOrInterface.file_path,
-                to_class_or_interface_name: otherClassOrInterface.name,
-                to_class_or_interface_key: otherClassOrInterface.key,
-                to_method_name: null,
-                to_method_key: null,
-
-                data_clump_type: data_clump_type, // "parameter_data_clump" or "field_data_clump"
-                data_clump_data: currentParameters
-            }
-            dataClumpsMethodParameterDataClumps[dataClumpContext.key] = dataClumpContext;
-
         }
+
+
+        //console.log("- Found data clumps between method " + method.key + " and method " + otherMethod.key);
+        let commonMethodParameterPairKeys = DetectorUtils.getCommonParameterPairKeys(method.parameters, otherClassParameters, this.options.similarityModifierOfVariablesWithUnknownType);
+
+        let [currentParameters, commonFieldParamterKeysAsKey] = DetectorUtils.getCurrentAndOtherParametersFromCommonParameterPairKeys(commonMethodParameterPairKeys, method.parameters, otherClassParameters)
+
+        let fileKey = currentClassOrInterface.file_path;
+
+        let probability = DetectorUtils.calculateProbabilityOfDataClumpsMethodsToFields(wholeHierarchyKnownOfClassOrInterfaceOfCurrentMethod, otherClassWholeHierarchyKnown, commonMethodParameterPairKeys, this.options.methodsOfClassesOrInterfacesWithUnknownHierarchyProbabilityModifier, this.options.fieldsOfClassesWithUnknownHierarchyProbabilityModifier);
+
+        let data_clump_type = DetectorDataClumpsMethodsToOtherFields.TYPE;
+        let dataClumpContext: DataClumpTypeContext = {
+            type: "data_clump",
+            key: data_clump_type+"-"+fileKey+"-"+currentClassOrInterface.key+"-"+otherClassOrInterface.key+"-"+commonFieldParamterKeysAsKey, // typically the file path + class name + method name + parameter names
+
+            probability: probability,
+
+            from_file_path: fileKey,
+            from_class_or_interface_name: currentClassOrInterface.name,
+            from_class_or_interface_key: currentClassOrInterface.key,
+            from_method_name: method.name,
+            from_method_key: method.key,
+
+            to_file_path: otherClassOrInterface.file_path,
+            to_class_or_interface_name: otherClassOrInterface.name,
+            to_class_or_interface_key: otherClassOrInterface.key,
+            to_method_name: null,
+            to_method_key: null,
+
+            data_clump_type: data_clump_type, // "parameter_data_clump" or "field_data_clump"
+            data_clump_data: currentParameters
+        }
+        dataClumpsMethodParameterDataClumps[dataClumpContext.key] = dataClumpContext;
+
     }
 
 }

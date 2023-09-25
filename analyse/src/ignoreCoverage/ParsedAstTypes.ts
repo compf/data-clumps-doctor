@@ -11,7 +11,7 @@ export class AstPosition{
 export class AstElementTypeContext {
     public name: string;
     public key: string;
-    public type: string;
+    public type: string | undefined | null;
     public hasTypeVariable: boolean;
     public position: AstPosition | undefined;
 
@@ -33,7 +33,7 @@ export class ParameterTypeContext extends AstElementTypeContext{
         this.ignore = ignore;
     }
 
-    public isSimilarTo(otherParameter: ParameterTypeContext){
+    public isSimilarTo(otherParameter: ParameterTypeContext, similarityModifierOfVariablesWithUnknownType: number): number{
         //TODO: we need to check the similarity of the name
         // https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=5328371 page 164
         // not only the data fields with same
@@ -41,9 +41,25 @@ export class ParameterTypeContext extends AstElementTypeContext{
         // modifier), but also data fields with similar signatures (similar
         // name, same data type, same access modifier)
         let sameModifiers = this.haveSameModifiers(otherParameter);
-        let sameType = this.type === otherParameter.type;
+        let sameType = !!this.type && !!otherParameter.type && this.type === otherParameter.type;
         let sameName = this.name === otherParameter.name;
-        return sameModifiers && sameType && sameName;
+
+        let baseSimilarity = 1;
+        if(!sameModifiers){
+            baseSimilarity *= 0;
+        }
+        if(!sameType){
+            if(similarityModifierOfVariablesWithUnknownType > 0){
+                baseSimilarity *= similarityModifierOfVariablesWithUnknownType;
+            } else {
+                baseSimilarity *= 0;
+            }
+        }
+        if(!sameName){
+            baseSimilarity *= 0;
+        }
+
+        return baseSimilarity
     }
 
     public haveSameModifiers(otherParameter: ParameterTypeContext){
@@ -357,6 +373,7 @@ export class MethodTypeContext extends AstElementTypeContext{
         return currentClassOrInterface.isWholeHierarchyKnown(softwareProjectDicts);
     }
 
+    /**
     public isInheritedFromParentClassOrInterface(softwareProjectDicts: SoftwareProjectDicts){
         // In Java we can't rely on @Override annotation because it is not mandatory: https://stackoverflow.com/questions/4822954/do-we-really-need-override-and-so-on-when-code-java
         if(this.overrideAnnotation){
@@ -394,4 +411,5 @@ export class MethodTypeContext extends AstElementTypeContext{
         //console.log("++++++++++++++")
         return isInherited;
     }
+     */
 }

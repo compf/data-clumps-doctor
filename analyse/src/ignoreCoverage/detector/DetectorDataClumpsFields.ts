@@ -16,7 +16,8 @@ function getParsedValuesFromPartialOptions(rawOptions: DetectorOptions): Detecto
     rawOptions.sharedFieldsToFieldsAmountMinimum = parseInt(rawOptions.sharedFieldsToFieldsAmountMinimum)
     rawOptions.analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces = parseBoolean(rawOptions.analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces)
     //rawOptions.sharedFieldParametersCheckIfAreSubtypes = parseBoolean(rawOptions.sharedFieldParametersCheckIfAreSubtypes);
-    rawOptions.analyseFieldsOfClassesWithUnknownHierarchy = parseBoolean(rawOptions.analyseFieldsOfClassesWithUnknownHierarchy);
+    rawOptions.fieldsOfClassesWithUnknownHierarchyProbabilityModifier = parseFloat(rawOptions.fieldsOfClassesWithUnknownHierarchyProbabilityModifier);
+    rawOptions.similarityModifierOfVariablesWithUnknownType = parseFloat(rawOptions.similarityModifierOfVariablesWithUnknownType);
 
     return rawOptions;
 }
@@ -61,10 +62,11 @@ export class DetectorDataClumpsFields {
      */
     private generateMemberFieldParametersRelatedToForClass(currentClass: ClassOrInterfaceTypeContext, classesDict: Dictionary<ClassOrInterfaceTypeContext>, dataClumpsFieldParameters: Dictionary<DataClumpTypeContext>, softwareProjectDicts: SoftwareProjectDicts){
 
-        if(!this.options.analyseFieldsOfClassesWithUnknownHierarchy){
+        let currentClassWholeHierarchyKnown = currentClass.isWholeHierarchyKnown(softwareProjectDicts)
+        if(!this.options.fieldsOfClassesWithUnknownHierarchyProbabilityModifier){
             //console.log("- check if hierarchy is complete")
-            let wholeHierarchyKnown = currentClass.isWholeHierarchyKnown(softwareProjectDicts)
-            if(!wholeHierarchyKnown){ // since we dont the complete hierarchy, we can't detect if a class is inherited or not
+
+            if(!currentClassWholeHierarchyKnown){ // since we dont the complete hierarchy, we can't detect if a class is inherited or not
                 //console.log("-- check if hierarchy is complete")
                 return; // therefore we stop here
             }
@@ -81,11 +83,11 @@ export class DetectorDataClumpsFields {
         for (let otherClassKey of otherClassKeys) {
             let otherClass = classesDict[otherClassKey];
 
-            this.generateMemberFieldParametersRelatedToForClassToOtherClass(currentClass, otherClass, dataClumpsFieldParameters, softwareProjectDicts);
+            this.generateMemberFieldParametersRelatedToForClassToOtherClass(currentClass, otherClass, dataClumpsFieldParameters, softwareProjectDicts, currentClassWholeHierarchyKnown);
         }
     }
 
-    private generateMemberFieldParametersRelatedToForClassToOtherClass(currentClass: ClassOrInterfaceTypeContext, otherClass: ClassOrInterfaceTypeContext, dataClumpsFieldParameters: Dictionary<DataClumpTypeContext>, softwareProjectDicts: SoftwareProjectDicts){
+    private generateMemberFieldParametersRelatedToForClassToOtherClass(currentClass: ClassOrInterfaceTypeContext, otherClass: ClassOrInterfaceTypeContext, dataClumpsFieldParameters: Dictionary<DataClumpTypeContext>, softwareProjectDicts: SoftwareProjectDicts, currentClassWholeHierarchyKnown: boolean){
 
         if(otherClass.auxclass){ // ignore auxclasses as are not important for our project
             return;
@@ -98,10 +100,11 @@ export class DetectorDataClumpsFields {
             return; // skip the same class // DataclumpsInspection.java line 411
         }
 
-        if(!this.options.analyseFieldsOfClassesWithUnknownHierarchy){
+        let otherClassWholeHierarchyKnown = otherClass.isWholeHierarchyKnown(softwareProjectDicts);
+        if(!this.options.fieldsOfClassesWithUnknownHierarchyProbabilityModifier){
             //console.log("- check if hierarchy is complete")
-            let wholeHierarchyKnown = otherClass.isWholeHierarchyKnown(softwareProjectDicts)
-            if(!wholeHierarchyKnown){ // since we dont the complete hierarchy, we can't detect if a class is inherited or not
+
+            if(!otherClassWholeHierarchyKnown){ // since we dont the complete hierarchy, we can't detect if a class is inherited or not
                 //console.log("-- check if hierarchy is complete")
                 return; // therefore we stop here
             }
@@ -128,20 +131,27 @@ export class DetectorDataClumpsFields {
         let analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces = this.options.analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces;
         let currentClassParameters = DetectorDataClumpsFields.getMemberParametersFromClassOrInterface(currentClass, softwareProjectDicts, analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces);
         let otherClassParameters = DetectorDataClumpsFields.getMemberParametersFromClassOrInterface(otherClass, softwareProjectDicts, analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces);
-        let commonFieldParameterPairKeys = DetectorUtils.getCommonParameterPairKeys(currentClassParameters, otherClassParameters);
+        let commonFieldParameterPairKeys = DetectorUtils.getCommonParameterPairKeys(currentClassParameters, otherClassParameters, this.options.similarityModifierOfVariablesWithUnknownType);
 
         let amountOfCommonFieldParameters = commonFieldParameterPairKeys.length;
-        if(amountOfCommonFieldParameters < this.options.sharedFieldsToFieldsAmountMinimum){
+        if(amountOfCommonFieldParameters < this.options.sharedFieldsToFieldsAmountMinimum){ //
             return; // DataclumpsInspection.java line 410
         }
 
         let [currentParameters, commonFieldParamterKeysAsKey] = DetectorUtils.getCurrentAndOtherParametersFromCommonParameterPairKeys(commonFieldParameterPairKeys, currentClassParameters, otherClassParameters);
 
+        let currentParametersAmount = Object.keys(currentParameters).length;
+
         let fileKey = currentClass.file_path;
         let data_clump_type = DetectorDataClumpsFields.TYPE;
+
+        let probability = DetectorUtils.calculateProbabilityOfDataClumpsFields(currentClassWholeHierarchyKnown, otherClassWholeHierarchyKnown, commonFieldParameterPairKeys, this.options.fieldsOfClassesWithUnknownHierarchyProbabilityModifier);
+
         let dataClumpContext: DataClumpTypeContext = {
             type: "data_clump",
             key: data_clump_type+"-"+fileKey+"-"+currentClass.key+"-"+otherClass.key+"-"+commonFieldParamterKeysAsKey, // typically the file path + class name + method name + parameter names
+
+            probability: probability,
 
             from_file_path: fileKey,
             from_class_or_interface_name: currentClass.name,

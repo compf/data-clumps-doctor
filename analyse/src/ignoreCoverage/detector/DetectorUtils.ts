@@ -6,27 +6,95 @@ import {ClassOrInterfaceTypeContext, MemberFieldParameterTypeContext, ParameterT
 type ParameterPair = {
     parameterKey: string;
     otherParameterKey: string;
+    probability: number | null;
 }
 
 export class DetectorUtils {
 
-    public static countCommonParameters(parameters: ParameterTypeContext[], otherParameters: ParameterTypeContext[]){
-        let commonParameterKeys = DetectorUtils.getCommonParameterPairKeys(parameters, otherParameters);
+    public static countCommonParameters(parameters: ParameterTypeContext[], otherParameters: ParameterTypeContext[], similarityModifierOfVariablesWithUnknownType: number){
+        let commonParameterKeys = DetectorUtils.getCommonParameterPairKeys(parameters, otherParameters, similarityModifierOfVariablesWithUnknownType);
         let amountCommonParameters = commonParameterKeys.length;
         return amountCommonParameters;
     }
 
+    private static calculateProbabilityOfDataClumps(currentProbabilityModifier: number, otherProbabilityModifier: number, parameterPairs: ParameterPair[]){
+        let modifierCurrentClassKnown = currentProbabilityModifier
+        let modifierOtherClassKnown = otherProbabilityModifier
 
-    public static getCommonParameterPairKeys(parameters: ParameterTypeContext[], otherParameters: ParameterTypeContext[]){
+        let averageParameterSimilarity = 0;
+        let amountCommonParameters = parameterPairs.length;
+        if(amountCommonParameters > 0){
+            let sumOfParameterSimilarities = 0;
+            for(let parameterPair of parameterPairs){
+                if(parameterPair.probability){
+                    sumOfParameterSimilarities += parameterPair.probability;
+                }
+            }
+            averageParameterSimilarity = sumOfParameterSimilarities / amountCommonParameters;
+        }
+
+        let probabilityOfDataClumps = modifierCurrentClassKnown * modifierOtherClassKnown * averageParameterSimilarity;
+        return probabilityOfDataClumps;
+    }
+
+    public static calculateProbabilityOfDataClumpsFields(currentClassWholeHierarchyKnown: boolean, otherClassWholeHierarchyKnown: boolean, parameterPairs: ParameterPair[], fieldsOfClassesWithUnknownHierarchyProbabilityModifier: number){
+        let currentModifier = 1
+        if(!currentClassWholeHierarchyKnown){
+            currentModifier = fieldsOfClassesWithUnknownHierarchyProbabilityModifier * currentModifier
+        }
+
+        let otherModifier = 1
+        if(!otherClassWholeHierarchyKnown){
+            otherModifier = fieldsOfClassesWithUnknownHierarchyProbabilityModifier * otherModifier
+        }
+
+        let probabilityOfDataClumps = DetectorUtils.calculateProbabilityOfDataClumps(currentModifier, otherModifier, parameterPairs);
+        return probabilityOfDataClumps;
+    }
+
+    public static calculateProbabilityOfDataClumpsMethodsToMethods(currentClassWholeHierarchyKnown: boolean, otherClassWholeHierarchyKnown: boolean, parameterPairs: ParameterPair[], methodsOfClassesOrInterfacesWithUnknownHierarchyProbabilityModifier: number){
+        let currentModifier = 1;
+        if(!currentClassWholeHierarchyKnown){
+            currentModifier = methodsOfClassesOrInterfacesWithUnknownHierarchyProbabilityModifier * currentModifier
+        }
+        let otherModifier = 1;
+        if(!otherClassWholeHierarchyKnown){
+            otherModifier = methodsOfClassesOrInterfacesWithUnknownHierarchyProbabilityModifier * otherModifier
+        }
+
+        let probabilityOfDataClumps = DetectorUtils.calculateProbabilityOfDataClumps(currentModifier, otherModifier, parameterPairs);
+        return probabilityOfDataClumps;
+    }
+
+    public static calculateProbabilityOfDataClumpsMethodsToFields(currentClassWholeHierarchyKnown: boolean, otherClassWholeHierarchyKnown: boolean, parameterPairs: ParameterPair[], methodsOfClassesOrInterfacesWithUnknownHierarchyProbabilityModifier: number, fieldsOfClassesWithUnknownHierarchyProbabilityModifier: number){
+        let currentModifier = 1;
+        if(!currentClassWholeHierarchyKnown){
+            currentModifier = methodsOfClassesOrInterfacesWithUnknownHierarchyProbabilityModifier * currentModifier
+        }
+
+        let otherModifier = 1;
+        if(!otherClassWholeHierarchyKnown){
+            otherModifier = fieldsOfClassesWithUnknownHierarchyProbabilityModifier * otherModifier
+        }
+
+        let probabilityOfDataClumps = DetectorUtils.calculateProbabilityOfDataClumps(currentModifier, otherModifier, parameterPairs);
+        return probabilityOfDataClumps;
+    }
+
+
+    public static getCommonParameterPairKeys(parameters: ParameterTypeContext[], otherParameters: ParameterTypeContext[], similarityModifierOfVariablesWithUnknownType){
 
 
         let commonParameterPairKeys: ParameterPair[] = [];
         for(let parameter of parameters){
             for(let otherParameter of otherParameters){
-                if(parameter.isSimilarTo(otherParameter)){
+                let probabilityOfSimilarity = parameter.isSimilarTo(otherParameter, similarityModifierOfVariablesWithUnknownType)
+
+                if(probabilityOfSimilarity > 0.5){
                     let commonParameterPairKey = {
                         parameterKey: parameter.key,
-                        otherParameterKey: otherParameter.key
+                        otherParameterKey: otherParameter.key,
+                        probability: probabilityOfSimilarity
                     }
                     commonParameterPairKeys.push(commonParameterPairKey);
                 }
@@ -58,6 +126,7 @@ export class DetectorUtils {
                             let related_to_parameter: DataClumpsVariableToContext = {
                                 key: otherClassParameter.key,
                                 name: otherClassParameter.name,
+                                // @ts-ignore
                                 type: otherClassParameter.type,
                                 modifiers: otherClassParameter.modifiers,
                                 position: {
@@ -75,7 +144,9 @@ export class DetectorUtils {
                     currentParameters[currentClassParameter.key] = {
                         key: currentClassParameter.key,
                         name: currentClassParameter.name,
+                        // @ts-ignore
                         type: currentClassParameter.type,
+                        probability: commonFieldParameterPairKey.probability,
                         modifiers: currentClassParameter.modifiers,
                         to_variable: related_to_context,
                         position:{

@@ -50,12 +50,20 @@ export class DetectorOptionsInformation {
         type: "boolean"
     }
 
-    public static analyseFieldsOfClassesWithUnknownHierarchy: DetectorOptionInformationParameter = {
-        label: "Analyze Classes with Unknown Hierarchy",
-        description: "If set to true, the detector will analyze classes that are not part of a known hierarchy of related classes. Default value is false. If set to true, it may find more data clumps but they are maybe false positive.",
-        defaultValue: false,
+    public static similarityModifierOfVariablesWithUnknownType: DetectorOptionInformationParameter = {
+        label: "Similarity of Variables Ignores Unknown Type",
+        description: "Default value is 0. Range [0,1]. For example in class diagrams types are not always explicitly shown and therefore unknown. If set to true, the detector will ignore unknown types of variables when checking for similarity. Setting it to true may result in faulty detection of data clumps.",
+        defaultValue: 0,
+        group: "all",
+        type: "float"
+    }
+
+    public static fieldsOfClassesWithUnknownHierarchyProbabilityModifier: DetectorOptionInformationParameter = {
+        label: "Probability for Data Clumps in analyzed Classes with Unknown Hierarchy",
+        description: "If set not to 0, the detector will analyze classes that are not part of a known hierarchy of related classes. Range [0,1]. Default value is true. If set to 1, it may find more data clumps but they are maybe false positive, but they have a lower probability score.",
+        defaultValue: 0,
         group: "method",
-        type: "boolean"
+        type: "float"
     }
 
     public static sharedFieldsToFieldsAmountMinimum: DetectorOptionInformationParameter = {
@@ -86,13 +94,23 @@ export class DetectorOptionsInformation {
     /**
      * Methods
      */
+
     public static sharedParametersToParametersAmountMinimum: DetectorOptionInformationParameter = {
         label: "Minimum Number of Shared Method Parameters",
-        description: "The minimum number of method parameters that a method must share to be considered related to a . Default value is 3.. The lower the value, the more data clumps will be found.",
+        description: "The minimum number of method parameters that a method must share to be considered related. Default value is 3. The lower the value, the more data clumps will be found.",
         defaultValue: 3,
         group: "method",
         type: "number"
     }
+
+    public static sharedParametersToFieldsAmountMinimum: DetectorOptionInformationParameter = {
+        label: "Minimum Number of Shared Method Parameters to Fields",
+        description: "The minimum number of method parameters that a method must share with class fields to be considered related. Default value is 3. The lower the value, the more data clumps will be found.",
+        defaultValue: 3,
+        group: "method",
+        type: "number"
+    }
+
     /**
     public static sharedMethodParametersHierarchyConsidered: DetectorOptionInformationParameter = {
         label: "Consider Hierarchy for Shared Method Parameters",
@@ -102,12 +120,13 @@ export class DetectorOptionsInformation {
         type: "boolean"
     }
     */
-    public static analyseMethodsWithUnknownHierarchy: DetectorOptionInformationParameter = {
-        label: "Analyze Methods with Unknown Hierarchy",
-        description: "If set to true, the detector will analyze methods that are not part of a known hierarchy of related classes. Default value is false. If set to true, it may find more data clumps but they are maybe false positive.",
-        defaultValue: false,
+
+    public static methodsOfClassesOrInterfacesWithUnknownHierarchyProbabilityModifier: DetectorOptionInformationParameter = {
+        label: "Probability of Data Clumps in analyzed Methods of Classes with Unknown Hierarchy",
+        description: "If set not to 0, the detector will analyze methods of classes that are not part of a known hierarchy of related classes. Range [0,1]. Default value is 0. If set not to 0, it may find more data clumps but they are maybe false positive, but they have a lower probability score.",
+        defaultValue: 0,
         group: "method",
-        type: "boolean"
+        type: "float"
     }
 }
 
@@ -150,6 +169,7 @@ export class Detector {
     public timer: Timer;
     public progressCallback: any;
     public target_language: string;
+    public project_url: string | null;
     public project_name: string;
     public project_version: string | null;
     public project_commit_hash: string | null;
@@ -165,6 +185,7 @@ export class Detector {
     public constructor(softwareProjectDicts: SoftwareProjectDicts,
                        options: Partial<DetectorOptions> | null,
                        progressCallback: any,
+                       project_url: string | null,
                        project_name: string | null,
                        project_version: string | null,
                        project_commit_hash: string | null,
@@ -179,6 +200,7 @@ export class Detector {
         this.progressCallback = progressCallback;
 
         this.target_language = target_language || "java";
+        this.project_url = project_url || "unknown"
         this.project_name = project_name || "unknown";
         this.project_version = project_version || "unknown";
         this.project_commit_hash = project_commit_hash || "unknown";
@@ -197,6 +219,7 @@ export class Detector {
             target_language: this.target_language || "unkown",
             report_summary: {},
             project_info: {
+                project_url: this.project_url,
                 project_name: this.project_name,
                 project_version: this.project_version,
                 project_commit_hash: this.project_commit_hash,

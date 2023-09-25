@@ -14,7 +14,8 @@ function getParsedValuesFromPartialOptions(rawOptions: DetectorOptions): Detecto
     rawOptions.sharedParametersToParametersAmountMinimum = parseInt(rawOptions.sharedParametersToParametersAmountMinimum)
     //rawOptions.sharedMethodParametersHierarchyConsidered = parseBoolean(rawOptions.sharedMethodParametersHierarchyConsidered)
     //rawOptions.sharedFieldParametersCheckIfAreSubtypes = parseBoolean(rawOptions.sharedFieldParametersCheckIfAreSubtypes);
-    rawOptions.analyseMethodsWithUnknownHierarchy = parseBoolean(rawOptions.analyseMethodsWithUnknownHierarchy);
+    rawOptions.methodsOfClassesOrInterfacesWithUnknownHierarchyProbabilityModifier = parseFloat(rawOptions.methodsOfClassesOrInterfacesWithUnknownHierarchyProbabilityModifier);
+    rawOptions.similarityModifierOfVariablesWithUnknownType = parseFloat(rawOptions.similarityModifierOfVariablesWithUnknownType);
 
     return rawOptions;
 }
@@ -37,8 +38,16 @@ export class DetectorDataClumpsMethodsToOtherMethods {
      * @param methodToClassOrInterfaceDict
      * @private
      */
-    public checkParameterDataClumps(method: MethodTypeContext, softwareProjectDicts: SoftwareProjectDicts, dataClumpsMethodParameterDataClumps: Dictionary<DataClumpTypeContext>){
+    public checkParameterDataClumps(method: MethodTypeContext, softwareProjectDicts: SoftwareProjectDicts, dataClumpsMethodParameterDataClumps: Dictionary<DataClumpTypeContext>, methodWholeHierarchyKnown: boolean){
         //console.log("Checking parameter data clumps for method " + method.key);
+
+        let methodParameters = method.parameters;
+        let methodParametersKeys = Object.keys(methodParameters);
+        let methodParametersAmount = methodParametersKeys.length;
+        if(methodParametersAmount < this.options.sharedParametersToParametersAmountMinimum){ // avoid checking methods with less than 3 parameters
+            //console.log("Method " + otherMethod.key + " has less than " + this.options.sharedParametersToParametersAmountMinimum + " parameters. Skipping this method.")
+            return;
+        }
 
         let classesOrInterfacesDict = softwareProjectDicts.dictClassOrInterface;
         let otherClassesOrInterfacesKeys = Object.keys(classesOrInterfacesDict);
@@ -54,7 +63,7 @@ export class DetectorDataClumpsMethodsToOtherMethods {
             for (let otherMethodKey of otherMethodsKeys) {
                 let otherMethod = otherMethods[otherMethodKey];
                 // DataclumpsInspection.java line 511
-                let foundDataClumps = this.checkMethodParametersForDataClumps(method, otherMethod, softwareProjectDicts, dataClumpsMethodParameterDataClumps);
+                let foundDataClumps = this.checkMethodParametersForDataClumps(method, otherMethod, softwareProjectDicts, dataClumpsMethodParameterDataClumps, methodWholeHierarchyKnown);
                 // TODO: DataclumpsInspection.java line 512
             }
         }
@@ -70,7 +79,7 @@ export class DetectorDataClumpsMethodsToOtherMethods {
      * @param isSameClassOrInterface
      * @private
      */
-    private checkMethodParametersForDataClumps(method: MethodTypeContext,otherMethod: MethodTypeContext, softwareProjectDicts: SoftwareProjectDicts, dataClumpsMethodParameterDataClumps: Dictionary<DataClumpTypeContext>) {
+    private checkMethodParametersForDataClumps(method: MethodTypeContext,otherMethod: MethodTypeContext, softwareProjectDicts: SoftwareProjectDicts, dataClumpsMethodParameterDataClumps: Dictionary<DataClumpTypeContext>, wholeHierarchyKnownOfClassOrInterfaceOfCurrentMethod: boolean) {
         //console.log("--- otherMethod"+ otherMethod.key)
 
 
@@ -95,16 +104,15 @@ export class DetectorDataClumpsMethodsToOtherMethods {
         }
 
 
-        if(!this.options.analyseMethodsWithUnknownHierarchy){
-            //console.log("---- check otherMethod wholeHierarchyKnownOfOtherMethod");
-//            let wholeHierarchyKnownOfOtherMethod = otherMethod.isWholeHierarchyKnown(softwareProjectDicts)
-            let wholeHierarchyKnownOfOtherMethod = MethodTypeContext.isWholeHierarchyKnown(otherMethod, softwareProjectDicts);
-            if(!wholeHierarchyKnownOfOtherMethod){ // since we dont the complete hierarchy, we can't detect if a method is inherited or not
-                //console.log("Other hierarchy not full known");
+        let wholeHierarchyKnownOfOtherClassOrInterfaceOfCurrentMethod = MethodTypeContext.isWholeHierarchyKnown(otherMethod, softwareProjectDicts);
+        if(!this.options.methodsOfClassesOrInterfacesWithUnknownHierarchyProbabilityModifier){
+            //console.log("- check if methods hierarchy is complete")
+//            let wholeHierarchyKnown = method.isWholeHierarchyKnown(softwareProjectDicts)
+            if(!wholeHierarchyKnownOfOtherClassOrInterfaceOfCurrentMethod){ // since we dont the complete hierarchy, we can't detect if a method is inherited or not
+                //console.log("-- check if methods hierarchy is complete")
                 return; // therefore we stop here
             }
         }
-
 
 
 
@@ -117,58 +125,50 @@ export class DetectorDataClumpsMethodsToOtherMethods {
 
         /**
          * From: "Improving the Precision of Fowler’s Definitions of Bad Smells"
+         * "Expert 1A suggests that in Situation 2 we should exclude methods inherited from parent-classes. This expert’s reason is that the inheritance features of OO programming allow a method from subclasses using the same signature to override a method from parent-classes. In this situation, we should not count the same parameters in these methods as a Data Clump, because they are not duplication.
          * "These methods should not in a same inheritance hierarchy and with a same method signature."
          *
-         * We do not exclude a method if the method signature is same, it has also to have the same inheritance to be excluded
-         * This checks same method signature
+         *
          */
         if(method.hasSameSignatureAs(otherMethod)) { // if the methods have the same signature
-            //console.log("Method " + method.key + " has the same signature as method " + otherMethod.key + "")
-            // we already checked if our method is inherited, now we check if the other method is inherited
+            let isInSameInheritanceHierarchy = currentClassOrInterface.isSubClassOrInterfaceOrParentOfOtherClassOrInterface(otherClassOrInterface, softwareProjectDicts);
+            if(isInSameInheritanceHierarchy){
+                return; // then skip this method
+            }
 
             /**
-             * DataclumpsInspection.java line 548
-             * // avoid inherited methods if checkHierarchyInParametersInstances is off
-             * // avoid overloaded methods
-             * // avoid overrided methods
-             * // avoid constructors
-             */
-
-            /**
-             * From: "Improving the Precision of Fowler’s Definitions of Bad Smells"
-             * "These methods should not in a same inheritance hierarchy and with a same method signature."
-             *
-             * We do not exclude a method if the method signature is same, it has also to have the same inheritance to be excluded
-             * This checks same inheritance PART 2/2 (see also part 1)
-             */
-            let otherMethodIsInherited = otherMethod.isInheritedFromParentClassOrInterface(softwareProjectDicts);
-            if(otherMethodIsInherited) { // if the method is inherited
+             // Other methods in the same class or interface should be checked, so these are not skipped
+             let otherMethodIsInherited = otherMethod.isInheritedFromParentClassOrInterface(softwareProjectDicts);
+             if(otherMethodIsInherited) { // if the method is inherited
                 // then skip this method
                 return;
             }
+             */
         }
 
 
 
-        let amountCommonParameters = this.countCommonParametersBetweenMethods(method, otherMethod);
+        let amountCommonParameters = this.countCommonParametersBetweenMethods(method, otherMethod, this.options.similarityModifierOfVariablesWithUnknownType);
         //console.log("Amount of common parameters: "+amountCommonParameters);
         if(amountCommonParameters < this.options.sharedParametersToParametersAmountMinimum) { // is not a data clump
             //console.log("Method " + method.key + " and method " + otherMethod.key + " have less than " + this.options.sharedParametersToParametersAmountMinimum + " common parameters. Skipping this method.")
             return;
         } else {
             //console.log("- Found data clumps between method " + method.key + " and method " + otherMethod.key);
-            let commonMethodParameterPairKeys = DetectorUtils.getCommonParameterPairKeys(method.parameters, otherMethod.parameters);
+            let commonMethodParameterPairKeys = DetectorUtils.getCommonParameterPairKeys(method.parameters, otherMethod.parameters, this.options.similarityModifierOfVariablesWithUnknownType);
 
             let [currentParameters, commonFieldParamterKeysAsKey] = DetectorUtils.getCurrentAndOtherParametersFromCommonParameterPairKeys(commonMethodParameterPairKeys, method.parameters, otherMethod.parameters)
 
-            let currentClassOrInterface = softwareProjectDicts.dictClassOrInterface[method.classOrInterfaceKey];
-
             let fileKey = currentClassOrInterface.file_path;
+
+            let probability = DetectorUtils.calculateProbabilityOfDataClumpsMethodsToMethods(wholeHierarchyKnownOfClassOrInterfaceOfCurrentMethod, wholeHierarchyKnownOfOtherClassOrInterfaceOfCurrentMethod, commonMethodParameterPairKeys, this.options.methodsOfClassesOrInterfacesWithUnknownHierarchyProbabilityModifier);
 
             let data_clump_type = DetectorDataClumpsMethodsToOtherMethods.TYPE
             let dataClumpContext: DataClumpTypeContext = {
                 type: "data_clump",
                 key: data_clump_type+"-"+fileKey+"-"+currentClassOrInterface.key+"-"+otherClassOrInterface.key+"-"+commonFieldParamterKeysAsKey, // typically the file path + class name + method name + parameter names
+
+                probability: probability,
 
                 from_file_path: fileKey,
                 from_class_or_interface_name: currentClassOrInterface.name,
@@ -190,11 +190,11 @@ export class DetectorDataClumpsMethodsToOtherMethods {
         }
     }
 
-    private countCommonParametersBetweenMethods(method: MethodTypeContext, otherMethod: MethodTypeContext){
+    private countCommonParametersBetweenMethods(method: MethodTypeContext, otherMethod: MethodTypeContext, similarityModifierOfVariablesWithUnknownType: number){
         //console.log("Counting common parameters between method " + method.key + " and method " + otherMethod.key)
         let parameters = method.parameters;
         let otherParameters = otherMethod.parameters;
-        let amountCommonParameters = DetectorUtils.countCommonParameters(parameters, otherParameters);
+        let amountCommonParameters = DetectorUtils.countCommonParameters(parameters, otherParameters, similarityModifierOfVariablesWithUnknownType);
         return amountCommonParameters;
     }
 

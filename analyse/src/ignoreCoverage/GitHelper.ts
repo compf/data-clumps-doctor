@@ -13,6 +13,27 @@ export class GitHelper {
         }
     }
 
+    static async getRemoteUrl(path_to_project): Promise<string> {
+        console.log("Start getRemoteUrl");
+        const git: SimpleGit = simpleGit(path_to_project);
+        try {
+            const remotes = await git.listRemote(['--get-url']);
+            if (remotes) {
+                let remoteUrl = remotes.split('\n')[0];  // Assuming the first line contains the URL
+                let gitEnding = ".git";
+                if(remoteUrl.endsWith(gitEnding)){
+                    remoteUrl = remoteUrl.substring(0, remoteUrl.length - gitEnding.length);
+                }
+                return remoteUrl;
+            } else {
+                throw new Error('No remote URL found');
+            }
+        } catch (error) {
+            console.error('Error getting remote URL:', error);
+            throw new Error('Failed to get remote URL');
+        }
+    }
+
     static async getCommitHashForTag(path_to_folder: string, tagName: string): Promise<string | null> {
         return new Promise((resolve, reject) => {
             const git: SimpleGit = simpleGit(path_to_folder);

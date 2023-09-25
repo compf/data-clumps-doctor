@@ -50,6 +50,11 @@ cd data-clumps-doctor/analyse
 node ./build/ignoreCoverage/cli.js <Path_to_your_project_to_analyse>
 ```
 
+Example to analyse git ArgoUML completely:
+```
+node ./build/ignoreCoverage/cli.js --output /Users/nbaumgartner/Documents/GitHub/Data-Clumps-Dataset/Data/Projects/{project_name}/tags/{project_commit}.json --commit_selection tags /Users/nbaumgartner/Desktop/argouml
+```
+
 ### Help
 
 ```

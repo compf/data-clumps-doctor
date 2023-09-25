@@ -1,9 +1,0 @@
-{
-    "typeVariablesConsidered": false,
-    "sharedFieldParametersMinimum": 3,
-    "sharedFieldParametersCheckIfAreSubtypes": false,
-    "subclassInheritsAllMembersFromSuperclass": false,
-    "sharedMethodParametersMinimum": 3,
-    "sharedMethodParametersHierarchyConsidered": false,
-    "analyseMethodsWithUnknownHierarchy": false
-}
