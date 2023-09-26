@@ -78,6 +78,12 @@ export class DetectorDataClumpsMethods {
             }
         }
 
+        let methodIsInherited = method.isInheritedFromParentClassOrInterface(softwareProjectDicts);
+        if(methodIsInherited) { // if the method is inherited
+            // then skip this method
+            return;
+        }
+
 
         // we assume that all methods are not constructors
         this.toOtherMethodsDetector.checkParameterDataClumps(method, softwareProjectDicts, dataClumpsMethodParameterDataClumps, wholeHierarchyKnownOfClassOrInterfaceOfCurrentMethod);

@@ -1,7 +1,7 @@
 import {SoftwareProjectDicts} from "../SoftwareProject";
 import {Dictionary} from "../UtilTypes";
 import {DataClumpsVariableFromContext, DataClumpsVariableToContext,} from "data-clumps-type-context";
-import {ClassOrInterfaceTypeContext, MemberFieldParameterTypeContext, ParameterTypeContext} from "../ParsedAstTypes";
+import {ClassOrInterfaceTypeContext, MemberFieldParameterTypeContext, VariableTypeContext} from "../ParsedAstTypes";
 
 type ParameterPair = {
     parameterKey: string;
@@ -10,12 +10,6 @@ type ParameterPair = {
 }
 
 export class DetectorUtils {
-
-    public static countCommonParameters(parameters: ParameterTypeContext[], otherParameters: ParameterTypeContext[], similarityModifierOfVariablesWithUnknownType: number){
-        let commonParameterKeys = DetectorUtils.getCommonParameterPairKeys(parameters, otherParameters, similarityModifierOfVariablesWithUnknownType);
-        let amountCommonParameters = commonParameterKeys.length;
-        return amountCommonParameters;
-    }
 
     private static calculateProbabilityOfDataClumps(currentProbabilityModifier: number, otherProbabilityModifier: number, parameterPairs: ParameterPair[]){
         let modifierCurrentClassKnown = currentProbabilityModifier
@@ -82,13 +76,13 @@ export class DetectorUtils {
     }
 
 
-    public static getCommonParameterPairKeys(parameters: ParameterTypeContext[], otherParameters: ParameterTypeContext[], similarityModifierOfVariablesWithUnknownType){
+    public static getCommonParameterPairKeys(parameters: VariableTypeContext[], otherParameters: VariableTypeContext[], similarityModifierOfVariablesWithUnknownType, ignoreParameterModifiers: boolean){
 
 
         let commonParameterPairKeys: ParameterPair[] = [];
         for(let parameter of parameters){
             for(let otherParameter of otherParameters){
-                let probabilityOfSimilarity = parameter.isSimilarTo(otherParameter, similarityModifierOfVariablesWithUnknownType)
+                let probabilityOfSimilarity = parameter.isSimilarTo(otherParameter, similarityModifierOfVariablesWithUnknownType, ignoreParameterModifiers)
 
                 if(probabilityOfSimilarity > 0.5){
                     let commonParameterPairKey = {
@@ -103,7 +97,7 @@ export class DetectorUtils {
         return commonParameterPairKeys;
     }
 
-    public static getCurrentAndOtherParametersFromCommonParameterPairKeys(commonFieldParameterPairKeys: ParameterPair[], currentClassParameters: ParameterTypeContext[], otherClassParameters: ParameterTypeContext[])
+    public static getCurrentAndOtherParametersFromCommonParameterPairKeys(commonFieldParameterPairKeys: ParameterPair[], currentClassParameters: VariableTypeContext[], otherClassParameters: VariableTypeContext[])
         :[Dictionary<DataClumpsVariableFromContext>, string]
     {
         let currentParameters: Dictionary<DataClumpsVariableFromContext> = {};

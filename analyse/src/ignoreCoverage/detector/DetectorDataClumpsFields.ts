@@ -89,6 +89,18 @@ export class DetectorDataClumpsFields {
 
     private generateMemberFieldParametersRelatedToForClassToOtherClass(currentClass: ClassOrInterfaceTypeContext, otherClass: ClassOrInterfaceTypeContext, dataClumpsFieldParameters: Dictionary<DataClumpTypeContext>, softwareProjectDicts: SoftwareProjectDicts, currentClassWholeHierarchyKnown: boolean){
 
+        let debug = false;
+        if(currentClass.name==="PredicateSearch" && otherClass.name === "PredicateFind"){
+            debug = true;
+        }
+
+        if(debug) console.log("------------------")
+        if(debug) console.log("generateMemberFieldParametersRelatedToForClassToOtherClass: "+currentClass.name+" to "+otherClass.name)
+        if(debug) console.log("current file path: "+currentClass.file_path)
+        if(debug) console.log("other file path: "+otherClass.file_path)
+
+
+
         if(otherClass.auxclass){ // ignore auxclasses as are not important for our project
             return;
         }
@@ -101,6 +113,9 @@ export class DetectorDataClumpsFields {
         }
 
         let otherClassWholeHierarchyKnown = otherClass.isWholeHierarchyKnown(softwareProjectDicts);
+
+        if(debug) console.log("otherClassWholeHierarchyKnown: "+otherClassWholeHierarchyKnown)
+
         if(!this.options.fieldsOfClassesWithUnknownHierarchyProbabilityModifier){
             //console.log("- check if hierarchy is complete")
 
@@ -116,6 +131,9 @@ export class DetectorDataClumpsFields {
             // when class A is subclass of class B --> A will always have all fields of class B.
             // Although class A can override a field already inherited, this then must be intended.
             let hasCurrentClassOrInterfaceOtherClassOrInterfaceAsParent = currentClass.isSubClassOrInterfaceOrParentOfOtherClassOrInterface(otherClass, softwareProjectDicts);
+
+            if(debug) console.log("hasCurrentClassOrInterfaceOtherClassOrInterfaceAsParent: "+hasCurrentClassOrInterfaceOtherClassOrInterfaceAsParent)
+
             if(hasCurrentClassOrInterfaceOtherClassOrInterfaceAsParent){
                 return;
             }
@@ -130,22 +148,31 @@ export class DetectorDataClumpsFields {
 
         let analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces = this.options.analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces;
         let currentClassParameters = DetectorDataClumpsFields.getMemberParametersFromClassOrInterface(currentClass, softwareProjectDicts, analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces);
+        if(debug) console.log("currentClassParameters: "+currentClassParameters.length)
+        if(debug) console.log(JSON.stringify(currentClassParameters, null, 2))
+
         let otherClassParameters = DetectorDataClumpsFields.getMemberParametersFromClassOrInterface(otherClass, softwareProjectDicts, analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces);
-        let commonFieldParameterPairKeys = DetectorUtils.getCommonParameterPairKeys(currentClassParameters, otherClassParameters, this.options.similarityModifierOfVariablesWithUnknownType);
+        if(debug) console.log("otherClassParameters: "+otherClassParameters.length)
+        if(debug) console.log(JSON.stringify(otherClassParameters, null, 2))
+
+        let ignoreFieldModifiers = false; // From: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=5328371 "These data fields should have same signatures (same names, same data types, and same access modifiers)."
+        let commonFieldParameterPairKeys = DetectorUtils.getCommonParameterPairKeys(currentClassParameters, otherClassParameters, this.options.similarityModifierOfVariablesWithUnknownType, ignoreFieldModifiers);
 
         let amountOfCommonFieldParameters = commonFieldParameterPairKeys.length;
+
+        if(debug) console.log("amountOfCommonFieldParameters: "+amountOfCommonFieldParameters)
         if(amountOfCommonFieldParameters < this.options.sharedFieldsToFieldsAmountMinimum){ //
             return; // DataclumpsInspection.java line 410
         }
 
         let [currentParameters, commonFieldParamterKeysAsKey] = DetectorUtils.getCurrentAndOtherParametersFromCommonParameterPairKeys(commonFieldParameterPairKeys, currentClassParameters, otherClassParameters);
 
-        let currentParametersAmount = Object.keys(currentParameters).length;
-
         let fileKey = currentClass.file_path;
         let data_clump_type = DetectorDataClumpsFields.TYPE;
 
         let probability = DetectorUtils.calculateProbabilityOfDataClumpsFields(currentClassWholeHierarchyKnown, otherClassWholeHierarchyKnown, commonFieldParameterPairKeys, this.options.fieldsOfClassesWithUnknownHierarchyProbabilityModifier);
+
+        if(debug) console.log("probability: "+probability)
 
         let dataClumpContext: DataClumpTypeContext = {
             type: "data_clump",

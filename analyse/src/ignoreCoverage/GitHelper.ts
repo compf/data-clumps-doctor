@@ -13,8 +13,30 @@ export class GitHelper {
         }
     }
 
+    static async cloneGitProject(git_project_url, path_to_project){
+        console.log("Start cloneGitProject " + git_project_url);
+        const git: SimpleGit = simpleGit({
+            progress({ method, stage, progress }) {
+                console.log(`git.${method} ${stage} stage ${progress}% complete`);
+            },
+        });
+
+        try {
+            // Clone the repository with the --no-checkout option
+            await git.clone(git_project_url, path_to_project, ['--no-checkout']);
+            // Change the working directory to the specified directory
+            git.cwd(path_to_project);
+            // Checkout the files into the specified directory
+            await git.reset(['--hard']);
+        } catch (error) {
+            console.error(`Error cloning git project ${git_project_url}:`, error);
+            throw new Error(`Failed to clone git project ${git_project_url}`);
+        }
+    }
+
     static async getRemoteUrl(path_to_project): Promise<string> {
         console.log("Start getRemoteUrl");
+        console.log("path_to_project: "+path_to_project)
         const git: SimpleGit = simpleGit(path_to_project);
         try {
             const remotes = await git.listRemote(['--get-url']);

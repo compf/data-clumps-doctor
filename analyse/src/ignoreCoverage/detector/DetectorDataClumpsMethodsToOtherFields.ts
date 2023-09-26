@@ -94,7 +94,12 @@ export class DetectorDataClumpsMethodsToOtherFields {
 
         let analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces = this.options.analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces;
         let otherClassParameters = DetectorDataClumpsFields.getMemberParametersFromClassOrInterface(otherClassOrInterface, softwareProjectDicts, analyseFieldsInClassesOrInterfacesInheritedFromSuperClassesOrInterfaces);
-        let amountCommonParameters = DetectorUtils.getCommonParameterPairKeys(parameters, otherClassParameters, this.options.similarityModifierOfVariablesWithUnknownType);
+        //console.log("- Found data clumps between method " + method.key + " and method " + otherMethod.key);
+
+        let ignoreParameterToFieldModifiers = true; // From https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=5328371 "These parameters should have same signatures (same names, same data types)." since parameters can't have modifiers, we have to ignore them. And we shall only check names and data types
+        let commonMethodParameterPairKeys = DetectorUtils.getCommonParameterPairKeys(method.parameters, otherClassParameters, this.options.similarityModifierOfVariablesWithUnknownType, ignoreParameterToFieldModifiers);
+
+        let amountCommonParameters = commonMethodParameterPairKeys.length;
 
         //console.log("Amount of common parameters: "+amountCommonParameters);
         if(amountCommonParameters < this.options.sharedParametersToFieldsAmountMinimum) { // is not a data clump
@@ -103,8 +108,7 @@ export class DetectorDataClumpsMethodsToOtherFields {
         }
 
 
-        //console.log("- Found data clumps between method " + method.key + " and method " + otherMethod.key);
-        let commonMethodParameterPairKeys = DetectorUtils.getCommonParameterPairKeys(method.parameters, otherClassParameters, this.options.similarityModifierOfVariablesWithUnknownType);
+
 
         let [currentParameters, commonFieldParamterKeysAsKey] = DetectorUtils.getCurrentAndOtherParametersFromCommonParameterPairKeys(commonMethodParameterPairKeys, method.parameters, otherClassParameters)
 
@@ -115,7 +119,7 @@ export class DetectorDataClumpsMethodsToOtherFields {
         let data_clump_type = DetectorDataClumpsMethodsToOtherFields.TYPE;
         let dataClumpContext: DataClumpTypeContext = {
             type: "data_clump",
-            key: data_clump_type+"-"+fileKey+"-"+currentClassOrInterface.key+"-"+otherClassOrInterface.key+"-"+commonFieldParamterKeysAsKey, // typically the file path + class name + method name + parameter names
+            key: data_clump_type+"-"+fileKey+"-"+method.key+"-"+otherClassOrInterface.key+"-"+commonFieldParamterKeysAsKey, // typically the file path + class name + method name + parameter names
 
             probability: probability,
 

@@ -23,7 +23,7 @@ export class AstElementTypeContext {
     }
 }
 
-export class ParameterTypeContext extends AstElementTypeContext{
+export class VariableTypeContext extends AstElementTypeContext{
     public modifiers: string[] | undefined;
     public ignore: boolean;
 
@@ -33,7 +33,14 @@ export class ParameterTypeContext extends AstElementTypeContext{
         this.ignore = ignore;
     }
 
-    public isSimilarTo(otherParameter: ParameterTypeContext, similarityModifierOfVariablesWithUnknownType: number): number{
+    /**
+     * TODO: we should refactor it that VariableTypeContext has a field like: data field-> true; or parameter-> true, so we dont have to put ignoreParameterModifiers by ourself
+     * Returns a number between 0 and 1. 1 means the parameters are equal, 0 means they are not equal at all.
+     * @param otherParameter
+     * @param similarityModifierOfVariablesWithUnknownType
+     * @param ignoreParameterModifiers if true, the modifiers are ignored like "public" or "private". This is required for method parameters because they can't have "public" or "private" modifiers and therefore a comparison with data fields would be wrong and always return 0. But for data fields compared to other data fields, the modifiers should be considered and therefore this option shall be true.
+     */
+    public isSimilarTo(otherParameter: VariableTypeContext, similarityModifierOfVariablesWithUnknownType: number, ignoreParameterModifiers: boolean): number{
         //TODO: we need to check the similarity of the name
         // https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=5328371 page 164
         // not only the data fields with same
@@ -45,8 +52,10 @@ export class ParameterTypeContext extends AstElementTypeContext{
         let sameName = this.name === otherParameter.name;
 
         let baseSimilarity = 1;
-        if(!sameModifiers){
-            baseSimilarity *= 0;
+        if(!ignoreParameterModifiers){ // because method parameters can't have "public" or "private" modifiers, a comparison with data fields would be wrong and always return 0. Therefore support a variable to ignore the modifiers
+            if(!sameModifiers){
+                baseSimilarity *= 0;
+            }
         }
         if(!sameType){
             if(similarityModifierOfVariablesWithUnknownType > 0){
@@ -62,7 +71,7 @@ export class ParameterTypeContext extends AstElementTypeContext{
         return baseSimilarity
     }
 
-    public haveSameModifiers(otherParameter: ParameterTypeContext){
+    public haveSameModifiers(otherParameter: VariableTypeContext){
         let sameModifiers = true;
         let bothHaveModifiers = this.modifiers !== undefined && otherParameter.modifiers !== undefined;
         if(bothHaveModifiers){
@@ -95,11 +104,11 @@ export class ParameterTypeContext extends AstElementTypeContext{
 }
 
 export class ParameterTypeContextUtils{
-    public static parameterToString(parameterTypeContext: ParameterTypeContext){
+    public static parameterToString(parameterTypeContext: VariableTypeContext){
         return `{${parameterTypeContext.type} ${parameterTypeContext.name}}`;
     }
 
-    public static parametersToString(parameters: ParameterTypeContext[]){
+    public static parametersToString(parameters: VariableTypeContext[]){
         let orderedParameters = parameters.sort((a, b) => {
             return a.name.localeCompare(b.name);
         });
@@ -257,7 +266,7 @@ export class ClassOrInterfaceTypeContext extends AstElementTypeContext{
     }
 }
 
-export class MemberFieldParameterTypeContext extends ParameterTypeContext{
+export class MemberFieldParameterTypeContext extends VariableTypeContext{
     public memberFieldKey: string | undefined;
     public classOrInterfaceKey: string;
 
@@ -288,7 +297,7 @@ export class MemberFieldTypeContext extends AstElementTypeContext{
     }
 }
 
-export class MethodParameterTypeContext extends ParameterTypeContext{
+export class MethodParameterTypeContext extends VariableTypeContext{
     public methodKey: string;
 
     public static fromObject(obj: MethodParameterTypeContext){
@@ -373,7 +382,7 @@ export class MethodTypeContext extends AstElementTypeContext{
         return currentClassOrInterface.isWholeHierarchyKnown(softwareProjectDicts);
     }
 
-    /**
+
     public isInheritedFromParentClassOrInterface(softwareProjectDicts: SoftwareProjectDicts){
         // In Java we can't rely on @Override annotation because it is not mandatory: https://stackoverflow.com/questions/4822954/do-we-really-need-override-and-so-on-when-code-java
         if(this.overrideAnnotation){
@@ -411,5 +420,5 @@ export class MethodTypeContext extends AstElementTypeContext{
         //console.log("++++++++++++++")
         return isInherited;
     }
-     */
+
 }

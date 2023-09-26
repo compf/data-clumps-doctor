@@ -23,10 +23,12 @@ export class Analyzer {
     public path_to_ast_output: string;
     public commit_selection_mode: string | undefined | null;
     public project_name: string = "unknown_project_name";
+    public detectorOptions: any;
     public project_version: any;
     public preserve_ast_output: boolean;
 
     public passed_project_name: string | undefined | null;
+
 
     public timer: Timer;
 
@@ -41,7 +43,8 @@ export class Analyzer {
         project_url: string | undefined | null,
         project_name: string | undefined | null,
         project_version: any,
-        preserve_ast_output: boolean
+        preserve_ast_output: boolean,
+        detectorOptions: any
     ) {
         this.path_to_project = path_to_project;
         this.path_to_ast_generator_folder = path_to_ast_generator_folder;
@@ -54,6 +57,7 @@ export class Analyzer {
         this.passed_project_name = project_name;
         this.project_version = project_version;
         this.preserve_ast_output = preserve_ast_output
+        this.detectorOptions = detectorOptions;
 
         this.timer = new Timer();
     }
@@ -166,7 +170,7 @@ export class Analyzer {
             let amount_commits = commits_to_analyse.length;
             //console.log("Analysing amount commits: "+amount_commits);
             const commitInformation = "Commit ["+i+"/"+amount_commits+"]";
-            //console.log("Analyse "+commitInformation);
+            console.log("Analyse "+commitInformation);
             for (const commit of commits_to_analyse) {
                 let checkoutWorked = true;
                 if(!!commit){
@@ -228,6 +232,7 @@ export class Analyzer {
             console.log("commit_tag: "+commit_tag);
             console.log("commit_date: "+commit_date);
 
+            this.path_to_ast_output = Analyzer.replaceOutputVariables(this.path_to_ast_output, this.project_name, commit);
             await ParserHelper.removeGeneratedAst(this.path_to_ast_output);
             fs.mkdirSync(this.path_to_ast_output, { recursive: true });
 
@@ -248,8 +253,7 @@ export class Analyzer {
 
             let path_to_result = Analyzer.replaceOutputVariables(this.path_to_output_with_variables, this.project_name, commit);
             let progressCallback = this.generateAstCallback.bind(this);
-            await Analyzer.analyseSoftwareProjectDicts(softwareProjectDicts, this.project_url, this.project_name, project_version, commit, commit_tag, commit_date, path_to_result, progressCallback);
-
+            await Analyzer.analyseSoftwareProjectDicts(softwareProjectDicts, this.project_url, this.project_name, project_version, commit, commit_tag, commit_date, path_to_result, progressCallback, this.detectorOptions);
 
             if(!this.preserve_ast_output){
                 await ParserHelper.removeGeneratedAst(this.path_to_ast_output);
@@ -260,8 +264,7 @@ export class Analyzer {
         }
     }
 
-    static async analyseSoftwareProjectDicts(softwareProjectDicts, project_url, project_name, project_version, commit, commit_tag, commit_date, path_to_result, progressCallback){
-        let detectorOptions = {};
+    static async analyseSoftwareProjectDicts(softwareProjectDicts, project_url, project_name, project_version, commit, commit_tag, commit_date, path_to_result, progressCallback, detectorOptions){
         let detector = new Detector(softwareProjectDicts, detectorOptions, progressCallback, project_url, project_name, project_version, commit, commit_tag, commit_date);
 
         let dataClumpsContext = await detector.detect();
@@ -283,6 +286,8 @@ export class Analyzer {
         } catch (err) {
             console.error('An error occurred while writing to file:', err);
         }
+
+        return dataClumpsContext;
 
     }
 

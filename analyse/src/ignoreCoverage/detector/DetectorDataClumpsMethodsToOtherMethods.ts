@@ -131,31 +131,57 @@ export class DetectorDataClumpsMethodsToOtherMethods {
          *
          */
         if(method.hasSameSignatureAs(otherMethod)) { // if the methods have the same signature
+
+            /**
+             * This does not work, because it can be for example
+             * Class A
+             * Class B extends A with method foo()
+             * Class C extends A with method foo()
+             * Class D extends B with method foo() overriding foo() from B
+             * Class E extends C with method foo() overriding foo() from C
+             * Then foo() from D and foo() from E are not in the same inheritance hierarchy, but they are overriding foo() from B and C respectively
+             * Therefore we should skip these methods. But checking isSubClassOrInterfaceOrParentOfOtherClassOrInterface is not enough
             let isInSameInheritanceHierarchy = currentClassOrInterface.isSubClassOrInterfaceOrParentOfOtherClassOrInterface(otherClassOrInterface, softwareProjectDicts);
             if(isInSameInheritanceHierarchy){
                 return; // then skip this method
             }
+             */
 
-            /**
+
              // Other methods in the same class or interface should be checked, so these are not skipped
-             let otherMethodIsInherited = otherMethod.isInheritedFromParentClassOrInterface(softwareProjectDicts);
+            /**
+             * Problem in definition: "Expert 1A suggests that in Situation 2 we should exclude methods inherited from parent-classes."
+             * This says we shall exclude all methods which are overridden.
+             * But then "These methods should not in a same inheritance hierarchy and with a same method signature." says we only shall exclude methods which are in the same hierarchy with same signature
+             * This is a contradiction, because we could have
+             * Class A
+             * Class B extends A with method foo()
+             * Class C extends A with method foo()
+             * Class D extends B with method foo() overriding foo() from B
+             * Class E extends C with method foo() overriding foo() from C
+             * Then foo() from D and foo() from E are not in the same inheritance hierarchy, but they are overriding foo() from B and C respectively
+             * But this would still count from D and E as Dataclumps, because they are not dublicated, but overridden, so the root of the problem is in the definition in B and C
+             */
+
+            let otherMethodIsInherited = otherMethod.isInheritedFromParentClassOrInterface(softwareProjectDicts);
              if(otherMethodIsInherited) { // if the method is inherited
                 // then skip this method
                 return;
             }
-             */
+
         }
 
 
+        let ignoreParameterToFieldModifiers = true; // From https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=5328371 "These parameters should have same signatures (same names, same data types)." since parameters can't have modifiers, we have to ignore them. And we shall only check names and data types
+        let commonMethodParameterPairKeys = DetectorUtils.getCommonParameterPairKeys(method.parameters, otherMethod.parameters, this.options.similarityModifierOfVariablesWithUnknownType, ignoreParameterToFieldModifiers);
 
-        let amountCommonParameters = this.countCommonParametersBetweenMethods(method, otherMethod, this.options.similarityModifierOfVariablesWithUnknownType);
+        let amountCommonParameters = commonMethodParameterPairKeys.length;
         //console.log("Amount of common parameters: "+amountCommonParameters);
         if(amountCommonParameters < this.options.sharedParametersToParametersAmountMinimum) { // is not a data clump
             //console.log("Method " + method.key + " and method " + otherMethod.key + " have less than " + this.options.sharedParametersToParametersAmountMinimum + " common parameters. Skipping this method.")
             return;
         } else {
             //console.log("- Found data clumps between method " + method.key + " and method " + otherMethod.key);
-            let commonMethodParameterPairKeys = DetectorUtils.getCommonParameterPairKeys(method.parameters, otherMethod.parameters, this.options.similarityModifierOfVariablesWithUnknownType);
 
             let [currentParameters, commonFieldParamterKeysAsKey] = DetectorUtils.getCurrentAndOtherParametersFromCommonParameterPairKeys(commonMethodParameterPairKeys, method.parameters, otherMethod.parameters)
 
@@ -166,7 +192,7 @@ export class DetectorDataClumpsMethodsToOtherMethods {
             let data_clump_type = DetectorDataClumpsMethodsToOtherMethods.TYPE
             let dataClumpContext: DataClumpTypeContext = {
                 type: "data_clump",
-                key: data_clump_type+"-"+fileKey+"-"+currentClassOrInterface.key+"-"+otherClassOrInterface.key+"-"+commonFieldParamterKeysAsKey, // typically the file path + class name + method name + parameter names
+                key: data_clump_type+"-"+fileKey+"-"+method.key+"-"+otherMethod.key+"-"+commonFieldParamterKeysAsKey, // typically the file path + class name + method name + parameter names
 
                 probability: probability,
 
@@ -188,14 +214,6 @@ export class DetectorDataClumpsMethodsToOtherMethods {
             dataClumpsMethodParameterDataClumps[dataClumpContext.key] = dataClumpContext;
 
         }
-    }
-
-    private countCommonParametersBetweenMethods(method: MethodTypeContext, otherMethod: MethodTypeContext, similarityModifierOfVariablesWithUnknownType: number){
-        //console.log("Counting common parameters between method " + method.key + " and method " + otherMethod.key)
-        let parameters = method.parameters;
-        let otherParameters = otherMethod.parameters;
-        let amountCommonParameters = DetectorUtils.countCommonParameters(parameters, otherParameters, similarityModifierOfVariablesWithUnknownType);
-        return amountCommonParameters;
     }
 
 }

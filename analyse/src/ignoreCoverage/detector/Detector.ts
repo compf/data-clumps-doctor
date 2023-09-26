@@ -39,6 +39,30 @@ type DetectorOptionInformationParameter = {
 }
 
 export class DetectorOptionsInformation {
+
+    /**
+     * TODO: name similarity:
+     *  - ignore case: boolean
+     *  - ignore underscores: boolean
+     *  - use levenshtein distance: boolean
+     *  - use jaro winkler distance: boolean
+     *  - use jaccard similarity: boolean
+     *  - use ngram similarity: boolean
+     */
+
+    /**
+     * TODO: Explain the resulting probability modifiers in the report?
+     * Example: probability: 0.7
+     *  - name_similarity: 0.8
+     *  - type_similarity: 0.9
+     *  - whole_hierarchy_known: 0.5
+     *  - ...
+     */
+
+    /**
+     * TODO: Probability threshold for data clumps?
+     */
+
     /**
      * Fields
      */
@@ -266,6 +290,24 @@ export class Detector {
         dataClumpsTypeContext.report_summary = {
             amount_data_clumps: data_clumps_keys.length,
         };
+
+        let files_with_data_clumps: any = {};
+        let methods_with_data_clumps: any = {};
+        for(let data_clumps_key of data_clumps_keys){
+            let data_clump = detected_data_clumps[data_clumps_key];
+            files_with_data_clumps[data_clump.from_file_path] = true;
+            files_with_data_clumps[data_clump.to_file_path] = true;
+            if(!!data_clump.from_method_key){
+                methods_with_data_clumps[data_clump.from_method_key] = true;
+            }
+            if(!!data_clump.to_method_key){
+                methods_with_data_clumps[data_clump.to_method_key] = true;
+            }
+        }
+        let amount_files_with_data_clumps = Object.keys(files_with_data_clumps).length;
+        dataClumpsTypeContext.report_summary["amount_files_with_data_clumps"] = amount_files_with_data_clumps;
+        let amount_methods_with_data_clumps = Object.keys(methods_with_data_clumps).length;
+        dataClumpsTypeContext.report_summary["amount_methods_with_data_clumps"] = amount_methods_with_data_clumps;
 
         let data_clump_types = [DetectorDataClumpsFields.TYPE, DetectorDataClumpsMethodsToOtherFields.TYPE, DetectorDataClumpsMethodsToOtherMethods.TYPE];
         for(let data_clump_type of data_clump_types){
