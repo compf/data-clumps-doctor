@@ -224,7 +224,7 @@ export class Analyzer {
             //console.log(`The path to source files ${this.path_to_source_folder} does not exist.`);
             return;
         } else {
-            let commit_date = await GitHelper.getCommitDate(this.path_to_project, commit);
+            let commit_date = await GitHelper.getCommitDateUnixTimestamp(this.path_to_project, commit);
             let commit_tag = await GitHelper.getTagFromCommitHash(this.path_to_project, commit);
             let git_project_url = await GitHelper.getRemoteUrl(this.path_to_project);
             this.project_url = this.project_url || git_project_url || "unknown_project_url";

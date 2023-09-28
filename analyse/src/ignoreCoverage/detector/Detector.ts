@@ -237,6 +237,11 @@ export class Detector {
     public async detect(): Promise<DataClumpsTypeContext>{
         this.timer.start();
 
+        let number_of_classes = Object.keys(this.softwareProjectDicts.dictClassOrInterface).length;
+        let number_of_methods = Object.keys(this.softwareProjectDicts.dictMethod).length;
+        let number_of_data_fields = Object.keys(this.softwareProjectDicts.dictMemberFieldParameters).length;
+        let number_of_method_parameters = Object.keys(this.softwareProjectDicts.dictMethodParameters).length;
+
         let dataClumpsTypeContext: DataClumpsTypeContext = {
             report_version: reportVersion,
             report_timestamp: new Date().toISOString(),
@@ -250,6 +255,14 @@ export class Detector {
                 project_tag: this.project_tag,
                 project_commit_date: this.project_commit_date,
                 additional: this.additional,
+                // @ts-ignore
+                number_of_classes_or_interfaces: number_of_classes,
+                // @ts-ignore
+                number_of_methods: number_of_methods,
+                // @ts-ignore
+                number_of_data_fields: number_of_data_fields,
+                // @ts-ignore
+                number_of_method_parameters: number_of_method_parameters
             },
             detector: {
                 name: "data-clumps-doctor",

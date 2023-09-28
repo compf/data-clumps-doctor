@@ -116,11 +116,12 @@ public class MyRule extends AbstractJavaRule {
             // the individual : javaArrayList and anotherArrayList[]
             List<ASTVariableDeclaratorId> fieldVariableDeclarators = field.descendants(ASTVariableDeclaratorId.class).toList();
             for(ASTVariableDeclaratorId fieldVariableDeclarator: fieldVariableDeclarators){
-                String memberFieldKey = "";
+
                 MemberFieldParameterTypeContext fieldContext = new MemberFieldParameterTypeContext();
                 // Set the properties of the fieldContext based on the field
-                fieldContext.name = fieldVariableDeclarator.getName();
-                fieldContext.key = fieldVariableDeclarator.getName();
+                String fieldName = fieldVariableDeclarator.getName();
+
+                fieldContext.name = fieldName;
 
                 // TODO: what is is varargs?
                 fieldContext.type = this.getQualifiedNameUnsafe(fieldVariableDeclarator.getTypeMirror());
@@ -138,11 +139,10 @@ public class MyRule extends AbstractJavaRule {
                     fieldContext.modifiers = modifierSet.stream().map(Enum::name).collect(Collectors.toList());
                 }
 
-                // Add the fieldContext to the classContext.fields
-                classContext.fields.put(fieldContext.name, fieldContext);
-                memberFieldKey = memberFieldKeyPre+fieldContext.key;
+                fieldContext.key = memberFieldKeyPre+fieldName;
 
-                fieldContext.memberFieldKey = memberFieldKey;
+                // Add the fieldContext to the classContext.fields
+                classContext.fields.put(fieldContext.key, fieldContext);
             }
             /**
             // remove the last comma
@@ -206,7 +206,7 @@ public class MyRule extends AbstractJavaRule {
                 parameterContext.type = this.getQualifiedNameUnsafe(parameterVariableDeclarator.getTypeMirror());
                 parameterContext.hasTypeVariable = this.hasTypeVariable(parameterVariableDeclarator.getTypeMirror());
 
-                parameterContext.key = parameterContext.type+" "+parameterContext.name;
+                //parameterContext.key = parameterContext.type+" "+parameterContext.name;
                 /**
                 if (parameter.isVarargs()) {  // Hypothetical method; check PMD documentation
                     System.out.println("This is a varargs parameter: " + parameter.getImage());
@@ -241,12 +241,19 @@ public class MyRule extends AbstractJavaRule {
             int amountParameters = methodContext.parameters.size();
             for(int i=0; i<amountParameters; i++){
                 MethodParameterTypeContext parameterContext = methodContext.parameters.get(i);
-                methodContextParametersKey += parameterContext.key;
+                String parameterTypeAndName = parameterContext.type+" "+parameterContext.name;
+                methodContextParametersKey += parameterTypeAndName;
                 if(i+1<amountParameters){
                     methodContextParametersKey += ", ";
                 }
             }
             methodContextParametersKey += ")";
+
+            for(int i=0; i<amountParameters; i++){
+                MethodParameterTypeContext parameterContext = methodContext.parameters.get(i);
+                parameterContext.key = methodContextParametersKey+"/parameter/"+parameterContext.name;
+            }
+
 
             methodContext.key = methodContextParametersKey;
 

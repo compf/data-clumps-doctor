@@ -267,11 +267,10 @@ export class ClassOrInterfaceTypeContext extends AstElementTypeContext{
 }
 
 export class MemberFieldParameterTypeContext extends VariableTypeContext{
-    public memberFieldKey: string | undefined;
     public classOrInterfaceKey: string;
 
     public constructor(key, name, type, modifiers, ignore, classOrInterface: ClassOrInterfaceTypeContext){
-        super(classOrInterface?.key+"/"+"memberParameter"+"/"+key, name, type, modifiers, ignore);
+        super(classOrInterface?.key+"/"+"memberField"+"/"+key, name, type, modifiers, ignore);
         this.classOrInterfaceKey = classOrInterface?.key;
     }
 
@@ -281,19 +280,6 @@ export class MemberFieldParameterTypeContext extends VariableTypeContext{
         let instance = new MemberFieldParameterTypeContext();
         Object.assign(instance, obj);
         return instance;
-    }
-}
-
-export class MemberFieldTypeContext extends AstElementTypeContext{
-    public parameters: MemberFieldParameterTypeContext[];
-    public classOrInterfaceKey: string;
-    public modifiers: string[];
-
-    public constructor(key, name, type, classOrInterface: ClassOrInterfaceTypeContext){
-        super(classOrInterface?.key+"/memberField/"+key, name, type);
-        this.parameters = [];
-        this.modifiers = [];
-        this.classOrInterfaceKey = classOrInterface?.key;
     }
 }
 
@@ -308,7 +294,7 @@ export class MethodParameterTypeContext extends VariableTypeContext{
     }
 
     public constructor(key, name, type, modifiers, ignore, method: MethodTypeContext){
-        super(method?.key+"/"+key, name, type, modifiers, ignore);
+        super(method?.key+"/parameter/"+key, name, type, modifiers, ignore);
         this.methodKey = method?.key;
     }
 }

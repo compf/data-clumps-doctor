@@ -96,7 +96,7 @@ export class GitHelper {
 
     }
 
-    static async getCommitDate(path_to_folder: string, identifier: string): Promise<string | null> {
+    static async getCommitDateUnixTimestamp(path_to_folder: string, identifier: string): Promise<string | null> {
         try {
             const git: SimpleGit = simpleGit(path_to_folder);
             const options = ['-s', '--format=%ct', identifier];
