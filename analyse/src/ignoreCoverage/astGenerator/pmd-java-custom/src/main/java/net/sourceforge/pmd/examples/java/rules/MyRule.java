@@ -345,85 +345,6 @@ public class MyRule extends AbstractJavaRule {
         //System.out.println("prettyStringWithPackage: "+prettyStringWithPackage);
         return prettyStringWithPackage;
 
-
-        /**
-
-        //System.out.println("getQualifiedNameUnsafe: ");
-        JTypeDeclSymbol symbol = typeMirror.getSymbol();
-        //System.out.println("symbol: "+symbol);
-
-        StringBuilder genericQualifiedNames = new StringBuilder();
-        System.out.println(typeMirror.getClass().getName());
-
-        if(typeMirror instanceof JTypeVar){ // something like: T item ==> T
-            //System.out.println("Downcast to JTypeVar");
-            JTypeVar downCast = (JTypeVar) typeMirror;
-            String qualifiedName = downCast.getName();
-            //System.out.println("qualifiedName of JTypeVar: "+qualifiedName);
-            return qualifiedName;
-        }
-
-        if(typeMirror instanceof JClassType){
-            //System.out.println("Downcast to JClassType");
-            JClassType downCast = (JClassType) typeMirror;
-            List<JTypeMirror> typeMirrors = downCast.getTypeArgs();
-            boolean isGeneric = downCast.isGeneric();
-            //System.out.println("isGeneric: "+isGeneric);
-
-            if(isGeneric){
-                genericQualifiedNames.append("<");
-                for(int i = 0; i < typeMirrors.size(); i++){
-                    //System.out.println("loop typeMirrors i: "+i);
-                    JTypeMirror innerTypeMirror = typeMirrors.get(i);
-                    //System.out.println("class of innerTypeMirror: "+innerTypeMirror.getClass().getName());
-
-                    if(innerTypeMirror instanceof JClassType){ // something like: ArrayList<String> ==> ArrayList
-                        String innerTypeArgFullQualifiedName = this.getQualifiedNameUnsafe(innerTypeMirror);
-                        //System.out.println("adding innerTypeArgFullQualifiedName: "+innerTypeArgFullQualifiedName);
-                        genericQualifiedNames.append(innerTypeArgFullQualifiedName);
-                    }
-                    if(innerTypeMirror instanceof JTypeVar){ // something like: T item ==> T
-                        String innerTypeArgFullQualifiedName = this.getQualifiedNameUnsafe(innerTypeMirror);
-                        //System.out.println("adding innerTypeArgFullQualifiedName: "+innerTypeArgFullQualifiedName);
-                        genericQualifiedNames.append(innerTypeArgFullQualifiedName);
-                    }
-
-                    // Add a comma after each name, except the last one
-                    if (i < typeMirrors.size() - 1) {
-                        genericQualifiedNames.append(", ");
-                    }
-                }
-                genericQualifiedNames.append(">");
-            }
-        }
-
-        //System.out.println("genericQualifiedNames: "+genericQualifiedNames);
-
-        // Continue with your code
-        if (symbol instanceof JClassSymbol) {
-            JClassSymbol jClassSymbol = (JClassSymbol) symbol;
-            String fullQualifiedName = jClassSymbol.getCanonicalName();
-
-            // TODO check if * is found
-            // Then count the amount of dots
-            // *CodePiece --> no dots --> replace * by packagename
-            // *CodePiece.InnerClass --> ?
-
-            // org.flywaydb.core.Flyway#InnerClass --> we should replace the # to a dot
-            fullQualifiedName = fullQualifiedName.replaceAll("#",".");
-
-            // TODO
-            // *org.flywaydb.core.api.configuration.FluentConfiguration --> technically we only need to remove the *
-
-            String fullQualifiedNameWithGenerics = fullQualifiedName + genericQualifiedNames;
-            //String prettyString = TypePrettyPrint.prettyPrint(typeMirror);
-            //System.out.println("-- prettyString: "+prettyString);
-            //System.out.println("--> fullQualifiedNameWithGenerics: "+fullQualifiedNameWithGenerics);
-            //System.out.println("fullQualifiedName: "+fullQualifiedName);
-            return fullQualifiedNameWithGenerics;
-        }
-        return null;
-*/
     }
 
     private void extractExtendsAndImplements(ASTClassOrInterfaceDeclaration node, ClassOrInterfaceTypeContext classContext){
@@ -562,7 +483,7 @@ public class MyRule extends AbstractJavaRule {
 
         // Convert the classContext to JSON and add it to the output
         String outputRow = MyRule.convertToJson(classContext);
-        String usableFilePath = filePath.replaceAll("/","_");
+        //String usableFilePath = filePath.replaceAll("/","_");
         String fileName = classContext.key+".json";
 
         if(debug){

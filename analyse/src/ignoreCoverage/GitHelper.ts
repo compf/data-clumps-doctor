@@ -3,7 +3,7 @@ import simpleGit, {DefaultLogFields, LogResult, SimpleGit, TagResult} from "simp
 export class GitHelper {
 
     static async checkoutGitCommit(path_to_project, commit){
-        console.log("Start checkoutGitCommit "+commit);
+        //console.log("Start checkoutGitCommit "+commit);
         const git: SimpleGit = simpleGit(path_to_project);
         try {
             await git.checkout(commit);
@@ -34,9 +34,9 @@ export class GitHelper {
         }
     }
 
-    static async getRemoteUrl(path_to_project): Promise<string> {
-        console.log("Start getRemoteUrl");
-        console.log("path_to_project: "+path_to_project)
+    static async getRemoteUrl(path_to_project): Promise<string | null> {
+        //console.log("Start getRemoteUrl");
+        //console.log("path_to_project: "+path_to_project)
         const git: SimpleGit = simpleGit(path_to_project);
         try {
             const remotes = await git.listRemote(['--get-url']);
@@ -52,7 +52,7 @@ export class GitHelper {
             }
         } catch (error) {
             console.error('Error getting remote URL:', error);
-            throw new Error('Failed to get remote URL');
+            return null;
         }
     }
 

@@ -6,7 +6,8 @@ import path from 'path';
 import {Command} from 'commander';
 import {Analyzer} from "./Analyzer";
 import {GitHelper} from "./GitHelper";
-import * as os from "os"; // import commander
+import * as os from "os";
+import {DetectorOptions} from "./detector/Detector"; // import commander
 
 const packageJsonPath = path.join(__dirname, '..','..', 'package.json');
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
@@ -21,7 +22,7 @@ let default_ast_output_temp_folder = path.join(path_to_temp_folder, 'temp_ast_ou
 const program = new Command();
 
 const path_to_ast_generator_folder = __dirname+"/astGenerator";
-console.log("path_to_ast_generator_folder: "+path_to_ast_generator_folder)
+//console.log("path_to_ast_generator_folder: "+path_to_ast_generator_folder)
 
 const current_working_directory = process.cwd();
 
@@ -38,12 +39,13 @@ program
     .option('--preserve_ast_output <preserve_ast_output>', 'If the ast_output folder should be preserved (default: false).', false)
     .option('--path_to_ast_generator_folder', 'Absolute path to the ast generator folder (In this project: astGenerator)', path_to_ast_generator_folder)
     .option('--ast_output <path_to_ast_output>', 'Path where to save the generated AST output. By default it is in a temp folder (default: '+default_ast_output_temp_folder+")", default_ast_output_temp_folder)
-    .option('--source_type <type>', 'Source type (default: java, options: java, uml). uml: Class Diagram in the simple XML Export format of Visual Paradigm.', "java")
+    .option('--source_type <type>', 'Source type (default: java, options: java, uml, ast). uml: Class Diagram in the simple XML Export format of Visual Paradigm. ast: A well formed AST', "java")
     .option('--language <type>', 'Language (default: java, options: java)', "java")
     .option('--verbose', 'Verbose output', false)
     .option('--progress', 'Show progress', true)  // Default value is true
     .option('--output <path>', 'Output path', current_working_directory+'/data-clumps-results/'+Analyzer.project_name_variable_placeholder+'/'+Analyzer.project_commit_variable_placeholder+'.json') // Default value is './data-clumps.json'
-    .option('--path_to_detector_options <path_to_detector_options>', 'Path to detector options file. It can take all options which are in the generated output at: detector.options', undefined)
+    .option('--detector_options_path <detector_options_path>', 'Path to detector options file. It can take all options which are in the generated output at: detector.options', undefined)
+    .option('--detector_options_use_uncertainty <detector_options_use_uncertainty>', 'If unknown dependencies shall be also analysed', false)
     .option('--project_name <project_name>', 'Project Name (default: Git-Name)')
     .option('--project_url <project_url>', 'Project URL (default: Git-Repo-URL)')
     .option('--project_version <project_version>', 'Project Version (default: Git-Commit hash)')
@@ -90,26 +92,33 @@ async function analyse(path_to_project, options){
     let relative_path_to_source_folder_in_project = options.relative_path_to_source_folder_in_project;
 
     const absolute_path_to_source = path.resolve(path_to_project, relative_path_to_source_folder_in_project);
-    console.log("Absolute path to source: " + absolute_path_to_source);
+    //console.log("Absolute path to source: " + absolute_path_to_source);
     const path_to_ast_output = path.resolve(options.ast_output);
     let path_to_output_with_variables = options.output;
 
     let project_version = options.project_version;
     let preserve_ast_output = options.preserve_ast_output;
 
-    let path_to_detector_options = options.path_to_detector_options;
-    let detector_options = {};
-    if(!!path_to_detector_options){
-        if(fs.existsSync(path_to_detector_options)){
-            let detector_options_string = fs.readFileSync(path_to_detector_options, 'utf8');
+    let detector_options_path = options.detector_options_path;
+    let detector_options: Partial<DetectorOptions> = {};
+
+    let detector_options_use_uncertainty = options.detector_options_use_uncertainty
+    if(detector_options_use_uncertainty){
+        detector_options.fieldsOfClassesWithUnknownHierarchyProbabilityModifier = 0.5;
+        detector_options.methodsOfClassesOrInterfacesWithUnknownHierarchyProbabilityModifier = 0.5;
+    }
+
+    if(!!detector_options_path){
+        if(fs.existsSync(detector_options_path)){
+            let detector_options_string = fs.readFileSync(detector_options_path, 'utf8');
             try{
                 detector_options = JSON.parse(detector_options_string);
             } catch (e) {
-                console.log("Invalid detector options file: " + path_to_detector_options);
+                console.log("Invalid detector options file: " + detector_options_path);
                 process.exit(1);
             }
         } else {
-            console.log("Detector options file does not exist: " + path_to_detector_options);
+            console.log("Detector options file does not exist: " + detector_options_path);
             process.exit(1);
         }
     }

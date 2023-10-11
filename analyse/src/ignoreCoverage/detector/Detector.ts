@@ -237,7 +237,15 @@ export class Detector {
     public async detect(): Promise<DataClumpsTypeContext>{
         this.timer.start();
 
-        let number_of_classes = Object.keys(this.softwareProjectDicts.dictClassOrInterface).length;
+        let keys_for_classes_or_interfaces = Object.keys(this.softwareProjectDicts.dictClassOrInterface);
+        let file_paths = {};
+        for(let key of keys_for_classes_or_interfaces){
+            let classOrInterface = this.softwareProjectDicts.dictClassOrInterface[key];
+            file_paths[classOrInterface.file_path] = true;
+        }
+
+        let number_of_files = Object.keys(file_paths).length;
+        let number_of_classes = keys_for_classes_or_interfaces.length;
         let number_of_methods = Object.keys(this.softwareProjectDicts.dictMethod).length;
         let number_of_data_fields = Object.keys(this.softwareProjectDicts.dictMemberFieldParameters).length;
         let number_of_method_parameters = Object.keys(this.softwareProjectDicts.dictMethodParameters).length;
@@ -246,7 +254,16 @@ export class Detector {
             report_version: reportVersion,
             report_timestamp: new Date().toISOString(),
             target_language: this.target_language || "unkown",
-            report_summary: {},
+            report_summary: {
+                additional: null,
+                amount_classes_or_interfaces_with_data_clumps: null,
+                amount_files_with_data_clumps: null,
+                amount_methods_with_data_clumps: null,
+                fields_to_fields_data_clump: null,
+                parameters_to_fields_data_clump: null,
+                parameters_to_parameters_data_clump: null,
+                amount_data_clumps: null,
+            },
             project_info: {
                 project_url: this.project_url,
                 project_name: this.project_name,
@@ -255,13 +272,10 @@ export class Detector {
                 project_tag: this.project_tag,
                 project_commit_date: this.project_commit_date,
                 additional: this.additional,
-                // @ts-ignore
+                number_of_files: number_of_files,
                 number_of_classes_or_interfaces: number_of_classes,
-                // @ts-ignore
                 number_of_methods: number_of_methods,
-                // @ts-ignore
                 number_of_data_fields: number_of_data_fields,
-                // @ts-ignore
                 number_of_method_parameters: number_of_method_parameters
             },
             detector: {
@@ -273,7 +287,7 @@ export class Detector {
             data_clumps: {}
         };
 
-        console.log("Detecting software project for data clumps");
+        //console.log("Detecting software project for data clumps");
         //console.log(softwareProjectDicts);
         let detectorDataClumpsMethods = new DetectorDataClumpsMethods(this.options, this.progressCallback);
         let commonMethodParameters = await detectorDataClumpsMethods.detect(this.softwareProjectDicts);
@@ -300,15 +314,15 @@ export class Detector {
 
         let detected_data_clumps = dataClumpsTypeContext.data_clumps;
         let data_clumps_keys = Object.keys(detected_data_clumps);
-        dataClumpsTypeContext.report_summary = {
-            amount_data_clumps: data_clumps_keys.length,
-        };
+        dataClumpsTypeContext.report_summary.amount_data_clumps = data_clumps_keys.length
 
         let files_with_data_clumps: any = {};
+        let classes_or_interfaces_with_data_clumps: any = {};
         let methods_with_data_clumps: any = {};
         for(let data_clumps_key of data_clumps_keys){
             let data_clump = detected_data_clumps[data_clumps_key];
             files_with_data_clumps[data_clump.from_file_path] = true;
+            classes_or_interfaces_with_data_clumps[data_clump.from_class_or_interface_key] = true;
             files_with_data_clumps[data_clump.to_file_path] = true;
             if(!!data_clump.from_method_key){
                 methods_with_data_clumps[data_clump.from_method_key] = true;
@@ -317,10 +331,13 @@ export class Detector {
                 methods_with_data_clumps[data_clump.to_method_key] = true;
             }
         }
+
         let amount_files_with_data_clumps = Object.keys(files_with_data_clumps).length;
-        dataClumpsTypeContext.report_summary["amount_files_with_data_clumps"] = amount_files_with_data_clumps;
+        dataClumpsTypeContext.report_summary.amount_files_with_data_clumps = amount_files_with_data_clumps;
+        let amount_classes_or_interfaces_with_data_clumps = Object.keys(classes_or_interfaces_with_data_clumps).length
+        dataClumpsTypeContext.report_summary.amount_classes_or_interfaces_with_data_clumps = amount_classes_or_interfaces_with_data_clumps;
         let amount_methods_with_data_clumps = Object.keys(methods_with_data_clumps).length;
-        dataClumpsTypeContext.report_summary["amount_methods_with_data_clumps"] = amount_methods_with_data_clumps;
+        dataClumpsTypeContext.report_summary.amount_methods_with_data_clumps = amount_methods_with_data_clumps;
 
         let data_clump_types = [DetectorDataClumpsFields.TYPE, DetectorDataClumpsMethodsToOtherFields.TYPE, DetectorDataClumpsMethodsToOtherMethods.TYPE];
         for(let data_clump_type of data_clump_types){
@@ -341,7 +358,7 @@ export class Detector {
 
         this.timer.stop();
 
-        console.log("Detecting software project for data clumps (done)")
+        //console.log("Detecting software project for data clumps (done)")
         this.timer.printElapsedTime("Detector.detect");
 
         console.log("Amount of data clumps: " + Object.keys(dataClumpsTypeContext.data_clumps).length);

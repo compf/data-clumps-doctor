@@ -158,6 +158,9 @@ export class DetectorUtils {
         return [currentParameters, commonFieldParameterKeysAsKey];
     }
 
+    /**
+     * In Java also interfaces can have fields, so we need to check if the classOrInterface is a class
+     * Therefore this method is not needed, but it is kept for future reference
     public static getClassesDict(softwareProjectDicts: SoftwareProjectDicts){
         let classesOrInterfacesDict: Dictionary<ClassOrInterfaceTypeContext> = softwareProjectDicts.dictClassOrInterface;
         let classesDict: Dictionary<ClassOrInterfaceTypeContext> = {};
@@ -171,5 +174,6 @@ export class DetectorUtils {
         }
         return classesDict;
     }
+     */
 
 }

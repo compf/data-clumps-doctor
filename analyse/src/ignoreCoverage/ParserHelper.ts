@@ -11,8 +11,8 @@ export class ParserHelper {
 
     static async getSoftwareProjectDictsFromParsedAstFolder(path_to_folder_of_parsed_ast){
         let softwareProjectDicts: SoftwareProjectDicts = new SoftwareProjectDicts();
-        console.log("Started loading ASTs")
-        console.log("path_to_folder_of_parsed_ast", path_to_folder_of_parsed_ast)
+        //console.log("Started loading ASTs")
+        //console.log("path_to_folder_of_parsed_ast", path_to_folder_of_parsed_ast)
 
         let filesAndFoldersInPath = fs.readdirSync(path_to_folder_of_parsed_ast, { withFileTypes: true });
         for (let fileOrFolder of filesAndFoldersInPath) {
@@ -31,7 +31,7 @@ export class ParserHelper {
     }
 
     static async removeGeneratedAst(path_to_folder_of_parsed_ast: string): Promise<void> {
-        console.log("Started removing generated ASTs");
+        //console.log("Started removing generated ASTs");
         // delete file if exists
         if(fs.existsSync(path_to_folder_of_parsed_ast)){
             fs.rmSync(path_to_folder_of_parsed_ast, { recursive: true });

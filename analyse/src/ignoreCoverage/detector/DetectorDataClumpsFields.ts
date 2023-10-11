@@ -35,11 +35,16 @@ export class DetectorDataClumpsFields {
     }
 
     public async detect(softwareProjectDicts: SoftwareProjectDicts): Promise<Dictionary<DataClumpTypeContext> | null>{
-        let classesDict = DetectorUtils.getClassesDict(softwareProjectDicts);
+        console.log("DetectorDataClumpsFields: detect")
+
+        //let classesDict = DetectorUtils.getClassesDict(softwareProjectDicts); // in java also interfaces can have fields
+        let classesDict = softwareProjectDicts.dictClassOrInterface;
 
         let dataClumpsFieldParameters: Dictionary<DataClumpTypeContext> = {};
         let classKeys = Object.keys(classesDict);
         let amountOfClasses = classKeys.length;
+        console.log("amountOfClasses: "+amountOfClasses)
+
         let index = 0;
         for (let classKey of classKeys) {
             if(this.progressCallback){
@@ -48,7 +53,7 @@ export class DetectorDataClumpsFields {
             let currentClass = classesDict[classKey];// DataclumpsInspection.java line 404
 
             if(currentClass.auxclass){ // ignore auxclasses as are not important for our project
-                return null;
+                continue;
             }
 
             this.generateMemberFieldParametersRelatedToForClass(currentClass, classesDict, dataClumpsFieldParameters, softwareProjectDicts);
@@ -63,6 +68,12 @@ export class DetectorDataClumpsFields {
     private generateMemberFieldParametersRelatedToForClass(currentClass: ClassOrInterfaceTypeContext, classesDict: Dictionary<ClassOrInterfaceTypeContext>, dataClumpsFieldParameters: Dictionary<DataClumpTypeContext>, softwareProjectDicts: SoftwareProjectDicts){
 
         let currentClassWholeHierarchyKnown = currentClass.isWholeHierarchyKnown(softwareProjectDicts)
+        if(!currentClassWholeHierarchyKnown){
+            console.log("currentClassWholeHierarchyKnown: "+currentClassWholeHierarchyKnown)
+            console.log("currentClass.name: "+currentClass.name+ " - "+currentClass.file_path)
+            currentClass.isWholeHierarchyKnownPrintUnknown(softwareProjectDicts)
+        }
+
         if(!this.options.fieldsOfClassesWithUnknownHierarchyProbabilityModifier){
             //console.log("- check if hierarchy is complete")
 
@@ -90,9 +101,6 @@ export class DetectorDataClumpsFields {
     private generateMemberFieldParametersRelatedToForClassToOtherClass(currentClass: ClassOrInterfaceTypeContext, otherClass: ClassOrInterfaceTypeContext, dataClumpsFieldParameters: Dictionary<DataClumpTypeContext>, softwareProjectDicts: SoftwareProjectDicts, currentClassWholeHierarchyKnown: boolean){
 
         let debug = false;
-        if(currentClass.name==="PredicateSearch" && otherClass.name === "PredicateFind"){
-            debug = true;
-        }
 
         if(debug) console.log("------------------")
         if(debug) console.log("generateMemberFieldParametersRelatedToForClassToOtherClass: "+currentClass.name+" to "+otherClass.name)

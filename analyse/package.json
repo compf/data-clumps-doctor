@@ -68,7 +68,7 @@
     "buffer": "^6.0.0",
     "buffer-from": "^1.1.2",
     "commander": "^10.0.1",
-    "data-clumps-type-context": "^0.1.100",
+    "data-clumps-type-context": "^0.1.102",
     "eslint": "^7.32.0",
     "simple-git": "^3.19.0",
     "xml2js": "^0.6.2"

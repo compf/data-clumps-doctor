@@ -215,6 +215,27 @@ export class ClassOrInterfaceTypeContext extends AstElementTypeContext{
         return true;
     }
 
+    public isWholeHierarchyKnownPrintUnknown(softwareProjectDicts: SoftwareProjectDicts){
+        let currentClassOrInterface = this;
+        console.log("-- currentClassOrInterface.key: "+currentClassOrInterface?.key)
+        let superClassesOrInterfacesKeys = currentClassOrInterface.getSuperClassesAndInterfacesKeys(softwareProjectDicts, true);
+        console.log("-- superClassesOrInterfacesKeys");
+        console.log(superClassesOrInterfacesKeys);
+        for(let superClassesOrInterfaceKey of superClassesOrInterfacesKeys){
+            // remove generics from key --> no we dont do that --> fix the AST parser instead
+            //let superClassesOrInterfaceKeyWithoutGenerics = superClassesOrInterfaceKey.split("<")[0];
+            //superClassesOrInterfaceKey = superClassesOrInterfaceKeyWithoutGenerics;
+            let superClassesOrInterface = softwareProjectDicts.dictClassOrInterface[superClassesOrInterfaceKey];
+            if(!superClassesOrInterface){
+                console.log("Found no superClassesOrInterface for: "+superClassesOrInterfaceKey);
+                console.log("The hierarchy is therefore not complete");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public getSuperClassesAndInterfacesKeys(softwareProjectDicts: SoftwareProjectDicts, recursive: boolean, checkedKeys: Dictionary<string | null> = {}, level=0): any[] {
         //console.log(level+" - getSuperClassesAndInterfacesKeys for: "+this.key);
         //console.log(this);
