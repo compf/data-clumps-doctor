@@ -48,7 +48,7 @@ export class VariableTypeContext extends AstElementTypeContext{
         // modifier), but also data fields with similar signatures (similar
         // name, same data type, same access modifier)
         let sameModifiers = this.haveSameModifiers(otherParameter);
-        let sameType = !!this.type && !!otherParameter.type && this.type === otherParameter.type;
+        let sameType = (!!this.type && !!otherParameter.type && this.type === otherParameter.type) || (!this.type && !otherParameter.type);
         let sameName = this.name === otherParameter.name;
 
         let baseSimilarity = 1;
@@ -57,6 +57,7 @@ export class VariableTypeContext extends AstElementTypeContext{
                 baseSimilarity *= 0;
             }
         }
+        // TODO: Add ignore Type
         if(!sameType){
             if(similarityModifierOfVariablesWithUnknownType > 0){
                 baseSimilarity *= similarityModifierOfVariablesWithUnknownType;

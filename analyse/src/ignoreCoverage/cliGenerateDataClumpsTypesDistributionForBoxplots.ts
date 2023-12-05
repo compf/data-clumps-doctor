@@ -17,11 +17,12 @@ const program = new Command();
 const current_working_directory = process.cwd();
 
 program
-    .description('Analyse Detected Data-Clumps\n\n' +
+    .description('Start Analyse Detected Data-Clumps\n\n' +
         'This script performs data clumps detection in a given directory.\n\n' +
         'npx data-clumps-doctor [options] <path_to_folder>')
     .version(version)
     .option('--report_folder <path>', 'Report path', current_working_directory+'/data-clumps-results/'+Analyzer.project_name_variable_placeholder+'/') // Default value is './data-clumps.json'
+    .option('--ignore_without_data_clumps <bool>', 'Ignore files without data clumps', 'true') // Default value is 'true'
     .option('--output <path>', 'Output path for script', current_working_directory+'/DataClumpsTypesDistribution.py') // Default value is './data-clumps.json'
 
 function getAllReportFilesRecursiveInFolder(folder_path){
@@ -66,9 +67,9 @@ function getMedian(listOfValues){
 function getValuesFor(nameOfVariable, listOfValues){
     let fileContent = "";
     let median = getMedian(listOfValues);
-    console.log("Median for "+nameOfVariable+": "+median)
+    console.log("Median value for "+nameOfVariable+": "+median)
     fileContent += "\n";
-    fileContent += +"# "+nameOfVariable+"_median = "+median+"\n";
+    fileContent += "# "+nameOfVariable+"_median = "+median+"\n";
     fileContent += nameOfVariable+"= [\n";
     let amountSingleGroups = listOfValues.length
     for(let i = 0; i < amountSingleGroups; i++){
@@ -84,7 +85,9 @@ function getValuesFor(nameOfVariable, listOfValues){
     return fileContent;
 }
 
-function printDataClumpsClusterDistribution(all_report_files_paths){
+function printDataClumpsClusterDistribution(all_report_files_paths, ignore_without_data_clumps){
+
+
 
     console.log("Counting data clumps cluster distribution ...")
 
@@ -98,35 +101,41 @@ function printDataClumpsClusterDistribution(all_report_files_paths){
         let report_file_path = all_report_files_paths[i];
         console.log("Processing report_file_path: "+i+" with "+all_report_files_paths.length+" report files")
 
-            let report_file = fs.readFileSync(report_file_path, 'utf8');
-            let report_file_json: DataClumpsTypeContext = JSON.parse(report_file);
+        let report_file = fs.readFileSync(report_file_path, 'utf8');
+        let report_file_json: DataClumpsTypeContext = JSON.parse(report_file);
 
-            let amount_data_clumps = report_file_json?.report_summary?.amount_data_clumps || 0;
-            let amount_parameters_to_parameters_data_clump = report_file_json?.report_summary?.parameters_to_parameters_data_clump || 0;
-            let amount_parameters_to_fields_data_clump = report_file_json?.report_summary?.parameters_to_fields_data_clump || 0;
-            let amount_fields_to_fields_data_clump = report_file_json?.report_summary?.fields_to_fields_data_clump || 0;
+        let amount_data_clumps = report_file_json?.report_summary?.amount_data_clumps || 0;
 
-            let percentage_parameters_to_parameters_data_clump = 0
-            if(amount_data_clumps > 0){
-                percentage_parameters_to_parameters_data_clump = (amount_parameters_to_parameters_data_clump / amount_data_clumps) * 100;
-                percentage_parameters_to_parameters_data_clump = parseFloat(percentage_parameters_to_parameters_data_clump.toFixed(2))
-            }
 
-            let percentage_parameters_to_fields_data_clump = 0
-            if(amount_data_clumps > 0){
-                percentage_parameters_to_fields_data_clump = (amount_parameters_to_fields_data_clump / amount_data_clumps) * 100;
-                percentage_parameters_to_fields_data_clump = parseFloat(percentage_parameters_to_fields_data_clump.toFixed(2))
-            }
+        if(amount_data_clumps==0 && ignore_without_data_clumps){
+            continue;
+        }
 
-            let percentage_fields_to_fields_data_clump = 0
-            if(amount_data_clumps > 0){
-                percentage_fields_to_fields_data_clump = (amount_fields_to_fields_data_clump / amount_data_clumps) * 100;
-                percentage_fields_to_fields_data_clump = parseFloat(percentage_fields_to_fields_data_clump.toFixed(2))
-            }
+        let amount_parameters_to_parameters_data_clump = report_file_json?.report_summary?.parameters_to_parameters_data_clump || 0;
+        let amount_parameters_to_fields_data_clump = report_file_json?.report_summary?.parameters_to_fields_data_clump || 0;
+        let amount_fields_to_fields_data_clump = report_file_json?.report_summary?.fields_to_fields_data_clump || 0;
 
-            data_clumps_type_distribution.fields_to_fields_data_clump.push(percentage_fields_to_fields_data_clump);
-            data_clumps_type_distribution.parameters_to_fields_data_clump.push(percentage_parameters_to_fields_data_clump);
-            data_clumps_type_distribution.parameters_to_parameters_data_clump.push(percentage_parameters_to_parameters_data_clump);
+        let percentage_parameters_to_parameters_data_clump = 0
+        if(amount_data_clumps > 0){
+            percentage_parameters_to_parameters_data_clump = (amount_parameters_to_parameters_data_clump / amount_data_clumps) * 100;
+            percentage_parameters_to_parameters_data_clump = parseFloat(percentage_parameters_to_parameters_data_clump.toFixed(2))
+        }
+
+        let percentage_parameters_to_fields_data_clump = 0
+        if(amount_data_clumps > 0){
+            percentage_parameters_to_fields_data_clump = (amount_parameters_to_fields_data_clump / amount_data_clumps) * 100;
+            percentage_parameters_to_fields_data_clump = parseFloat(percentage_parameters_to_fields_data_clump.toFixed(2))
+        }
+
+        let percentage_fields_to_fields_data_clump = 0
+        if(amount_data_clumps > 0){
+            percentage_fields_to_fields_data_clump = (amount_fields_to_fields_data_clump / amount_data_clumps) * 100;
+            percentage_fields_to_fields_data_clump = parseFloat(percentage_fields_to_fields_data_clump.toFixed(2))
+        }
+
+        data_clumps_type_distribution.fields_to_fields_data_clump.push(percentage_fields_to_fields_data_clump);
+        data_clumps_type_distribution.parameters_to_fields_data_clump.push(percentage_parameters_to_fields_data_clump);
+        data_clumps_type_distribution.parameters_to_parameters_data_clump.push(percentage_parameters_to_parameters_data_clump);
     }
 
     console.log("Generating python file to generate boxplot ...")
@@ -152,7 +161,7 @@ function printDataClumpsClusterDistribution(all_report_files_paths){
     fileContent += "\n"
     fileContent += "fig, ax1 = plt.subplots()\n"
     fileContent += "plt.boxplot(data)\n"
-    fileContent += "ax1.set(ylabel='Relative Percentage')\n"
+    fileContent += "ax1.set(ylabel='Percentage of Data Clumps')\n"
     fileContent += "ax1.set(xlabel='Data Clumps Types')\n"
     fileContent += "plt.xticks(range(1, len(labels) + 1), labels)\n"
     fileContent += "plt.subplots_adjust(left=0.12, right=0.95, top=0.98, bottom=0.15)\n"
@@ -165,7 +174,7 @@ function printDataClumpsClusterDistribution(all_report_files_paths){
 }
 
 async function analyse(report_folder, options){
-    console.log("Analysing Detected Data-Clumps-Clusters");
+    console.log("Start Analysing Detected Data-Clumps-Clusters");
     if (!fs.existsSync(report_folder)) {
         console.log("ERROR: Specified path to report folder does not exist: "+report_folder);
         process.exit(1);
@@ -175,12 +184,13 @@ async function analyse(report_folder, options){
     console.log("all_report_files_paths: "+all_report_files_paths.length);
 
     //printHistogram(sorted_timestamps, timestamp_to_file_paths);
-    let filecontent = printDataClumpsClusterDistribution(all_report_files_paths);
+    const ignore_without_data_clumps = options.ignore_without_data_clumps=='true';
+    let filecontent = printDataClumpsClusterDistribution(all_report_files_paths, ignore_without_data_clumps);
     return filecontent;
 }
 
 async function main() {
-    console.log("Data-Clumps-Doctor Detection");
+    console.log("Start Data-Clumps-Doctor Detection");
 
     program.parse(process.argv);
 

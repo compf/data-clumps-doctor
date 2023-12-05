@@ -133,7 +133,7 @@ function getValuesFor(nameOfVariable, listOfValues){
     let median = getMedian(listOfValues);
     console.log("Median for "+nameOfVariable+": "+median)
     fileContent += "\n";
-    fileContent += +"# "+nameOfVariable+"_median = "+median+"\n";
+    fileContent += "# "+nameOfVariable+"_median = "+median+"\n";
     fileContent += nameOfVariable+"= [\n";
     let amountSingleGroups = listOfValues.length
     for(let i = 0; i < amountSingleGroups; i++){
@@ -176,29 +176,31 @@ function printDataClumpsClusterDistribution(all_report_files_paths){
             let largerGroups = groups.largerGroups;
 
             let amountGroups = singleNodeGroups + twoNodeGroups + largerGroups;
+            if(amountGroups>0){
+                let singleNodeGroupsPercentage = (singleNodeGroups / amountGroups) * 100;
+                singleNodeGroupsPercentage = parseFloat(singleNodeGroupsPercentage.toFixed(2))
 
-            let singleNodeGroupsPercentage = (singleNodeGroups / amountGroups) * 100;
-            singleNodeGroupsPercentage = parseFloat(singleNodeGroupsPercentage.toFixed(2))
+                let twoNodeGroupsPercentage = (twoNodeGroups / amountGroups) * 100;
+                twoNodeGroupsPercentage = parseFloat(twoNodeGroupsPercentage.toFixed(2))
 
-            let twoNodeGroupsPercentage = (twoNodeGroups / amountGroups) * 100;
-            twoNodeGroupsPercentage = parseFloat(twoNodeGroupsPercentage.toFixed(2))
+                let largerGroupsPercentage = (largerGroups / amountGroups) * 100;
+                largerGroupsPercentage = parseFloat(largerGroupsPercentage.toFixed(2))
 
-            let largerGroupsPercentage = (largerGroups / amountGroups) * 100;
-            largerGroupsPercentage = parseFloat(largerGroupsPercentage.toFixed(2))
-
-            data_clumps_cluster_distribution.singleNodeGroups.push(singleNodeGroupsPercentage);
-            data_clumps_cluster_distribution.twoNodeGroups.push(twoNodeGroupsPercentage);
-            data_clumps_cluster_distribution.largerGroups.push(largerGroupsPercentage);
+                data_clumps_cluster_distribution.singleNodeGroups.push(singleNodeGroupsPercentage);
+                data_clumps_cluster_distribution.twoNodeGroups.push(twoNodeGroupsPercentage);
+                data_clumps_cluster_distribution.largerGroups.push(largerGroupsPercentage);
+            }
     }
 
     console.log("Generating python file to generate boxplot ...")
 
     let fileContent = "import matplotlib.pyplot as plt\n" +
         "import numpy as np\n" +
+        "from numpy import nan\n" +
         "import pandas as pd\n" +
         "import math\n" +
         "import csv\n" +
-        "\n" +
+        "NaN = nan\n" +
         "";
 
     fileContent += getValuesFor("singleNodeGroups", data_clumps_cluster_distribution.singleNodeGroups);

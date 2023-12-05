@@ -10,6 +10,8 @@ const packageJsonPath = path.join(__dirname, '..','..', 'package.json');
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 const version = packageJson.version;
 
+const debugNumber = 63845
+let debug = false
 
 const program = new Command();
 
@@ -45,9 +47,13 @@ function getAllReportFilesRecursiveInFolder(folder_path){
 }
 
 function countDataClumpsGroupsToAmountDataClumps(data_clumps_dict){
+    if(debug) console.log("countDataClumpsGroupsToAmountDataClumps")
+
+    if(debug) console.log("get keys")
     let data_clumps_keys = Object.keys(data_clumps_dict);
 
     let graph = {};
+    if(debug) console.log("create graph")
     for(let j = 0; j < data_clumps_keys.length; j++){
         let data_clump_key = data_clumps_keys[j];
         let data_clump = data_clumps_dict[data_clump_key];
@@ -55,40 +61,77 @@ function countDataClumpsGroupsToAmountDataClumps(data_clumps_dict){
         let from_class = data_clump.from_class_or_interface_key;
 
         if(graph[from_class] === undefined){
-            graph[from_class] = [];
+            graph[from_class] = {};
         }
         if(graph[to_class] === undefined){
-            graph[to_class] = [];
+            graph[to_class] = {};
         }
-        graph[from_class].push(to_class);
-        graph[to_class].push(from_class);  // Assuming the graph is undirected
+        graph[from_class][to_class] = true;
+        graph[to_class][from_class] = true;  // Assuming the graph is undirected
     }
 
-    let visited = {};
-    function dfs(node): number {
-        visited[node] = true;
-        let neighbors = graph[node];
-        let groupSize = 1;  // Start with 1 to count the current node
-        for(let i = 0; i < neighbors.length; i++){
-            let neighbor = neighbors[i];
-            if(!visited[neighbor]){
-                groupSize += dfs(neighbor);  // Accumulate the size from each connected node
+    if(debug) console.log(JSON.stringify(graph, null, 2));
+
+    
+    let class_belongs_to_group = {};
+    let group_has_amount_nodes = {};
+
+    function calcDfs(){
+        let latest_group_number = 1;
+        for(let j = 0; j < data_clumps_keys.length; j++) {
+            let data_clump_key = data_clumps_keys[j];
+            let data_clump = data_clumps_dict[data_clump_key];
+            let from_class = data_clump.from_class_or_interface_key;
+            let node = from_class;
+            let group_number = class_belongs_to_group[node];
+            if(!group_number){ // if we have no group number yet, we choose the latest
+                class_belongs_to_group[node] = latest_group_number;
+                let neighbors_dict = graph[node];
+                let neighbors = Object.keys(neighbors_dict);
+                for(let i=0; i<neighbors.length; i++){ // since we had no number yet, this means our neighbors dont have one too.
+                    let neighbor = neighbors[i];
+                    class_belongs_to_group[neighbor] = latest_group_number;
+                }
+                latest_group_number++; // increase the amount of groups found
             }
         }
-        return groupSize;
+
+        // calc now the amount of nodes in each group
+        let nodes_keys = Object.keys(class_belongs_to_group);
+        for(let j = 0; j < nodes_keys.length; j++) {
+            let node_key = nodes_keys[j];
+            let group_number = class_belongs_to_group[node_key];
+            let amount_nodes_in_group = group_has_amount_nodes[group_number] || 0;
+            amount_nodes_in_group++;
+            group_has_amount_nodes[group_number] = amount_nodes_in_group
+        }
+
     }
+
+    function dfs(node): number {
+        let group_number = class_belongs_to_group[node];
+        let number_of_nodes_belong_together = group_has_amount_nodes[group_number];
+        return number_of_nodes_belong_together
+    }
+
+    calcDfs();
 
     let singleNodeGroups_amount_data_clumps = 0;
     let twoNodeGroups_amount_data_clumps = 0;
     let largerGroups_amount_data_clumps = 0;
 
-
+    if(debug) console.log("start visit for all keys")
     for(let j = 0; j < data_clumps_keys.length; j++) {
+        if(debug) console.log("j: "+j+"/"+data_clumps_keys.length)
         let data_clump_key = data_clumps_keys[j];
         let data_clump = data_clumps_dict[data_clump_key];
         let from_class = data_clump.from_class_or_interface_key;
+        let to_class = data_clump.to_class_or_interface_key;
+        let different_class = from_class !== to_class;
         let node = from_class;
         let groupSize: number = dfs(node);
+        let data_clump_type = data_clump.data_clump_type;
+        if(debug) console.log("groupSize: "+groupSize+" - different_class: "+different_class+" - from_class: "+from_class+" --> to_class: "+to_class+" - data_clump_type: "+data_clump_type);
         if(groupSize === 1){
             singleNodeGroups_amount_data_clumps++;
         } else if(groupSize === 2){
@@ -128,7 +171,7 @@ function getValuesFor(nameOfVariable, listOfValues){
     let median = getMedian(listOfValues);
     console.log("Median for "+nameOfVariable+": "+median)
     fileContent += "\n";
-    fileContent += +"# "+nameOfVariable+"_median = "+median+"\n";
+    fileContent += "# "+nameOfVariable+"_median = "+median+"\n";
     fileContent += nameOfVariable+"= [\n";
     let amountSingleGroups = listOfValues.length
     for(let i = 0; i < amountSingleGroups; i++){
@@ -157,35 +200,36 @@ function printDataClumpsClusterDistribution(all_report_files_paths){
     for(let i = 0; i < all_report_files_paths.length; i++){
         let report_file_path = all_report_files_paths[i];
         console.log("Processing report_file_path: "+i+" with "+all_report_files_paths.length+" report files")
+        debug = i==debugNumber
 
-            let report_file = fs.readFileSync(report_file_path, 'utf8');
-            let report_file_json = JSON.parse(report_file);
+        let report_file = fs.readFileSync(report_file_path, 'utf8');
+        let report_file_json = JSON.parse(report_file);
 
-            let data_clumps_dict = report_file_json?.data_clumps;
-            let groups = countDataClumpsGroupsToAmountDataClumps(data_clumps_dict)
+        let data_clumps_dict = report_file_json?.data_clumps;
+        let groups = countDataClumpsGroupsToAmountDataClumps(data_clumps_dict)
+        let singleNodeGroups_amount_data_clumps = groups.singleNodeGroups_amount_data_clumps;
 
-            let singleNodeGroups_amount_data_clumps = groups.singleNodeGroups_amount_data_clumps;
+        let twoNodeGroups_amount_data_clumps = groups.twoNodeGroups_amount_data_clumps;
 
-            let twoNodeGroups_amount_data_clumps = groups.twoNodeGroups_amount_data_clumps;
+        let largerGroups_amount_data_clumps = groups.largerGroups_amount_data_clumps;
 
-            let largerGroups_amount_data_clumps = groups.largerGroups_amount_data_clumps;
+        let amountDataClumps = singleNodeGroups_amount_data_clumps + twoNodeGroups_amount_data_clumps + largerGroups_amount_data_clumps;
 
-            let amountDataClumps = singleNodeGroups_amount_data_clumps + twoNodeGroups_amount_data_clumps + largerGroups_amount_data_clumps;
+        if(amountDataClumps>0){
+            let singleNodeGroupsPercentage = (singleNodeGroups_amount_data_clumps / amountDataClumps) * 100;
+            singleNodeGroupsPercentage = parseFloat(singleNodeGroupsPercentage.toFixed(2))
 
-            if(amountDataClumps>0){
-                let singleNodeGroupsPercentage = (singleNodeGroups_amount_data_clumps / amountDataClumps) * 100;
-                singleNodeGroupsPercentage = parseFloat(singleNodeGroupsPercentage.toFixed(2))
+            let twoNodeGroupsPercentage = (twoNodeGroups_amount_data_clumps / amountDataClumps) * 100;
+            twoNodeGroupsPercentage = parseFloat(twoNodeGroupsPercentage.toFixed(2))
 
-                let twoNodeGroupsPercentage = (twoNodeGroups_amount_data_clumps / amountDataClumps) * 100;
-                twoNodeGroupsPercentage = parseFloat(twoNodeGroupsPercentage.toFixed(2))
+            let largerGroupsPercentage = (largerGroups_amount_data_clumps / amountDataClumps) * 100;
+            largerGroupsPercentage = parseFloat(largerGroupsPercentage.toFixed(2))
 
-                let largerGroupsPercentage = (largerGroups_amount_data_clumps / amountDataClumps) * 100;
-                largerGroupsPercentage = parseFloat(largerGroupsPercentage.toFixed(2))
-
-                data_clumps_cluster_distribution.singleNodeGroups.push(singleNodeGroupsPercentage);
-                data_clumps_cluster_distribution.twoNodeGroups.push(twoNodeGroupsPercentage);
-                data_clumps_cluster_distribution.largerGroups.push(largerGroupsPercentage);
-            }
+            data_clumps_cluster_distribution.singleNodeGroups.push(singleNodeGroupsPercentage);
+            data_clumps_cluster_distribution.twoNodeGroups.push(twoNodeGroupsPercentage);
+            data_clumps_cluster_distribution.largerGroups.push(largerGroupsPercentage);
+        }
+        if(debug) console.log("Proceed to next")
     }
 
     console.log("Generating python file to generate boxplot ...")
