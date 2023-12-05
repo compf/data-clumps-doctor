@@ -153,9 +153,9 @@ function printDataClumpsClusterDistribution(all_report_files_paths, ignore_witho
     fileContent += getValuesFor("parameters_to_parameters_data_clump", data_clumps_type_distribution.parameters_to_parameters_data_clump);
 
     fileContent += "all_data = {}\n"
-    fileContent += "all_data['Parameter-Parameter'] = parameters_to_parameters_data_clump\n"
-    fileContent += "all_data['Instance-Instance'] = fields_to_fields_data_clump\n"
-    fileContent += "all_data['Parameter-Instance'] = parameters_to_fields_data_clump\n"
+    fileContent += "all_data['Parameter-\\nParameter'] = parameters_to_parameters_data_clump\n"
+    fileContent += "all_data['Field-\\nField'] = fields_to_fields_data_clump\n"
+    fileContent += "all_data['Parameter-\\nField'] = parameters_to_fields_data_clump\n"
     fileContent += "\n"
     fileContent += "labels, data = all_data.keys(), all_data.values()\n"
     fileContent += "\n"
