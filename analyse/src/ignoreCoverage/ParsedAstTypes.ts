@@ -47,15 +47,11 @@ export class VariableTypeContext extends AstElementTypeContext{
         // signatures (same name, same data type, same access
         // modifier), but also data fields with similar signatures (similar
         // name, same data type, same access modifier)
-        let sameModifiers = this.haveSameModifiers(otherParameter);
         let sameType = (!!this.type && !!otherParameter.type && this.type === otherParameter.type) || (!this.type && !otherParameter.type);
-        let sameName = this.name === otherParameter.name;
 
         let baseSimilarity = 1;
         if(!ignoreParameterModifiers){ // because method parameters can't have "public" or "private" modifiers, a comparison with data fields would be wrong and always return 0. Therefore support a variable to ignore the modifiers
-            if(!sameModifiers){
-                baseSimilarity *= 0;
-            }
+            baseSimilarity *= this.getSimilarityModifierOfSameVariableModifiers(otherParameter)
         }
         // TODO: Add ignore Type
         if(!sameType){
@@ -65,11 +61,27 @@ export class VariableTypeContext extends AstElementTypeContext{
                 baseSimilarity *= 0;
             }
         }
-        if(!sameName){
-            baseSimilarity *= 0;
-        }
+
+        baseSimilarity *= this.isSimilarName(this.name, otherParameter.name);
 
         return baseSimilarity
+    }
+
+    public getSimilarityModifierOfSameVariableModifiers(otherParameter: VariableTypeContext){
+        let sameModifiers = this.haveSameModifiers(otherParameter);
+        if(!sameModifiers){
+            return 0
+        } else {
+            return 1;
+        }
+    }
+
+    public isSimilarName(nameA: string, nameB: string){
+        let sameName = nameA === nameB;
+        if(!sameName){
+            return 0;
+        }
+        return 1;
     }
 
     public haveSameModifiers(otherParameter: VariableTypeContext){
