@@ -145,6 +145,8 @@ function printDataClumpsClusterDistribution(all_report_files_paths, ignore_witho
         "import pandas as pd\n" +
         "import math\n" +
         "import csv\n" +
+        "import matplotlib\n" +
+        "matplotlib.rcParams.update({'font.size': 18})\n" +
         "\n" +
         "";
 
