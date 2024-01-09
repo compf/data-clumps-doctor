@@ -1,0 +1,126 @@
+
+> data_clump_solver@0.0.1 dev
+> npm run run /home/compf/data/uni/master/sem4/data_clump_solver/javaTest
+
+
+> data_clump_solver@0.0.1 run
+> npx tsc && node dist/src/main.js /home/compf/data/uni/master/sem4/data_clump_solver/javaTest
+
+Could not read package.json to get version of detector
+Could not read package-lock.json to get version of report
+hello world
+[ '/home/compf/data/uni/master/sem4/data_clump_solver/javaTest' ]
+Analyse commit: null
+An error occurred: GitError: fatal: ambiguous argument 'null': unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions, like this:
+'git <command> [<revision>...] -- [<file>...]'
+
+    at Object.action (/home/compf/data/uni/master/sem4/data_clump_solver/node_modules/simple-git/dist/cjs/index.js:1300:25)
+    at PluginStore.exec (/home/compf/data/uni/master/sem4/data_clump_solver/node_modules/simple-git/dist/cjs/index.js:1335:29)
+    at /home/compf/data/uni/master/sem4/data_clump_solver/node_modules/simple-git/dist/cjs/index.js:1734:43
+    at new Promise (<anonymous>)
+    at GitExecutorChain.handleTaskData (/home/compf/data/uni/master/sem4/data_clump_solver/node_modules/simple-git/dist/cjs/index.js:1732:16)
+    at GitExecutorChain.<anonymous> (/home/compf/data/uni/master/sem4/data_clump_solver/node_modules/simple-git/dist/cjs/index.js:1716:44)
+    at Generator.next (<anonymous>)
+    at fulfilled (/home/compf/data/uni/master/sem4/data_clump_solver/node_modules/simple-git/dist/cjs/index.js:55:24) {
+  task: {
+    commands: [ 'show', '-s', '--format=%ct', null ],
+    format: 'utf-8',
+    parser: [Function: parser]
+  }
+}
+Generate AST
+softwareProjectDicts: 
+amount: dictClassOrInterface: 2
+amount: dictMemberFieldParameters: 0
+amount: dictMethod: 6
+amount: dictMethodParameters: 9
+DetectorDataClumpsFields: detect
+amountOfClasses: 2
+Detector.detect: Elapsed time: 00:00:00.001
+Amount of data clumps: 6
+Results saved to /home/compf/data/uni/master/sem4/data_clump_solver/stuff/output.json
+Preserving generated AST Output
+hello
+public class x_y_z{
+private int x;
+public int getX(){
+return x;
+}
+public void setX(int value){
+x=value;
+}
+private int y;
+public int getY(){
+return y;
+}
+public void setY(int value){
+y=value;
+}
+private int z;
+public int getZ(){
+return z;
+}
+public void setZ(int value){
+z=value;
+}
+public x_y_z(int x,int y,int z){
+this.x=x;
+this.y=y;
+this.z=z;
+}
+}
+ERROR 21:37:57.209	INFO	LSP connect	Reading messages from queue...
+
+ERROR 21:37:57.209	INFO	LSP$1MessageReader run	Placing incoming messages on queue...
+
+received "Content-Length: 487
+
+{"jsonrpc":"2.0","id":1,"result":{"capabilities":{"textDocumentSync":2,"hoverProvider":true,"completionProvider":{"resolveProvider":true,"triggerCharacters":["."]},"signatureHelpProvider":{"triggerCharacters":["(",","]},"referencesProvider":true,"definitionProvider":true,"workspaceSymbolProvider":true,"documentSymbolProvider":true,"documentFormattingProvider":true,"codeLensProvider":{},"foldingRangeProvider":true,"codeActionProvider":true,"renameProvider":{"prepareProvider":true}}}}"
+sending init
+windows
+hallo
+TO_SEND
+Content-Length: 265
+
+{"jsonrpc":"2.0","id":2,"method":"textDocument/references","params":{"context":{"includeDeclaration":true},"textDocument":{"uri":"file:///home/compf/data/uni/master/sem4/data_clump_solver/javaTestsimpleExample/MathStuff.java"},"position":{"line":5,"character":33}}}
+TO_SEND
+Content-Length: 265
+
+{"jsonrpc":"2.0","id":3,"method":"textDocument/references","params":{"context":{"includeDeclaration":true},"textDocument":{"uri":"file:///home/compf/data/uni/master/sem4/data_clump_solver/javaTestsimpleExample/MathStuff.java"},"position":{"line":5,"character":40}}}
+TO_SEND
+Content-Length: 265
+
+{"jsonrpc":"2.0","id":4,"method":"textDocument/references","params":{"context":{"includeDeclaration":true},"textDocument":{"uri":"file:///home/compf/data/uni/master/sem4/data_clump_solver/javaTestsimpleExample/MathStuff.java"},"position":{"line":5,"character":47}}}
+TO_SEND
+Content-Length: 265
+
+{"jsonrpc":"2.0","id":5,"method":"textDocument/references","params":{"context":{"includeDeclaration":true},"textDocument":{"uri":"file:///home/compf/data/uni/master/sem4/data_clump_solver/javaTestsimpleExample/MathStuff.java"},"position":{"line":5,"character":33}}}
+TO_SEND
+Content-Length: 265
+
+{"jsonrpc":"2.0","id":6,"method":"textDocument/references","params":{"context":{"includeDeclaration":true},"textDocument":{"uri":"file:///home/compf/data/uni/master/sem4/data_clump_solver/javaTestsimpleExample/MathStuff.java"},"position":{"line":5,"character":40}}}
+TO_SEND
+Content-Length: 265
+
+{"jsonrpc":"2.0","id":7,"method":"textDocument/references","params":{"context":{"includeDeclaration":true},"textDocument":{"uri":"file:///home/compf/data/uni/master/sem4/data_clump_solver/javaTestsimpleExample/MathStuff.java"},"position":{"line":5,"character":47}}}
+TO_SEND
+Content-Length: 265
+
+{"jsonrpc":"2.0","id":8,"method":"textDocument/references","params":{"context":{"includeDeclaration":true},"textDocument":{"uri":"file:///home/compf/data/uni/master/sem4/data_clump_solver/javaTestsimpleExample/MathStuff.java"},"position":{"line":9,"character":30}}}
+TO_SEND
+Content-Length: 265
+
+{"jsonrpc":"2.0","id":9,"method":"textDocument/references","params":{"context":{"includeDeclaration":true},"textDocument":{"uri":"file:///home/compf/data/uni/master/sem4/data_clump_solver/javaTestsimpleExample/MathStuff.java"},"position":{"line":9,"character":37}}}
+TO_SEND
+Content-Length: 266
+
+{"jsonrpc":"2.0","id":10,"method":"textDocument/references","params":{"context":{"includeDeclaration":true},"textDocument":{"uri":"file:///home/compf/data/uni/master/sem4/data_clump_solver/javaTestsimpleExample/MathStuff.java"},"position":{"line":9,"character":44}}}
+TO_SEND
+Content-Length: 266
+
+{"jsonrpc":"2.0","id":11,"method":"textDocument/references","params":{"context":{"includeDeclaration":true},"textDocument":{"uri":"file:///home/compf/data/uni/master/sem4/data_clump_solver/javaTestsimpleExample/MathStuff.java"},"position":{"line":9,"character":30}}}
+TO_SEND
+Content-Length: 266
+
+{"jsonrpc":"2.0","id":12,"method":"textDocument/references","params":{"context":{"includeDeclaration":true},"textDocument":{"uri":"file:///home/compf/data/uni/master/sem4/data_clump_solver/javaTestsimpleExample/MathStuff.java"},"position":{"line":9,"character":37}}}

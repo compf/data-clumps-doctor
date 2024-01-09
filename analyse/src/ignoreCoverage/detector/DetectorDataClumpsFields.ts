@@ -196,7 +196,7 @@ export class DetectorDataClumpsFields {
 
             to_file_path: otherClass.file_path,
             to_class_or_interface_key: otherClass.key,
-            to_class_or_interface_name: currentClass.name,
+            to_class_or_interface_name: otherClass.name,
             to_method_key: null,
             to_method_name: null,
 
