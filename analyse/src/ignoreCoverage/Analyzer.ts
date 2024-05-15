@@ -233,6 +233,7 @@ export class Analyzer {
 
             if(this.source_type === "java"){
                 await ParserHelperJavaSourceCode.parseSourceCodeToAst(this.path_to_source, this.path_to_ast_output, this.path_to_ast_generator_folder);
+                console.log("FINNISHED GENERATING AST")
             } else if(this.source_type === "uml"){
                 await ParserHelperXmlVisualParadigm.parseXmlToAst(this.path_to_source, this.path_to_ast_output);
             } else if(this.source_type === "ast"){
@@ -289,7 +290,7 @@ export class Analyzer {
 
         // save to file
         try {
-            fs.writeFileSync(path_to_result, JSON.stringify(dataClumpsContext, null, 2), 'utf8');
+            fs.writeFileSync(path_to_result, JSON.stringify(dataClumpsContext), 'utf8');
             console.log('Results saved to '+path_to_result);
         } catch (err) {
             console.error('An error occurred while writing to file:', err);

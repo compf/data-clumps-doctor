@@ -85,7 +85,7 @@ export class DetectorOptionsInformation {
     public static fieldsOfClassesWithUnknownHierarchyProbabilityModifier: DetectorOptionInformationParameter = {
         label: "Probability for Data Clumps in analyzed Classes with Unknown Hierarchy",
         description: "If set not to 0, the detector will analyze classes that are not part of a known hierarchy of related classes. Range [0,1]. Default value is true. If set to 1, it may find more data clumps but they are maybe false positive, but they have a lower probability score.",
-        defaultValue: 0,
+        defaultValue: 1,
         group: "method",
         type: "float"
     }
@@ -148,7 +148,7 @@ export class DetectorOptionsInformation {
     public static methodsOfClassesOrInterfacesWithUnknownHierarchyProbabilityModifier: DetectorOptionInformationParameter = {
         label: "Probability of Data Clumps in analyzed Methods of Classes with Unknown Hierarchy",
         description: "If set not to 0, the detector will analyze methods of classes that are not part of a known hierarchy of related classes. Range [0,1]. Default value is 0. If set not to 0, it may find more data clumps but they are maybe false positive, but they have a lower probability score.",
-        defaultValue: 0,
+        defaultValue: 1,
         group: "method",
         type: "float"
     }
@@ -243,7 +243,7 @@ export class Detector {
             let classOrInterface = this.softwareProjectDicts.dictClassOrInterface[key];
             file_paths[classOrInterface.file_path] = true;
         }
-
+        //if(1==1)throw new Error(Object.keys(file_paths).length+"");
         let number_of_files = Object.keys(file_paths).length;
         let number_of_classes = keys_for_classes_or_interfaces.length;
         let number_of_methods = Object.keys(this.softwareProjectDicts.dictMethod).length;
@@ -287,14 +287,15 @@ export class Detector {
             data_clumps: {}
         };
 
-        //console.log("Detecting software project for data clumps");
-        //console.log(softwareProjectDicts);
+        console.log("Detecting software project for data clumps");
+        //console.log(this.softwareProjectDicts);
         let detectorDataClumpsMethods = new DetectorDataClumpsMethods(this.options, this.progressCallback);
         let commonMethodParameters = await detectorDataClumpsMethods.detect(this.softwareProjectDicts);
         let commonMethodParametersKeys: any[] = []
         if(!!commonMethodParameters){
             commonMethodParametersKeys = Object.keys(commonMethodParameters);
             for (let commonMethodParametersKey of commonMethodParametersKeys) {
+            console.log("commonMethodParametersKey: "+commonMethodParametersKey);
                 let commonMethodParameter = commonMethodParameters[commonMethodParametersKey];
                 dataClumpsTypeContext.data_clumps[commonMethodParameter.key] = commonMethodParameter;
             }
@@ -306,6 +307,7 @@ export class Detector {
         if(!!commonFields){
             commonFieldsKeys = Object.keys(commonFields);
             for (let commonFieldsKey of commonFieldsKeys) {
+                console.log("commonFieldsKey: "+commonFieldsKey);
                 let commonField = commonFields[commonFieldsKey];
                 dataClumpsTypeContext.data_clumps[commonField.key] = commonField;
             }
@@ -320,6 +322,7 @@ export class Detector {
         let classes_or_interfaces_with_data_clumps: any = {};
         let methods_with_data_clumps: any = {};
         for(let data_clumps_key of data_clumps_keys){
+            console.log("data_clumps_key: "+data_clumps_key);
             let data_clump = detected_data_clumps[data_clumps_key];
             files_with_data_clumps[data_clump.from_file_path] = true;
             classes_or_interfaces_with_data_clumps[data_clump.from_class_or_interface_key] = true;
@@ -358,7 +361,7 @@ export class Detector {
 
         this.timer.stop();
 
-        //console.log("Detecting software project for data clumps (done)")
+        console.log("Detecting software project for data clumps (done)")
         this.timer.printElapsedTime("Detector.detect");
 
         console.log("Amount of data clumps: " + Object.keys(dataClumpsTypeContext.data_clumps).length);

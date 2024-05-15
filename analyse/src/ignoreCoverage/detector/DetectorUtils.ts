@@ -83,7 +83,6 @@ export class DetectorUtils {
         for(let parameter of parameters){
             for(let otherParameter of otherParameters){
                 let probabilityOfSimilarity = parameter.isSimilarTo(otherParameter, similarityModifierOfVariablesWithUnknownType, ignoreParameterModifiers)
-
                 if(probabilityOfSimilarity > 0.5){
                     let commonParameterPairKey = {
                         parameterKey: parameter.key,
@@ -122,6 +121,7 @@ export class DetectorUtils {
                                 name: otherClassParameter.name,
                                 // @ts-ignore
                                 type: otherClassParameter.type,
+                                displayedType: currentClassParameter.displayedType,
                                 modifiers: otherClassParameter.modifiers,
                                 position: {
                                     startLine: otherClassParameter.position?.startLine,
@@ -140,6 +140,7 @@ export class DetectorUtils {
                         name: currentClassParameter.name,
                         // @ts-ignore
                         type: currentClassParameter.type,
+                        displayedType: currentClassParameter.displayedType,
                         probability: commonFieldParameterPairKey.probability,
                         modifiers: currentClassParameter.modifiers,
                         to_variable: related_to_context,

@@ -33,8 +33,18 @@ export class ParserHelper {
     static async removeGeneratedAst(path_to_folder_of_parsed_ast: string): Promise<void> {
         //console.log("Started removing generated ASTs");
         // delete file if exists
-        if(fs.existsSync(path_to_folder_of_parsed_ast)){
-            fs.rmSync(path_to_folder_of_parsed_ast, { recursive: true });
+        let attempts=0;
+        const MAX_ATTEMPTS=3;
+        let success=false;
+        while(fs.existsSync(path_to_folder_of_parsed_ast) && attempts<MAX_ATTEMPTS && !success){
+            try{
+                fs.rmSync(path_to_folder_of_parsed_ast, { recursive: true,force: true });
+                success=true;
+            }
+            catch (e) {
+                attempts++;
+                console.log("Failed to remove folder, attempt: ", attempts, "Error:", e);
+            }
         }
     }
 

@@ -1,6 +1,8 @@
 package net.sourceforge.pmd.examples.java.rules;
 
 import java.lang.reflect.Method;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
 import java.io.BufferedWriter;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -31,6 +33,7 @@ import net.sourceforge.pmd.util.OptionalBool;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -42,6 +45,7 @@ public class MyRule extends AbstractJavaRule {
     static String output = "";
     static String filePath = "";
     static String packageName = "";
+    private List<String> imports = new ArrayList<String>();
 
     public static String convertToJson(Object obj) {
         ObjectMapper mapper = new ObjectMapper();
@@ -61,8 +65,17 @@ public class MyRule extends AbstractJavaRule {
             .build();
 
     public MyRule() {
+     
         definePropertyDescriptor(BAD_NAME);
     }
+    private  static void writeTextToFile(String text, String path){
+        try (BufferedWriter writer = new BufferedWriter
+                (new FileWriter(path
+                ))) {
+            writer.write(text);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }   }
 
     @Override
     public void start(RuleContext ctx) {
@@ -125,6 +138,7 @@ public class MyRule extends AbstractJavaRule {
 
                 // TODO: what is is varargs?
                 fieldContext.type = this.getQualifiedNameUnsafe(fieldVariableDeclarator.getTypeMirror());
+                fieldContext.displayedType = fieldVariableDeclarator.getTypeNode().getText().toString();
                 fieldContext.hasTypeVariable = this.hasTypeVariable(fieldVariableDeclarator.getTypeMirror());
 
                 // Set the position
@@ -166,7 +180,7 @@ public class MyRule extends AbstractJavaRule {
             // Set the properties of the methodContext based on the method
             methodContext.name = method.getMethodName();
             methodContext.type = this.getQualifiedNameUnsafe(method.getResultTypeNode().getTypeMirror());
-
+            methodContext.displayedType = method.getResultTypeNode().getText().toString();
             //System.out.println("----------------");
             //System.out.println("methodContext.name: "+methodContext.name);
 
@@ -204,7 +218,10 @@ public class MyRule extends AbstractJavaRule {
 
                 // TODO: what is is varargs?
                 parameterContext.type = this.getQualifiedNameUnsafe(parameterVariableDeclarator.getTypeMirror());
+                parameterContext.displayedType = parameterVariableDeclarator.getTypeNode().getText().toString();
+                parameterContext.displayedType=parameterContext.displayedType.replace("...","[]");
                 parameterContext.hasTypeVariable = this.hasTypeVariable(parameterVariableDeclarator.getTypeMirror());
+           
 
                 //parameterContext.key = parameterContext.type+" "+parameterContext.name;
                 /**
@@ -373,12 +390,16 @@ public class MyRule extends AbstractJavaRule {
             }
         }
     }
-
+    
     private ClassOrInterfaceTypeContext visitClassOrInterface(ASTClassOrInterfaceDeclaration node){
         //System.out.println("ASTClassOrInterfaceDeclaration");
 
         // Create a new instance of your ClassOrInterfaceTypeContext class
         ClassOrInterfaceTypeContext classContext = new ClassOrInterfaceTypeContext();
+        /*for(String s : this.imports){
+           classContext.imports.add(s);
+        }*/
+
         this.extractClassInformations(node, classContext);
 
         classContext.file_path = MyRule.filePath;
@@ -418,14 +439,27 @@ public class MyRule extends AbstractJavaRule {
             }
         }
     }
+    @Override
+    public Object visit(ASTCompilationUnit node, Object data) {
+        // Collect all import statements
+        List<ASTImportDeclaration> imports = node.findDescendantsOfType(ASTImportDeclaration.class);
+        this.imports.clear();
+        // Process all imports at once
+        for (ASTImportDeclaration importDecl : imports) {
+            //writeTextToFile(importDecl.getText().toString(), "/home/compf/log8");
+            this.imports.add(importDecl.getText().toString());
+        }
 
+        return super.visit(node, data);
+    }
+
+    
     public void setFilePathAndPackageName(ASTClassOrInterfaceDeclaration node){
         //System.out.println(node.getCanonicalName());
         AstInfo astInfo = node.getAstInfo();
-
+        
         String packagename = node.getPackageName();
         MyRule.packageName = packagename;
-
         TextDocument document = astInfo.getTextDocument();
 
         FileId fileId = document.getFileId();
@@ -469,8 +503,10 @@ public class MyRule extends AbstractJavaRule {
         // Stop the program and throw an exception
         throw new RuntimeException("Class ("+classContext.name+") with same package ("+MyRule.packageName+") multiple times declared!. Read the parsed AST file:"+file.getAbsolutePath()+". The class was defined in: "+currentClassDefinedInFile+" - and in: "+otherClassDefinedInFilePath);
     }
-
+    
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+       // writeTextToFile("test","/home/compf/log4");
+        
         this.setFilePathAndPackageName(node); // before visitClassOrInterface
         ClassOrInterfaceTypeContext classContext = this.visitClassOrInterface(node); // after setFilePathAndPackageName
 
@@ -530,16 +566,18 @@ public class MyRule extends AbstractJavaRule {
                 writer.write(outputRow);
             } catch (IOException e) {
                 e.printStackTrace();
+               
             }
 
             // Print the absolute path of the file
-            System.out.println("AST Generated for: " + file.getAbsolutePath());
+            System.out.println("AST Generated for: " + file.getAbsolutePath() +" "+counter);
+            counter++;
         }
 
         //return super.visit(node, data);
         return null;
     }
 
-
+int counter=0;
 
 }

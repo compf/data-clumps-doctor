@@ -55,7 +55,6 @@ export class DetectorDataClumpsFields {
             if(currentClass.auxclass){ // ignore auxclasses as are not important for our project
                 continue;
             }
-
             this.generateMemberFieldParametersRelatedToForClass(currentClass, classesDict, dataClumpsFieldParameters, softwareProjectDicts);
             index++;
         }
@@ -69,13 +68,13 @@ export class DetectorDataClumpsFields {
 
         let currentClassWholeHierarchyKnown = currentClass.isWholeHierarchyKnown(softwareProjectDicts)
         if(!currentClassWholeHierarchyKnown){
-            console.log("currentClassWholeHierarchyKnown: "+currentClassWholeHierarchyKnown)
-            console.log("currentClass.name: "+currentClass.name+ " - "+currentClass.file_path)
+           // console.log("currentClassWholeHierarchyKnown: "+currentClassWholeHierarchyKnown)
+            //console.log("currentClass.name: "+currentClass.name+ " - "+currentClass.file_path)
             currentClass.isWholeHierarchyKnownPrintUnknown(softwareProjectDicts)
         }
 
         if(!this.options.fieldsOfClassesWithUnknownHierarchyProbabilityModifier){
-            //console.log("- check if hierarchy is complete")
+            console.log("- check if hierarchy is complete")
 
             if(!currentClassWholeHierarchyKnown){ // since we dont the complete hierarchy, we can't detect if a class is inherited or not
                 //console.log("-- check if hierarchy is complete")
@@ -93,7 +92,6 @@ export class DetectorDataClumpsFields {
         let otherClassKeys = Object.keys(classesDict);
         for (let otherClassKey of otherClassKeys) {
             let otherClass = classesDict[otherClassKey];
-
             this.generateMemberFieldParametersRelatedToForClassToOtherClass(currentClass, otherClass, dataClumpsFieldParameters, softwareProjectDicts, currentClassWholeHierarchyKnown);
         }
     }
@@ -128,7 +126,7 @@ export class DetectorDataClumpsFields {
             //console.log("- check if hierarchy is complete")
 
             if(!otherClassWholeHierarchyKnown){ // since we dont the complete hierarchy, we can't detect if a class is inherited or not
-                //console.log("-- check if hierarchy is complete")
+                console.log("-- check if hierarchy is complete")
                 return; // therefore we stop here
             }
         }
@@ -163,12 +161,10 @@ export class DetectorDataClumpsFields {
         if(debug) console.log("otherClassParameters: "+otherClassParameters.length)
         if(debug) console.log(JSON.stringify(otherClassParameters, null, 2))
 
-        let ignoreFieldModifiers = false; // From: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=5328371 "These data fields should have same signatures (same names, same data types, and same access modifiers)."
+        let ignoreFieldModifiers = true; // From: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=5328371 "These data fields should have same signatures (same names, same data types, and same access modifiers)."
         let commonFieldParameterPairKeys = DetectorUtils.getCommonParameterPairKeys(currentClassParameters, otherClassParameters, this.options.similarityModifierOfVariablesWithUnknownType, ignoreFieldModifiers);
-
         let amountOfCommonFieldParameters = commonFieldParameterPairKeys.length;
 
-        if(debug) console.log("amountOfCommonFieldParameters: "+amountOfCommonFieldParameters)
         if(amountOfCommonFieldParameters < this.options.sharedFieldsToFieldsAmountMinimum){ //
             return; // DataclumpsInspection.java line 410
         }
