@@ -295,7 +295,7 @@ export class Detector {
         if(!!commonMethodParameters){
             commonMethodParametersKeys = Object.keys(commonMethodParameters);
             for (let commonMethodParametersKey of commonMethodParametersKeys) {
-            console.log("commonMethodParametersKey: "+commonMethodParametersKey);
+            //console.log("commonMethodParametersKey: "+commonMethodParametersKey);
                 let commonMethodParameter = commonMethodParameters[commonMethodParametersKey];
                 dataClumpsTypeContext.data_clumps[commonMethodParameter.key] = commonMethodParameter;
             }
@@ -307,7 +307,7 @@ export class Detector {
         if(!!commonFields){
             commonFieldsKeys = Object.keys(commonFields);
             for (let commonFieldsKey of commonFieldsKeys) {
-                console.log("commonFieldsKey: "+commonFieldsKey);
+                //console.log("commonFieldsKey: "+commonFieldsKey);
                 let commonField = commonFields[commonFieldsKey];
                 dataClumpsTypeContext.data_clumps[commonField.key] = commonField;
             }
@@ -322,7 +322,7 @@ export class Detector {
         let classes_or_interfaces_with_data_clumps: any = {};
         let methods_with_data_clumps: any = {};
         for(let data_clumps_key of data_clumps_keys){
-            console.log("data_clumps_key: "+data_clumps_key);
+            //console.log("data_clumps_key: "+data_clumps_key);
             let data_clump = detected_data_clumps[data_clumps_key];
             files_with_data_clumps[data_clump.from_file_path] = true;
             classes_or_interfaces_with_data_clumps[data_clump.from_class_or_interface_key] = true;

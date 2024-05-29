@@ -290,6 +290,7 @@ export class Analyzer {
 
         // save to file
         try {
+            console.log("Number",Object.keys(dataClumpsContext.data_clumps).length)
             fs.writeFileSync(path_to_result, JSON.stringify(dataClumpsContext), 'utf8');
             console.log('Results saved to '+path_to_result);
         } catch (err) {
