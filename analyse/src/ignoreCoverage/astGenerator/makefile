@@ -1,4 +1,39 @@
 .PHONY: all build run clean
+ifeq ($(OS),Windows_NT)
+# Default value for the DIRECTORY variable
+SOURCE := .\testSrc\java
+DESTINATION := ..\testDataParsedAst\testSrc
+IGNORE_DUBLICATE_DEFINITION := true
+IGNORE_WILDCARD_IMPORTS := true
+GENERATE_REFERENCES_OF_FIELDS_AND_METHODS := true
+
+# Determine the appropriate remove command based on the operating system
+
+    RM := rmdir /s /q
+clean:
+	if exist  ".\pmd-java-dist\target" $(RM) ".\pmd-java-dist\target"
+	if exist ".\pmd-java-custom\target" $(RM) ".\pmd-java-custom\target"
+	echo "hello"
+	all: clean build run
+
+setup:
+	.\mvnw clean install
+
+build:
+	.\mvnw clean install
+	unzip -o .\pmd-java-dist\target\pmd-java-bin-1.0.0-SNAPSHOT.zip -d .\pmd-java-dist\target\
+	
+	copy .\pmd-java-dist\target\pmd-java-bin-1.0.0-SNAPSHOT\lib\pmd-java-custom-1.0.0-SNAPSHOT.jar .\pmd-bin-7.0.0-rc3\lib
+	copy .\pmd-java-dist\target\pmd-java-bin-1.0.0-SNAPSHOT\lib\jackson-annotations-2.12.3.jar .\pmd-bin-7.0.0-rc3\lib 
+	copy .\pmd-java-dist\target\pmd-java-bin-1.0.0-SNAPSHOT\lib\jackson-core-2.12.3.jar .\pmd-bin-7.0.0-rc3\lib 
+	copy .\pmd-java-dist\target\pmd-java-bin-1.0.0-SNAPSHOT\lib\jackson-databind-2.12.3.jar .\pmd-bin-7.0.0-rc3\lib 
+
+run:
+	.\win_run.bat $(SOURCE) $(DESTINATION) $(IGNORE_DUBLICATE_DEFINITION)  $(IGNORE_WILDCARD_IMPORTS)  $(GENERATE_REFERENCES_OF_FIELDS_AND_METHODS)
+
+else
+
+.PHONY: all build run clean
 
 # Default value for the DIRECTORY variable
 SOURCE := ./testSrc/java
@@ -50,3 +85,5 @@ clean:
 designer:
 	@echo "Starting PMD designer..."
 	JAVAFX_HOME=/Users/nbaumgartner/Library/Java/JavaVirtualMachines/javafx-sdk-17.0.7 pmd-bin-7.0.0-rc3/bin/pmd designer
+	
+endif
