@@ -211,6 +211,19 @@ export class DetectorDataClumpsMethodsToOtherMethods {
                 data_clump_type: data_clump_type, // "parameter_data_clump" or "field_data_clump"
                 data_clump_data: currentParameters
             }
+            for(let data of Object.values(dataClumpContext.data_clump_data)){
+                for(let mod of method.modifiers){
+                    if (!data.modifiers?.includes(mod)){
+                        data.modifiers?.push(mod)
+                    }
+                }
+                for(let mod of otherMethod.modifiers){
+                    if (!data.modifiers?.includes(mod)){
+                        data.to_variable.modifiers?.push(mod)
+                    }
+                }
+         
+            }
             dataClumpsMethodParameterDataClumps[dataClumpContext.key] = dataClumpContext;
 
         }

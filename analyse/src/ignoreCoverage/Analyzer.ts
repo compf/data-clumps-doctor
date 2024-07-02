@@ -1,17 +1,17 @@
-import {GitHelper} from "./GitHelper";
+import { GitHelper } from "./GitHelper";
 import fs from "fs";
-import {SoftwareProjectDicts} from "./SoftwareProject";
-import {Detector} from "./detector/Detector";
-import {ParserHelperJavaSourceCode} from "./ParserHelperJavaSourceCode";
-import {Timer} from "./Timer";
+import { SoftwareProjectDicts } from "./SoftwareProject";
+import { Detector } from "./detector/Detector";
+import { ParserHelperJavaSourceCode } from "./ParserHelperJavaSourceCode";
+import { Timer } from "./Timer";
 import path from "path";
-import {ParserHelper} from "./ParserHelper";
-import {ParserHelperXmlVisualParadigm} from "./ParserHelperXmlVisualParadigm";
+import { ParserHelper } from "./ParserHelper";
+import { ParserHelperXmlVisualParadigm } from "./ParserHelperXmlVisualParadigm";
 
 export class Analyzer {
 
-    public static project_name_variable_placeholder ="{project_name}";
-    public static project_commit_variable_placeholder ="{project_commit}";
+    public static project_name_variable_placeholder = "{project_name}";
+    public static project_commit_variable_placeholder = "{project_commit}";
 
 
     public project_url: string | undefined | null;
@@ -62,22 +62,22 @@ export class Analyzer {
         this.timer = new Timer();
     }
 
-    public async getCommitSelectionModeCurrent(){
+    public async getCommitSelectionModeCurrent() {
         let commits_to_analyse: any[] = [];
         let commit = await GitHelper.getProjectCommit(this.path_to_project);
-        if(!commit){
+        if (!commit) {
             commit = null;
         }
         commits_to_analyse.push(commit);
         return commits_to_analyse;
     }
 
-    async getAllGitCommits(){
+    async getAllGitCommits() {
         //console.log("Perform a full check of the whole project");
         const allCommits = await GitHelper.getAllCommitsFromGitProject(this.path_to_project);
         let missing_commit_results: string[] = [];
 
-        if(!!allCommits){
+        if (!!allCommits) {
             //console.log("amount commits: "+allCommits.length)
 
             for (const commit of allCommits) {
@@ -89,18 +89,18 @@ export class Analyzer {
         return missing_commit_results;
     }
 
-    async getGitTagCommitsHashes(){
+    async getGitTagCommitsHashes() {
         //console.log("Perform a full check of the whole project");
         const allTags = await GitHelper.getAllTagsFromGitProject(this.path_to_project);
         let missing_commit_results: string[] = [];
 
-        if(!!allTags){
+        if (!!allTags) {
             //console.log("amount tag commits: "+allTags.length)
 
             for (const tag of allTags) {
                 //console.log("check tag: " + tag);
                 let commit_hash = await GitHelper.getCommitHashForTag(this.path_to_project, tag);
-                if(!commit_hash){
+                if (!commit_hash) {
                     //console.log("No commit hash found for tag: "+tag);
                     continue;
                 }
@@ -115,12 +115,12 @@ export class Analyzer {
     public async configureCommitSelectionMode(): Promise<{ git_checkout_needed: boolean; commits_to_analyse: any[] }> {
         let git_checkout_needed = true;
         let commits_to_analyse: any[] = [];
-        if(this.commit_selection_mode==="current" || !this.commit_selection_mode){
+        if (this.commit_selection_mode === "current" || !this.commit_selection_mode) {
             commits_to_analyse = await this.getCommitSelectionModeCurrent();
             git_checkout_needed = false;
-        } else if(this.commit_selection_mode==="full"){
+        } else if (this.commit_selection_mode === "full") {
             commits_to_analyse = await this.getAllGitCommits();
-        } else if(this.commit_selection_mode==="tags"){
+        } else if (this.commit_selection_mode === "tags") {
             commits_to_analyse = await this.getGitTagCommitsHashes();
         } else {
             let string_commits_to_analyse = this.commit_selection_mode;
@@ -133,18 +133,18 @@ export class Analyzer {
     }
 
     async loadProjectName(path_to_folder: string): Promise<string> {
-        if(!!this.passed_project_name){ // if project name was passed as parameter
+        if (!!this.passed_project_name) { // if project name was passed as parameter
             return this.passed_project_name; // use passed project name
         }
 
         let project_name = await GitHelper.getProjectName(path_to_folder);
-        if(!project_name){ // if no project name could be found in the git repository
+        if (!project_name) { // if no project name could be found in the git repository
             project_name = this.project_name // use default project name
         }
         return project_name;
     }
 
-    async start(){
+    async start() {
         this.timer.start();
 
         this.project_name = await this.loadProjectName(this.path_to_project);
@@ -153,28 +153,28 @@ export class Analyzer {
             commits_to_analyse
         } = await this.configureCommitSelectionMode();
 
-        if(git_checkout_needed){
-            let i=1;
+        if (git_checkout_needed) {
+            let i = 1;
             let amount_commits = commits_to_analyse.length;
             //console.log("Analysing amount commits: "+amount_commits);
             for (const commit of commits_to_analyse) {
-                console.log("Check "+"Commit ["+i+"/"+amount_commits+"]");
+                console.log("Check " + "Commit [" + i + "/" + amount_commits + "]");
 
                 let output_exists = await this.doesAnalysisExist(commit);
-                if(output_exists){
-                    console.log("Result already exists for "+commit);
+                if (output_exists) {
+                    console.log("Result already exists for " + commit);
                 } else {
-                    console.log("Analyse "+commit);
+                    console.log("Analyse " + commit);
 
                     let checkoutWorked = true;
-                    if(!!commit){
-                        try{
+                    if (!!commit) {
+                        try {
                             await GitHelper.checkoutGitCommit(this.path_to_project, commit);
-                        } catch(error){
+                        } catch (error) {
                             checkoutWorked = false;
                         }
                     }
-                    if(checkoutWorked){
+                    if (checkoutWorked) {
                         // Do analysis for each missing commit and proceed to the next
                         await this.analyse(commit);
                         //console.log("Proceed to next");
@@ -193,14 +193,14 @@ export class Analyzer {
         this.timer.printElapsedTime("Detection time");
     }
 
-    static replaceOutputVariables(path_to_output_with_variables, project_name="project_name", project_commit="project_commit"){
-        let copy = path_to_output_with_variables+"";
+    static replaceOutputVariables(path_to_output_with_variables, project_name = "project_name", project_commit = "project_commit") {
+        let copy = path_to_output_with_variables + "";
         copy = copy.replace(Analyzer.project_name_variable_placeholder, project_name);
         copy = copy.replace(Analyzer.project_commit_variable_placeholder, project_commit);
         return copy;
     }
 
-    async doesAnalysisExist(commit){
+    async doesAnalysisExist(commit) {
         let path_to_result = Analyzer.replaceOutputVariables(this.path_to_output_with_variables, this.project_name, commit);
         if (fs.existsSync(path_to_result)) {
             return true;
@@ -208,8 +208,8 @@ export class Analyzer {
         return false;
     }
 
-    async analyse(commit){
-        console.log("Analyse commit: "+commit);
+    async analyse(commit) {
+        console.log("Analyse commit: " + commit);
 
         let project_version = this.project_version || commit || "unknown_project_version";
 
@@ -231,20 +231,20 @@ export class Analyzer {
 
             console.log("Generate AST");
 
-            if(this.source_type === "java"){
+            if (this.source_type === "java") {
                 await ParserHelperJavaSourceCode.parseSourceCodeToAst(this.path_to_source, this.path_to_ast_output, this.path_to_ast_generator_folder);
                 console.log("FINNISHED GENERATING AST")
-            } else if(this.source_type === "uml"){
+            } else if (this.source_type === "uml") {
                 await ParserHelperXmlVisualParadigm.parseXmlToAst(this.path_to_source, this.path_to_ast_output);
-            } else if(this.source_type === "ast"){
+            } else if (this.source_type === "ast") {
                 console.log("Skip ast generation since ast is already provided")
                 this.path_to_ast_output = this.path_to_source;
                 this.preserve_ast_output = true; // since the ast is our input, we do not want to delete it
-                console.log("path_to_ast_output: "+this.path_to_ast_output)
-                console.log("path_to_source: "+this.path_to_source)
-                console.log("path_to_project: "+this.path_to_project)
+                console.log("path_to_ast_output: " + this.path_to_ast_output)
+                console.log("path_to_source: " + this.path_to_source)
+                console.log("path_to_project: " + this.path_to_project)
             } else {
-                throw new Error("Source type "+this.source_type+" not supported");
+                throw new Error("Source type " + this.source_type + " not supported");
             }
 
 
@@ -253,33 +253,37 @@ export class Analyzer {
                 // in order when the ast generator does not find any files, it does not create the folder
                 fs.mkdirSync(this.path_to_ast_output, { recursive: true });
             }
-
-            let softwareProjectDicts: SoftwareProjectDicts = await ParserHelper.getSoftwareProjectDictsFromParsedAstFolder(this.path_to_ast_output);
-            console.log("softwareProjectDicts: ")
-            softwareProjectDicts.printInfo();
+           await this.analyzeAST(project_version,commit,commit_tag,commit_date)
 
 
-            let path_to_result = Analyzer.replaceOutputVariables(this.path_to_output_with_variables, this.project_name, commit);
-            let progressCallback = null
-            //let progressCallback = this.generateAstCallback.bind(this);
-            await Analyzer.analyseSoftwareProjectDicts(softwareProjectDicts, this.project_url, this.project_name, project_version, commit, commit_tag, commit_date, path_to_result, progressCallback, this.detectorOptions);
-
-            if(!this.preserve_ast_output){
-                await ParserHelper.removeGeneratedAst(this.path_to_ast_output);
-            } else {
-                console.log("Preserving generated AST Output");
-            }
 
         }
     }
+    async analyzeAST(project_version, commit, commit_tag, commit_date) {
+        let softwareProjectDicts: SoftwareProjectDicts = await ParserHelper.getSoftwareProjectDictsFromParsedAstFolder(this.path_to_ast_output);
+        console.log("softwareProjectDicts: ")
+        softwareProjectDicts.printInfo();
 
-    static async analyseSoftwareProjectDicts(softwareProjectDicts, project_url, project_name, project_version, commit, commit_tag, commit_date, path_to_result, progressCallback, detectorOptions){
+
+        let path_to_result = Analyzer.replaceOutputVariables(this.path_to_output_with_variables, this.project_name, commit);
+        let progressCallback = null
+        //let progressCallback = this.generateAstCallback.bind(this);
+        await Analyzer.analyseSoftwareProjectDicts(softwareProjectDicts, this.project_url, this.project_name, project_version, commit, commit_tag, commit_date, path_to_result, progressCallback, this.detectorOptions);
+
+        if (!this.preserve_ast_output) {
+            await ParserHelper.removeGeneratedAst(this.path_to_ast_output);
+        } else {
+            console.log("Preserving generated AST Output");
+        }
+    }
+
+    static async analyseSoftwareProjectDicts(softwareProjectDicts, project_url, project_name, project_version, commit, commit_tag, commit_date, path_to_result, progressCallback, detectorOptions) {
         let detector = new Detector(softwareProjectDicts, detectorOptions, progressCallback, project_url, project_name, project_version, commit, commit_tag, commit_date);
 
         let dataClumpsContext = await detector.detect();
 
         // delete file if exists
-        if(fs.existsSync(path_to_result)){
+        if (fs.existsSync(path_to_result)) {
             fs.unlinkSync(path_to_result);
         }
 
@@ -290,9 +294,9 @@ export class Analyzer {
 
         // save to file
         try {
-            console.log("Number",Object.keys(dataClumpsContext.data_clumps).length)
+            console.log("Number", Object.keys(dataClumpsContext.data_clumps).length)
             fs.writeFileSync(path_to_result, JSON.stringify(dataClumpsContext), 'utf8');
-            console.log('Results saved to '+path_to_result);
+            console.log('Results saved to ' + path_to_result);
         } catch (err) {
             console.error('An error occurred while writing to file:', err);
         }
