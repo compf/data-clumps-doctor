@@ -218,7 +218,7 @@ export class DetectorDataClumpsMethodsToOtherMethods {
                     }
                 }
                 for(let mod of otherMethod.modifiers){
-                    if (!data.modifiers?.includes(mod)){
+                    if (!data.to_variable.modifiers?.includes(mod)){
                         data.to_variable.modifiers?.push(mod)
                     }
                 }
